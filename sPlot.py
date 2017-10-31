@@ -1,16 +1,6 @@
 import ROOT
 from ROOT import RooFit as RF
-
-# Create the observables (x), parameters, and PDFs
-# w = ROOT.RooWorkspace('w')
-# w.factory('RooGaussian::sig_Bs(BU_mass_Cjp[0, 10], mean[5], sigma[1])')
-# w.factory('RooExponential::bkg_pdf(x, lambda[0.2])')
-# tot_pdf = w.factory(
-#     'SUM::tot_pdf(nsig[1000, 0, 2000]*sig_pdf, nbkg[1200, 0, 2000]*bkg_pdf)'
-# )
-# x = w.var('x')
-
-# ROOT.gStyle.SetStatW(0.1); ROOT.gStyle.SetStatH(0.1)
+import math
 
 var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}#phi) [GeV]', 5.3669 - 0.2, 5.3669 + 0.2)
 var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}) [GeV]', 3.38, 4.24)
@@ -38,8 +28,8 @@ mean_psi = ROOT.RooRealVar("mean_psi", "", 3.68, 3.6, 3.8)
 sigma_psi_1 = ROOT.RooRealVar("sigma_psi_1", "", 0.01, 0.001, 0.5)
 sigma_psi_2 = ROOT.RooRealVar("sigma_psi_2", "", 0.01, 0.001, 0.5)
 # sigma_psi = ROOT.RooRealVar("sigma_psi", "", 0.01, 0.001, 0.5)
-mean_X = ROOT.RooRealVar("mean_X", "", 3.8717, 3.8717 - 0.001, 3.8717 + 0.001)
-sigma_X = ROOT.RooRealVar("sigma_X", "", 0.007, 0.003, 0.01)
+mean_X = ROOT.RooRealVar("mean_X", "", 3.8717, 3.8717 - 0.1, 3.8717 + 0.1)
+sigma_X = ROOT.RooRealVar("sigma_X", "", 0.0051, 0.003, 0.01)
 
 N_sig_psi = ROOT.RooRealVar('N_sig_psi', '', 1000., 1., 10000)
 fr_psi = ROOT.RooRealVar('fr_psi', 'fr_psi', 0.5 , 0., 1.)
@@ -81,7 +71,7 @@ ROOT.RooStats.SPlot(
     ROOT.RooArgList(N_sig,N_bkgr)
 )
 
-data_sig_weighted = ROOT.RooDataSet(data.GetName(),data.GetTitle(),data, data.get(),'X_mass_Cjp > 3.6 && X_mass_Cjp < 3.95', "N_sig_sw") ;
+data_sig_weighted = ROOT.RooDataSet(data.GetName(),data.GetTitle(),data, data.get(),'X_mass_Cjp > 3.6 && X_mass_Cjp < 4.1', "N_sig_sw") ;
 data_bkgr_weighted = ROOT.RooDataSet(data.GetName(),data.GetTitle(),data, data.get(),'',"N_bkgr_sw") ;
 
 # # Import the dataset so we can easily access everything
@@ -140,13 +130,36 @@ _data = data_sig_weighted.reduce('PIPI_mass_Cjp > 0.36 && PIPI_mass_Cjp < 0.86')
 _data.plotOn(frame_control_pipi_sig)
 frame_control_pipi_sig.Draw()
 
+
+sigma_X.setConstant(1)
+
+
 c.cd(2)
-var_control.setRange(3.6, 3.95)
-frame_control_sig = var_control.frame(RF.Title('sPlot for the signal'), RF.Bins(70))
-_data = data_sig_weighted.reduce('X_mass_Cjp > 3.6 && X_mass_Cjp < 3.95')
+left = 3.6; right = 3.95; nbins = 70
+var_control.setRange(left, right)
+frame_control_sig = var_control.frame(RF.Title('sPlot for the signal'), RF.Bins(nbins))
+_data = data_sig_weighted.reduce('X_mass_Cjp >' + str(left) + ' && X_mass_Cjp <' + str(right) )
 # data_sig_weighted = ROOT.RooDataSet(data.GetName(),data.GetTitle(),data, data.get(),'X_mass_Cjp > 3.6 && X_mass_Cjp < 3.95', "N_sig_sw") ;
+
+print '\n\n#################################\n\n\n           background only now\n\n\n#################################\n\n'
+# ---- bkgr only fit
+N_sig_X.setVal(0)
+N_sig_X.setConstant(1)
+# mean_X.setConstant(1)
 model_control.fitTo(_data)
 model_control.fitTo(_data)
+model_control.fitTo(_data)
+rrr_null = model_control.fitTo(_data, RF.Save())
+
+print '\n\n#################################\n\n\n           sig+bkgr now\n\n\n#################################\n\n'
+# ---- sig+bkgr fit
+N_sig_X.setVal(100)
+N_sig_X.setConstant(0)
+# mean_X.setConstant(1)
+model_control.fitTo(_data)
+model_control.fitTo(_data)
+rrr_sig = model_control.fitTo(_data, RF.Save())
+
 _data.plotOn(frame_control_sig)
 model_control.paramOn(frame_control_sig)
 model_control.plotOn(frame_control_sig)
@@ -154,10 +167,12 @@ model_control.plotOn(frame_control_sig)
 frame_control_sig.Draw()
 
 c.cd(3)
-var_control.setRange(3.872 - 0.08, 3.872 + 0.08)
-frame_control_X = var_control.frame(RF.Title('sPlot for X(3872)'), RF.Bins(40))
-_data = data_sig_weighted.reduce('X_mass_Cjp > 3.872 - 0.07 && X_mass_Cjp < 3.872 + 0.07')
-# data_sig_weighted = ROOT.RooDataSet(data.GetName(),data.GetTitle(),data, data.get(),'X_mass_Cjp > 3.872 - 0.07 && X_mass_Cjp < 3.872 + 0.07', "N_sig_sw") ;
+left = 3.872 - 0.15; right = 3.872 + 0.15; nbins = 60
+var_control.setRange(left, right)
+frame_control_X = var_control.frame(RF.Title('sPlot for X(3872)'), RF.Bins(nbins))
+_data = data_sig_weighted.reduce('X_mass_Cjp >' + str(left) + ' && X_mass_Cjp <' + str(right) )
+
+print '\n\n#################################\n\n\n           X now\n\n\n#################################\n\n'
 model_X.fitTo(_data)
 model_X.fitTo(_data)
 _data.plotOn(frame_control_X)
@@ -166,5 +181,10 @@ model_X.plotOn(frame_control_X)
 frame_control_X.Draw()
 
 
+nll_sig  = rrr_sig.minNll()
+nll_null = rrr_null.minNll()
+P = ROOT.TMath.Prob(nll_null - nll_sig, 3)## !!! Change delta of ndf appropriately
+S = ROOT.TMath.ErfcInverse(P) * math.sqrt(2)
+print 'P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S
 
 c.SaveAs('sPlot.png')

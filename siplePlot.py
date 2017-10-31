@@ -3,7 +3,7 @@ import glob
 from math import sqrt
  
 ch = TChain("mytree");
-MyFileNames12 = glob.glob('SimpleFile_Bs_to_Xphi_b715_preselection_test7_NoMultCandRemoval_0_14000.root')
+MyFileNames12 = glob.glob('new.root')
 #MyFileNames12 = glob.glob('../SimpleFile_Bs_to_Xphi_b711_preselection_test5_NoMultCandRemoval_0_14000.root')
 for fName in MyFileNames12 :
     ch.Add(fName)
