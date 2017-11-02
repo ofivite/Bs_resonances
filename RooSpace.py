@@ -1,6 +1,7 @@
 import ROOT
 
-var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}#phi) [GeV]', 5.3669 - 0.2, 5.3669 + 0.2)
+left_discr =  5.3669 - 0.2; right_discr = 5.3669 + 0.2; nbins_discr = 80
+var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}#phi) [GeV]', 5.3669 - 0.2, 5.3669 + 0.2);
 var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}) [GeV]', 3.4, 4.2)
 PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'PIPI_mass_Cjp', 0.2, 1.2)
 PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'PHI_mass_Cjp', 0., 2.)
@@ -12,6 +13,7 @@ exp_par = ROOT.RooRealVar('exp_par', '', -0.01, -6., -0.00001)
 a1 = ROOT.RooRealVar('a1', 'a1', 0.5, 0., 1.)
 a2 = ROOT.RooRealVar('a2', 'a2', 0.5, 0., 1.)
 a3 = ROOT.RooRealVar('a3', 'a3', 0.5, 0., 1.)
+a4 = ROOT.RooRealVar('a4', 'a4', 0.5, 0., 1.)
 
 N_sig_discr = ROOT.RooRealVar('N_sig_discr', '', 30000., 1., 100000)
 fr_Bs = ROOT.RooRealVar('fr_Bs', 'fr_Bs', 0.5 , 0., 1.)
@@ -44,7 +46,7 @@ sigma_X = ROOT.RooRealVar("sigma_X", "", 0.0051, 0.001, 0.01)
 N_sig_X = ROOT.RooRealVar('N_sig_X', '', 100., 1., 1000)
 signal_X = ROOT.RooGaussian("signal_X", "", var_control, mean_X, sigma_X)
 
-bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1))
+bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
 N_bkgr_control = ROOT.RooRealVar('N_bkgr_control', '', 1000., 1., 10000)
 
 
