@@ -59,3 +59,23 @@ model_control = ROOT.RooAddPdf('model_control', 'model_control', ROOT.RooArgList
 # model_control = ROOT.RooAddPdf('model_control', 'model_control', ROOT.RooArgList(signal_psi, signal_X), ROOT.RooArgList(N_sig_psi, N_sig_X))
 model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
 model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(sig_psi_1, sig_psi_2, bkgr_control), ROOT.RooArgList(N_sig_psi_1, N_sig_psi_2, N_bkgr_control))
+
+N_sig_discr.setPlotLabel("N_{B_{s}}");
+N_sig_X.setPlotLabel('N_{X}')
+N_sig_psi.setPlotLabel('N_{#psi(2S)}')
+N_bkgr_control.setPlotLabel('N_{bkgr}')
+N_bkgr_discr.setPlotLabel('N_{bkgr}')
+a1.setPlotLabel('a_{1}')
+a2.setPlotLabel('a_{2}')
+a3.setPlotLabel('a_{3}')
+a4.setPlotLabel('a_{4}')
+mean_X.setPlotLabel("m[X]");
+sigma_X.setPlotLabel("#sigma[X]");
+mean_psi.setPlotLabel("m[#psi(2S)]");
+sigma_psi_1.setPlotLabel("#sigma_{1}[#psi(2S)]");
+sigma_psi_2.setPlotLabel("#sigma_{2}[#psi(2S)]");
+fr_psi.setPlotLabel('fr_{#psi(2S)}')
+mean_Bs.setPlotLabel('m[B_{s}]')
+sigma_Bs_1.setPlotLabel('#sigma[B_{s}]')
+sigma_Bs_2.setPlotLabel('#sigma_{2}[B_{s}]')
+fr_Bs.setPlotLabel('fr_{B_{s}}')

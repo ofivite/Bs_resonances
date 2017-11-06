@@ -28,7 +28,7 @@ data.plotOn(frame_discr)
 model_discr.paramOn(frame_discr, RF.Layout(0.55, 0.87, 0.6))
 model_discr.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
 model_discr.plotOn(frame_discr, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 4 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 4 * sigma_Bs_1.getValV()));
+model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 40 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 40 * sigma_Bs_1.getValV()));
 
 frame_discr.Draw()
 
@@ -48,7 +48,7 @@ data_psi.plotOn(frame_discr)
 model_discr.paramOn(frame_discr, RF.Layout(0.55, 0.87, 0.6))
 model_discr.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
 model_discr.plotOn(frame_discr, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 4 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 4 * sigma_Bs_1.getValV()));
+model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 40 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 40 * sigma_Bs_1.getValV()));
 
 frame_discr.Draw()
 
@@ -80,8 +80,8 @@ data_psi_weighted.plotOn(frame_control, ROOT.RooLinkedList())
 model_psi.paramOn(frame_control, RF.Layout(0.55, 0.87, 0.6))
 model_psi.plotOn(frame_control, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
 model_psi.plotOn(frame_control, RF.Components("bkgr_control"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-model_psi.plotOn(frame_control, RF.Components("sig_psi_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_psi.getValV() - 4 * sigma_psi_1.getValV(), mean_psi.getValV() + 4 * sigma_psi_1.getValV()));
-model_psi.plotOn(frame_control, RF.Components("sig_psi_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_psi.getValV() - 4 * sigma_psi_2.getValV(), mean_psi.getValV() + 4 * sigma_psi_2.getValV()));
+model_psi.plotOn(frame_control, RF.Components("sig_psi_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_psi.getValV() - 40 * sigma_psi_1.getValV(), mean_psi.getValV() + 40 * sigma_psi_1.getValV()));
+model_psi.plotOn(frame_control, RF.Components("sig_psi_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_psi.getValV() - 40 * sigma_psi_2.getValV(), mean_psi.getValV() + 40 * sigma_psi_2.getValV()));
 # model_psi.plotOn(frame_control) # , RF.NormRange("psi"), RF.Range("psi")
 frame_control.Draw()
 
@@ -99,7 +99,7 @@ data_X.plotOn(frame_discr)
 model_discr.paramOn(frame_discr, RF.Layout(0.55, 0.87, 0.6))
 model_discr.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
 model_discr.plotOn(frame_discr, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 4 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 4 * sigma_Bs_1.getValV()));
+model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 40 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 40 * sigma_Bs_1.getValV()));
 
 frame_discr.Draw()
 
@@ -113,14 +113,37 @@ ROOT.RooStats.SPlot(
 ##_-_-_-_-_-_-#
 ##############
 
-c.cd(6)
+c.cd(4)
 
 var_control.setMin(left_X); var_control.setMax(right_X)
 
 data_X_weighted = ROOT.RooDataSet(data_X.GetName(),data_X.GetTitle(),data_X, data_X.get(), 'X_mass_Cjp >' + str(left_X) + ' && X_mass_Cjp < ' + str(right_X), "N_sig_discr_sw") ;
-r_X = model_X.fitTo(data_X_weighted, RF.Save())
-r_X = model_X.fitTo(data_X_weighted, RF.Save())
-r_X = model_X.fitTo(data_X_weighted, RF.Save())
+
+N_sig_X.setVal(0)
+N_sig_X.setConstant(1)
+sigma_X.setVal(0.0047)
+# sigma_X.setConstant(1)
+
+rrr_null = model_X.fitTo(data_X_weighted, RF.Save())
+rrr_null = model_X.fitTo(data_X_weighted, RF.Save())
+rrr_null = model_X.fitTo(data_X_weighted, RF.Save())
+
+frame_control = ROOT.RooPlot(" ", 'm(J/#psi#pi^{+}#pi^{-}#phi) bkgr only', var_control, left_X, right_X, nbins_X);
+data_X_weighted.plotOn(frame_control)
+model_X.paramOn(frame_control, RF.Layout(0.55, 0.87, 0.6))
+model_X.plotOn(frame_control, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
+model_X.plotOn(frame_control, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+# model_X.plotOn(frame_control, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 40 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 40 * sigma_Bs_1.getValV()));
+
+frame_control.Draw()
+#----------------------------------
+c.cd(6)
+
+N_sig_X.setVal(50)
+N_sig_X.setConstant(0)
+rrr_sig = model_X.fitTo(data_X_weighted, RF.Save())
+rrr_sig = model_X.fitTo(data_X_weighted, RF.Save())
+rrr_sig = model_X.fitTo(data_X_weighted, RF.Save())
 
 # frame_control = ROOT.RooPlot('frame_control', 'sPlot for X(3872) region', var_control, left_X, right_X, nbins_X)
 frame_control = ROOT.RooPlot(" ", "sPlot for X(3872) region", var_control, left_X, right_X, nbins_X);
@@ -128,7 +151,7 @@ data_X_weighted.plotOn(frame_control)
 model_X.paramOn(frame_control, RF.Layout(0.55, 0.87, 0.6))
 model_X.plotOn(frame_control, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
 model_X.plotOn(frame_control, RF.Components("bkgr_control"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-model_X.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_X.getValV() - 4 * sigma_X.getValV(), mean_X.getValV() + 4 * sigma_X.getValV()));
+model_X.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_X.getValV() - 40 * sigma_X.getValV(), mean_X.getValV() + 40 * sigma_X.getValV()));
 
 # model_X.plotOn(frame_control) # , RF.NormRange("X"), RF.Range("X")
 frame_control.Draw()
@@ -172,5 +195,11 @@ frame_control.Draw()
 # model_X.paramOn(frame_control_X)
 # model_X.plotOn(frame_control_X)
 # frame_control_X.Draw()
+
+nll_sig  = rrr_sig.minNll()
+nll_null = rrr_null.minNll()
+P = ROOT.TMath.Prob(nll_null - nll_sig, 2)## !!! Change delta of ndf appropriately
+S = ROOT.TMath.ErfcInverse(P) * math.sqrt(2)
+print 'P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S
 
 c.SaveAs('sPlot.png')
