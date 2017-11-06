@@ -10,6 +10,8 @@ left_X = 3.872 - 0.07; right_X = 3.872 + 0.07; nbins_X = 35
 
 file_data = ROOT.TFile('new.root')
 cuts = 'TMath::Abs(PHI_mass_Cjp - 1.02)<0.005 && PIPI_mass_Cjp > X_mass_Cjp - 3.0969 - 0.15' #PIPI_mass_Cjp > 0.65 && PIPI_mass_Cjp < 0.78 &&
+cuts_psi = 'X_mass_Cjp >' + str(left_psi) + ' && X_mass_Cjp < ' + str(right_psi) # + ' && PIPI_mass_Cjp > 0.4 && PIPI_mass_Cjp < 0.6'
+cuts_X = 'X_mass_Cjp >' + str(left_X) + ' && X_mass_Cjp < ' + str(right_X) # + ' && PIPI_mass_Cjp > 0.65 && PIPI_mass_Cjp < 0.78'
 
 c = ROOT.TCanvas("c", "c", 1700, 650)
 c.Divide(3,2)
@@ -37,7 +39,7 @@ frame_discr.Draw()
 ##############
 print '\n\n#################################\n\n\n           psi(2S) now\n\n\n#################################\n\n'
 
-data_psi = data.reduce('X_mass_Cjp >' + str(left_psi) + ' && X_mass_Cjp < ' + str(right_psi))
+data_psi = data.reduce(cuts_psi)
 model_discr.fitTo(data_psi)
 model_discr.fitTo(data_psi)
 model_discr.fitTo(data_psi)
@@ -68,7 +70,7 @@ print '\n\n\n\n\n\n\n\n\n\n\n\n'
 
 c.cd(3)
 var_control.setMin(left_psi); var_control.setMax(right_psi)
-data_psi_weighted = ROOT.RooDataSet(data_psi.GetName(),data_psi.GetTitle(),data_psi, data_psi.get(),'X_mass_Cjp >' + str(left_psi) + ' && X_mass_Cjp < ' + str(right_psi), "N_sig_discr_sw") ;
+data_psi_weighted = ROOT.RooDataSet(data_psi.GetName(),data_psi.GetTitle(),data_psi, data_psi.get(), cuts_psi, "N_sig_discr_sw") ;
 r_psi = model_psi.fitTo(data_psi_weighted, RF.Save()) #
 r_psi = model_psi.fitTo(data_psi_weighted, RF.Save()) # , RF.Range("psi")
 r_psi = model_psi.fitTo(data_psi_weighted, RF.Save()) # , RF.Range("psi")
@@ -88,7 +90,7 @@ frame_control.Draw()
 ###############################################################################################################################
 print '\n\n#################################\n\n\n           X now\n\n\n#################################\n\n'
 
-data_X = data.reduce('X_mass_Cjp >' + str(left_X) + ' && X_mass_Cjp < ' + str(right_X))
+data_X = data.reduce(cuts_X)
 model_discr.fitTo(data_X)
 model_discr.fitTo(data_X)
 model_discr.fitTo(data_X)
@@ -117,7 +119,7 @@ c.cd(4)
 
 var_control.setMin(left_X); var_control.setMax(right_X)
 
-data_X_weighted = ROOT.RooDataSet(data_X.GetName(),data_X.GetTitle(),data_X, data_X.get(), 'X_mass_Cjp >' + str(left_X) + ' && X_mass_Cjp < ' + str(right_X), "N_sig_discr_sw") ;
+data_X_weighted = ROOT.RooDataSet(data_X.GetName(),data_X.GetTitle(),data_X, data_X.get(), cuts_X, "N_sig_discr_sw") ;
 
 N_sig_X.setVal(0)
 N_sig_X.setConstant(1)
