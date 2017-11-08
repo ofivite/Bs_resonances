@@ -46,9 +46,9 @@ file_MC_psi = ROOT.TFile('SimpleFileMC_b715psi_0_14000.root')
 data_psi = data.reduce(cuts_psi)
 # data_psi = ROOT.RooDataSet('data', '', file_MC_psi.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts + '&& ' + cuts_psi)
 
-sigma_Bs_1.setVal(0.01764);  sigma_Bs_2.setVal(0.007117)
+sigma_Bs_1.setVal(0.01923);  sigma_Bs_2.setVal(0.007333)
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1)
-fr_Bs.setVal(0.3); fr_Bs.setConstant(1)
+fr_Bs.setVal(0.2651); fr_Bs.setConstant(1)
 
 model_discr.fitTo(data_psi)
 model_discr.fitTo(data_psi)
@@ -83,9 +83,9 @@ c.cd(3)
 var_control.setMin(left_psi); var_control.setMax(right_psi)
 data_psi_weighted = ROOT.RooDataSet(data_psi.GetName(),data_psi.GetTitle(),data_psi, data_psi.get(), cuts + '&& ' + cuts_psi, "N_sig_discr_sw") ;
 
-sigma_psi_1.setVal(0.00593);  sigma_psi_2.setVal(0.002978)
+sigma_psi_1.setVal(0.00668);  sigma_psi_2.setVal(0.003120)
 sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1)
-fr_psi.setVal(0.432); fr_Bs.setConstant(1)
+fr_psi.setVal(0.371); fr_psi.setConstant(1)
 
 r_psi = model_psi.fitTo(data_psi_weighted, RF.Save(), RF.SumW2Error(ROOT.kFALSE)) #
 r_psi = model_psi.fitTo(data_psi_weighted, RF.Save(), RF.SumW2Error(ROOT.kFALSE)) # , RF.Range("psi")
@@ -115,9 +115,9 @@ data_X = data.reduce(cuts_X)
 # data_X = ROOT.RooDataSet('data', '', file_MC_X.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts + '&& ' + cuts_X)
 
 sigma_Bs_1.setConstant(0); sigma_Bs_2.setConstant(0)
-sigma_Bs_1.setVal(0.007790);  sigma_Bs_2.setVal(0.02439)
+sigma_Bs_1.setVal(0.008227);  sigma_Bs_2.setVal(0.0332)
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1)
-fr_Bs.setConstant(0); fr_Bs.setVal(0.7724); fr_Bs.setConstant(1)
+fr_Bs.setConstant(0); fr_Bs.setVal(0.8057); fr_Bs.setConstant(1)
 
 model_discr.fitTo(data_X)
 model_discr.fitTo(data_X)
@@ -147,9 +147,9 @@ c.cd(4)
 var_control.setMin(left_X); var_control.setMax(right_X)
 data_X_weighted = ROOT.RooDataSet(data_X.GetName(),data_X.GetTitle(),data_X, data_X.get(), cuts + '&& ' + cuts_X, "N_sig_discr_sw") ;
 
-sigma_X_1.setVal(0.014348);  sigma_X_2.setVal(0.004979)
+sigma_X_1.setVal(0.005049);  sigma_X_2.setVal(0.01456)
 sigma_X_1.setConstant(1); sigma_X_2.setConstant(1)
-fr_X.setVal(0.2383); fr_X.setConstant(1)
+fr_X.setVal(0.775); fr_X.setConstant(1)
 
 N_sig_X.setVal(0)
 N_sig_X.setConstant(1)
