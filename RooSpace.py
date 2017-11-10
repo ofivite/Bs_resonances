@@ -24,8 +24,8 @@ N_sig_2 = ROOT.RooFormulaVar('N_sig_2', 'N_sig_discr * (1-fr_Bs)', ROOT.RooArgLi
 
 sig_Bs_1 = ROOT.RooGaussian("sig_Bs_1", "", var_discr, mean_Bs, sigma_Bs_1)
 sig_Bs_2 = ROOT.RooGaussian("sig_Bs_2", "", var_discr, mean_Bs, sigma_Bs_2)
-# bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
-bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3, a4))
+bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
+# bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3, a4))
 N_bkgr_discr = ROOT.RooRealVar('N_bkgr_discr', '', 100000., 1., 500000)
 
 #############################################################################################
@@ -58,9 +58,8 @@ N_sig_X_2 = ROOT.RooFormulaVar('N_sig_X_2', 'N_sig_X * (1-fr_X)', ROOT.RooArgLis
 sig_X_1 = ROOT.RooGaussian("sig_X_1", "", var_control, mean_X, sigma_X_1)
 sig_X_2 = ROOT.RooGaussian("sig_X_2", "", var_control, mean_X, sigma_X_2)
 
-# signal_X = ROOT.RooGaussian("signal_X", "", var_control, mean_X, sigma_X)
-
 bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2))
+# bkgr_control = ROOT.RooExponential('bkgr_control', '', var_control, exp_par)
 N_bkgr_control = ROOT.RooRealVar('N_bkgr_control', '', 100000., 1., 500000)
 
 #############################################################################################
@@ -79,18 +78,23 @@ N_sig_X.setPlotLabel('N_{X}')
 N_sig_psi.setPlotLabel('N_{#psi(2S)}')
 N_bkgr_control.setPlotLabel('N_{bkgr}')
 N_bkgr_discr.setPlotLabel('N_{bkgr}')
+#
 a1.setPlotLabel('a_{1}')
 a2.setPlotLabel('a_{2}')
 a3.setPlotLabel('a_{3}')
 a4.setPlotLabel('a_{4}')
+exp_par.setPlotLabel('#lambda_{bkgr}')
+#
 mean_X.setPlotLabel("m[X]");
 sigma_X.setPlotLabel("#sigma[X]");
 sigma_X_1.setPlotLabel("#sigma_{1}[X]");
 sigma_X_2.setPlotLabel("#sigma_{2}[X]");
+#
 mean_psi.setPlotLabel("m[#psi(2S)]");
 sigma_psi_1.setPlotLabel("#sigma_{1}[#psi(2S)]");
 sigma_psi_2.setPlotLabel("#sigma_{2}[#psi(2S)]");
 fr_psi.setPlotLabel('fr_{#psi(2S)}')
+#
 mean_Bs.setPlotLabel('m[B_{s}]')
 sigma_Bs_1.setPlotLabel('#sigma_{1}[B_{s}]')
 sigma_Bs_2.setPlotLabel('#sigma_{2}[B_{s}]')
