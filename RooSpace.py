@@ -5,6 +5,13 @@ var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}) [GeV]', 3.4
 PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'PIPI_mass_Cjp', 0.2, 1.2)
 PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'PHI_mass_Cjp', 0., 2.)
 
+dR_mu1 = ROOT.RooRealVar('dR_mu1', '', 0., 0.5)
+dR_mu2 = ROOT.RooRealVar('dR_mu2', '', 0., 0.5)
+dR_pi1 = ROOT.RooRealVar('dR_pi1', '', 0., 0.5)
+dR_pi2 = ROOT.RooRealVar('dR_pi2', '', 0., 0.5)
+dR_K1 = ROOT.RooRealVar('dR_K1', '', 0., 0.5)
+dR_K2 = ROOT.RooRealVar('dR_K2', '', 0., 0.5)
+
 #############################################################################################
 # Bs
 
@@ -85,10 +92,20 @@ bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgLis
 N_bkgr_control = ROOT.RooRealVar('N_bkgr_control', '', 100000., 0., 500000)
 
 #############################################################################################
+# B0->psi(2S)K*0 reflection
+
+file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_ws_after_cuts_dR0p05_5MeV_DC.root')
+w = file_B0_refl_ws.Get('w')
+
+B0_refl = w.pdf('B0_refl')
+N_B0_refl = ROOT.RooRealVar('N_B0_refl', '', 990., 0., 1000.)
+
+#############################################################################################
 # Models
 
-model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_discr, N_bkgr_discr))
-# model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(sig_Bs_1, sig_Bs_2, bkgr_Bs), ROOT.RooArgList(N_sig_1, N_sig_2, N_bkgr_discr))
+# model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_discr, N_bkgr_discr, N_B0_refl))
+# model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_discr, N_bkgr_discr))
+model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(sig_Bs_1, sig_Bs_2, bkgr_Bs), ROOT.RooArgList(N_sig_1, N_sig_2, N_bkgr_discr))
 
 # model_control = ROOT.RooAddPdf('model_control', 'model_control', ROOT.RooArgList(signal_psi, signal_X, bkgr_control), ROOT.RooArgList(N_sig_psi, N_sig_X, N_bkgr_control))
 # model_control = ROOT.RooAddPdf('model_control', 'model_control', ROOT.RooArgList(sig_psi_1, sig_psi_2, signal_X, bkgr_control), ROOT.RooArgList(N_sig_psi_1, N_sig_psi_2, N_sig_X, N_bkgr_control))
@@ -100,15 +117,17 @@ model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_co
 model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
 #############################################################################################
 
-plot_discr_param = ROOT.RooArgSet(mean_Bs, gamma_BW_Bs, sigma_Bs, N_sig_discr, N_bkgr_discr)
-plot_psi_param = ROOT.RooArgSet(mean_psi, gamma_BW_psi, sigma_psi, N_bkgr_control)
+plot_discr_param = ROOT.RooArgSet(mean_Bs, gamma_BW_Bs, sigma_Bs, N_sig_discr, N_bkgr_discr, N_B0_refl)
+plot_psi_param = ROOT.RooArgSet(mean_psi, gamma_BW_psi, sigma_psi, N_sig_psi, N_bkgr_control)
 plot_X_param = ROOT.RooArgSet(mean_X, gamma_BW_X, sigma_X, N_sig_X, N_bkgr_control)
 
-N_sig_discr.setPlotLabel("N_{B_{s}}");
+N_sig_discr.setPlotLabel("N_{B_{s}^{0}}");
 N_sig_X.setPlotLabel('N_{X}')
 N_sig_psi.setPlotLabel('N_{#psi(2S)}')
 N_bkgr_control.setPlotLabel('N_{bkgr}')
 N_bkgr_discr.setPlotLabel('N_{bkgr}')
+N_B0_refl.setPlotLabel('N(B^{0}#rightarrow#psi(2S)K^{*0})')
+
 #
 a1.setPlotLabel('a_{1}')
 a2.setPlotLabel('a_{2}')
@@ -129,9 +148,9 @@ sigma_psi_2.setPlotLabel("#sigma_{2}[#psi(2S)]");
 gamma_BW_psi.setPlotLabel('#Gamma_{BW}[#psi(2S)]')
 fr_psi.setPlotLabel('fr_{#psi(2S)}')
 #
-mean_Bs.setPlotLabel('m[B_{s}]')
-sigma_Bs.setPlotLabel('#sigma[B_{s}]')
-sigma_Bs_1.setPlotLabel('#sigma_{1}[B_{s}]')
-sigma_Bs_2.setPlotLabel('#sigma_{2}[B_{s}]')
-gamma_BW_Bs.setPlotLabel('#Gamma_{BW}[B_{s}]')
-fr_Bs.setPlotLabel('fr_{B_{s}}')
+mean_Bs.setPlotLabel('m[B_{s}^{0}]')
+sigma_Bs.setPlotLabel('#sigma[B_{s}^{0}]')
+sigma_Bs_1.setPlotLabel('#sigma_{1}[B_{s}^{0}]')
+sigma_Bs_2.setPlotLabel('#sigma_{2}[B_{s}^{0}]')
+gamma_BW_Bs.setPlotLabel('#Gamma_{BW}[B_{s}^{0}]')
+fr_Bs.setPlotLabel('fr_{B_{s}^{0}}')
