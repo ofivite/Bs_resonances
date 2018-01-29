@@ -89,7 +89,7 @@ signal_X = ROOT.RooVoigtian("signal_X", "signal_X", var_control, mean_X, gamma_B
 
 bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2))
 # bkgr_control = ROOT.RooExponential('bkgr_control', '', var_control, exp_par)
-N_bkgr_control = ROOT.RooRealVar('N_bkgr_control', '', 100000., 0., 500000)
+N_bkgr_control = ROOT.RooRealVar('N_bkgr_control', '', 10000., 0., 500000)
 
 #############################################################################################
 # B0->psi(2S)K*0 reflection
