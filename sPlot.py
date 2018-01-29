@@ -5,7 +5,7 @@ from RooSpace import *
 
 # gStyle.SetTitleFontSize(.085)
 
-left_discr =  5.3669 - 0.21; right_discr = 5.3669 + 0.21; nbins_discr = 63
+left_discr =  5.3669 - 0.21; right_discr = 5.3669 + 0.21; nbins_discr = 42
 left_psi = 3.686 - 0.03; right_psi = 3.686 + 0.03; nbins_psi = 60
 left_X = 3.872 - 0.08; right_X = 3.872 + 0.08; nbins_X = 32
 
@@ -20,9 +20,33 @@ cuts_dR = '1 > 0'
 cuts_psi = 'X_mass_Cjp >' + str(left_psi) + ' && X_mass_Cjp < ' + str(right_psi)  + ' && PIPI_mass_Cjp > 0.4 && PIPI_mass_Cjp < 0.6'
 cuts_X = 'X_mass_Cjp >' + str(left_X) + ' && X_mass_Cjp < ' + str(right_X)  + ' && PIPI_mass_Cjp > 0.65 && PIPI_mass_Cjp < 0.78'
 
+def plot_discr(title, data):
+    frame_discr = ROOT.RooPlot(" ", title, var_discr, left_discr, right_discr, nbins_discr);
+    data.plotOn(frame_discr)
+    model_discr.paramOn(frame_discr, RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_discr_param)
+    frame_discr.getAttText().SetTextSize(0.053)
+    model_discr.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
+    model_discr.plotOn(frame_discr, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+    model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 10 * sigma_Bs_1.getValV()));
+    model_discr.plotOn(frame_discr, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs_2.getValV(), mean_Bs.getValV() + 10 * sigma_Bs_2.getValV()));
+    # model_discr.plotOn(frame_discr, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs.getValV(), mean_Bs.getValV() + 10 * sigma_Bs.getValV()));
+    frame_discr.Draw()
+
+def plot_control(title, data):
+    frame_control = ROOT.RooPlot(" ", title, var_control, left_X, right_X, nbins_X);
+    data.plotOn(frame_control)
+    model_X.paramOn(frame_control,RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_X_param)
+    frame_control.getAttText().SetTextSize(0.053)
+    model_X.plotOn(frame_control, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
+    model_X.plotOn(frame_control, RF.Components("bkgr_control"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+    # model_X.plotOn(frame_control, RF.Components("sig_X_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    # model_X.plotOn(frame_control, RF.Components("sig_X_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model_X.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    frame_control.Draw()
+
 
 c = ROOT.TCanvas("c", "c", 1700, 650)
-c.Divide(2,1)
+c.Divide(2,2)
 
 ####################################################
 #_-_-_-_-_-_-      INCLUSIVE DATA      _-_-_-_-_-_-#
@@ -165,11 +189,11 @@ data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_d
 #_-_-_-_-_-_-          X DATA          _-_-_-_-_-_-#
 ####################################################
 
-print '\n\n' + 30*'#' + '\n\n\n           X now\n\n\n' + 30*'#' + '\n\n'
-
+c.cd(1)
+print '\n\n' + 30*'#' + '\n\n\n         MC X: Bs mass now\n\n\n' + 30*'#' + '\n\n'
 data_X = data.reduce(cuts_X)
 # data_X = ROOT.RooDataSet('data', '', file_MC_X.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts + '&& ' + cuts_X)
-# data_X = ROOT.RooDataSet('data', '', file_MC_X.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2)), cuts_dR + '&&' + cuts + '&&' + cuts_X)
+data_X_MC = ROOT.RooDataSet('data', '', file_MC_X.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2)), cuts_dR + '&&' + cuts + '&&' + cuts_X)
 
 # # phi 10 DC
 # sigma_Bs.setVal(0.00521); gamma_BW_Bs.setVal(0.00996)
@@ -194,42 +218,64 @@ data_X = data.reduce(cuts_X)
 # sigma_Bs_1.setVal(0.01848); sigma_Bs_2.setVal(0.00739); fr_Bs.setVal(0.235);
 # sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); fr_Bs.setConstant(1);
 
+# # phi 10 SC
+# sigma_Bs_1.setVal(0.01876); sigma_Bs_2.setVal(0.007472); fr_Bs.setVal(0.237);
+# sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); fr_Bs.setConstant(1);
+
+model_discr.fitTo(data_X_MC)
+# model_discr.fitTo(data_X)
+# model_discr.fitTo(data_X)
+plot_discr('MC: m(J/#psi#pi^{+}#pi^{-}#phi) from X(3872) region', data_X_MC)
+
+c.cd(2)
+print '\n\n' + 30*'#' + '\n\n\n           Data X: Bs mass now\n\n\n' + 30*'#' + '\n\n'
+
+# frame_discr = ROOT.RooPlot(" ", 'MC: m(J/#psi#pi^{+}#pi^{-}#phi) from X(3872) region', var_discr, left_discr, right_discr, nbins_discr);
+# data_X.plotOn(frame_discr)
+# model_discr.paramOn(frame_discr, RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_discr_param)
+# frame_discr.getAttText().SetTextSize(0.053)
+# model_discr.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
+# model_discr.plotOn(frame_discr, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+# model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 10 * sigma_Bs_1.getValV()));
+# model_discr.plotOn(frame_discr, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs_2.getValV(), mean_Bs.getValV() + 10 * sigma_Bs_2.getValV()));
+# # model_discr.plotOn(frame_discr, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs.getValV(), mean_Bs.getValV() + 10 * sigma_Bs.getValV()));
+#
+# frame_discr.Draw()
+
 # phi 10 SC
-sigma_Bs_1.setVal(0.01876); sigma_Bs_2.setVal(0.007472); fr_Bs.setVal(0.237);
+# sigma_Bs_1.setVal(0.01876); sigma_Bs_2.setVal(0.007472); fr_Bs.setVal(0.237);
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); fr_Bs.setConstant(1);
-
 model_discr.fitTo(data_X)
-# model_discr.fitTo(data_X)
-# model_discr.fitTo(data_X)
+model_discr.fitTo(data_X)
+model_discr.fitTo(data_X)
+plot_discr('Data: m(J/#psi#pi^{+}#pi^{-}#phi) from X(3872) region', data_X)
+# frame_discr = ROOT.RooPlot(" ", 'MC: m(J/#psi#pi^{+}#pi^{-}#phi) from X(3872) region', var_discr, left_discr, right_discr, nbins_discr);
+# data_X.plotOn(frame_discr)
+# model_discr.paramOn(frame_discr, RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_discr_param)
+# frame_discr.getAttText().SetTextSize(0.053)
+# model_discr.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
+# model_discr.plotOn(frame_discr, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+# model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 10 * sigma_Bs_1.getValV()));
+# model_discr.plotOn(frame_discr, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs_2.getValV(), mean_Bs.getValV() + 10 * sigma_Bs_2.getValV()));
+# # model_discr.plotOn(frame_discr, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs.getValV(), mean_Bs.getValV() + 10 * sigma_Bs.getValV()));
+#
+# frame_discr.Draw()
+###############
+#_-_-_-_-_-_-#
+#############
 
-c.cd(1)
-frame_discr = ROOT.RooPlot(" ", 'm(J/#psi#pi^{+}#pi^{-}#phi) from X(3872) region', var_discr, left_discr, right_discr, nbins_discr);
-data_X.plotOn(frame_discr)
-model_discr.paramOn(frame_discr, RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_discr_param)
-frame_discr.getAttText().SetTextSize(0.053)
-model_discr.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
-model_discr.plotOn(frame_discr, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 10 * sigma_Bs_1.getValV()));
-model_discr.plotOn(frame_discr, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs_2.getValV(), mean_Bs.getValV() + 10 * sigma_Bs_2.getValV()));
-# model_discr.plotOn(frame_discr, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs.getValV(), mean_Bs.getValV() + 10 * sigma_Bs.getValV()));
-
-frame_discr.Draw()
-
-################
-##_-_-_-_-_-_-#
-##############
+c.cd(3)
+print '\n\n' + 30*'#' + '\n\n\n          MC X: X mass now\n\n\n' + 30*'#' + '\n\n'
 
 ROOT.RooStats.SPlot(
     'sData_X', 'sData_X', data_X, model_discr,
     ROOT.RooArgList(N_sig_discr,N_bkgr_discr)
 )
 
-print '\n\n' + 30*'#' + '\n\n\n           X splot now\n\n\n' + 30*'#' + '\n\n'
-
 # c.cd(5)
 #
 var_control.setMin(left_X); var_control.setMax(right_X)
-data_X_weighted = ROOT.RooDataSet(data_X.GetName(),data_X.GetTitle(),data_X, data_X.get(), cuts_dR + '&&' + cuts + '&&' + cuts_X, "N_sig_discr_sw") ;
+data_X_weighted = ROOT.RooDataSet(data_X.GetName(), data_X.GetTitle(), data_X, data_X.get(), cuts_dR + '&&' + cuts + '&&' + cuts_X, "N_sig_discr_sw") ;
 
 # # phi 10 SC
 # sigma_X.setVal(0.004265); gamma_BW_X.setVal(0.004021)
@@ -254,9 +300,9 @@ data_X_weighted = ROOT.RooDataSet(data_X.GetName(),data_X.GetTitle(),data_X, dat
 # sigma_X.setVal(0.0048223); gamma_BW_X.setVal(0.002608)
 # sigma_X.setConstant(1);  gamma_BW_X.setConstant(1)
 
-# phi 10 SC
-sigma_X.setVal(0.0048267); gamma_BW_X.setVal(0.0026608)
-sigma_X.setConstant(1);  gamma_BW_X.setConstant(1)
+# # phi 10 SC
+# sigma_X.setVal(0.0048267); gamma_BW_X.setVal(0.0026608)
+# sigma_X.setConstant(1);  gamma_BW_X.setConstant(1)
 
 
 # N_sig_X.setVal(0)
@@ -276,29 +322,35 @@ sigma_X.setConstant(1);  gamma_BW_X.setConstant(1)
 ################
 ##_-_-_-_-_-_-#
 ##############
+# N_sig_X.setVal(50)
+# N_bkgr_control.setVal(5)
+# N_sig_X.setConstant(0)
 
-c.cd(2)
+model_X.fitTo(data_X_MC)
+plot_control('MC: m(J/#psi#pi^{+}#pi^{-}) projection for X(3872) region', data_X_MC)
 
-N_sig_X.setVal(50)
-N_bkgr_control.setVal(5)
-N_sig_X.setConstant(0)
-
+c.cd(4)
+print '\n\n' + 30*'#' + '\n\n\n           Data X: splot now\n\n\n' + 30*'#' + '\n\n'
+sigma_X.setConstant(1);  gamma_BW_X.setConstant(1)
 rrr_sig = model_X.fitTo(data_X_weighted, RF.Save(), RF.SumW2Error(ROOT.kFALSE))
 # rrr_sig = model_X.fitTo(data_X_weighted, RF.Save(), RF.SumW2Error(ROOT.kFALSE))
 # rrr_sig = model_X.fitTo(data_X_weighted, RF.Save(), RF.SumW2Error(ROOT.kFALSE))
+plot_control('Data: sPlot for X(3872) region', data_X_weighted)
 
-# frame_control = ROOT.RooPlot('frame_control', 'sPlot for X(3872) region', var_control, left_X, right_X, nbins_X)
-frame_control = ROOT.RooPlot(" ", "sPlot for X(3872) region", var_control, left_X, right_X, nbins_X);
-data_X_weighted.plotOn(frame_control)
-model_X.paramOn(frame_control,RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_X_param)
-frame_control.getAttText().SetTextSize(0.053)
-model_X.plotOn(frame_control, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
-model_X.plotOn(frame_control, RF.Components("bkgr_control"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-# model_X.plotOn(frame_control, RF.Components("sig_X_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-# model_X.plotOn(frame_control, RF.Components("sig_X_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-model_X.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
 
-frame_control.Draw()
+#
+# # frame_control = ROOT.RooPlot('frame_control', 'sPlot for X(3872) region', var_control, left_X, right_X, nbins_X)
+# frame_control = ROOT.RooPlot(" ", "sPlot for X(3872) region", var_control, left_X, right_X, nbins_X);
+# data_X_weighted.plotOn(frame_control)
+# model_X.paramOn(frame_control,RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_X_param)
+# frame_control.getAttText().SetTextSize(0.053)
+# model_X.plotOn(frame_control, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
+# model_X.plotOn(frame_control, RF.Components("bkgr_control"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+# # model_X.plotOn(frame_control, RF.Components("sig_X_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+# # model_X.plotOn(frame_control, RF.Components("sig_X_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+# model_X.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+#
+# frame_control.Draw()
 
 #
 # ##############################################################################################################################
