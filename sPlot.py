@@ -119,15 +119,16 @@ data_psi_MC = ROOT.RooDataSet('data_psi_MC', '', file_MC_psi.Get('mytree'), ROOT
 c.cd(1)
 print '\n\n' + 30*'#' + '\n\n\n         MC psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n'
 
-# mean_phi.setConstant(1)
-model_2D_MC.fitTo(data_psi_MC)
-model_2D_MC.fitTo(data_psi_MC)
-model_2D_MC.fitTo(data_psi_MC)
 
-plot_discr(data_psi_MC, model_2D_MC, 'MC: m(J/#psi#pi^{+}#pi^{-}#phi)', left_discr_MC, right_discr_MC, nbins_discr_MC)
+model_1D_Bs.fitTo(data_psi_MC)
+# model_1D_Bs.fitTo(data_psi_MC)
+model_1D_phi.fitTo(data_psi_MC)
+# model_1D_phi.fitTo(data_psi_MC)
+
+plot_discr(data_psi_MC, model_1D_Bs, 'MC: m(J/#psi#pi^{+}#pi^{-}#phi)', left_discr_MC, right_discr_MC, nbins_discr_MC)
 
 c.cd(2)
-plot_phi(data_psi_MC, model_2D_MC, 'MC: m(K^{+}K^{-})', left_phi_MC, right_phi_MC, nbins_phi_MC)
+plot_phi(data_psi_MC, model_1D_phi, 'MC: m(K^{+}K^{-})', left_phi_MC, right_phi_MC, nbins_phi_MC)
 
 ###############
 #_-_-_-_-_-_-#
@@ -143,7 +144,7 @@ c.cd(3)
 print '\n\n' + 30*'#' + '\n\n\n         Data psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n'
 
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); fr_Bs.setConstant(1);
-mean_Bs.setMin(5.367 - 0.01); mean_Bs.setMax(5.367 + 0.01)
+mean_Bs.setMin(mean_Bs.getVal() - 0.001); mean_Bs.setMax(mean_Bs.getVal() + 0.001)
 # a1.setVal(0.2); a2.setVal(0.2); a3.setVal(0.2); a4.setVal(0.2)
 # a1_phi.setVal(0.2); a2_phi.setVal(0.2); a3_phi.setVal(0.2); a4_phi.setVal(0.2)
 # N_sig_2D.setVal(100.); N_sig_2D.setMax(200.)
@@ -153,7 +154,8 @@ N_bb_2D.setVal(30000.); N_sb_2D.setVal(500.); N_bs_2D.setVal(500.); N_ss_2D.setV
 # N_ss_2D.setConstant(1); N_bs_2D.setConstant(1); N_sb_2D.setConstant(1); N_bb_2D.setConstant(1);
 # sigma_phi_1.setConstant(1); sigma_phi_2.setConstant(1); fr_phi.setConstant(1);
 # mean_phi.setConstant(1); sigma_phi.setConstant(1); alpha_phi.setConstant(1); n_phi.setConstant(1);
-sigma_phi.setConstant(1); gamma_BW_phi.setConstant(1); # mean_phi.setConstant(1)
+sigma_phi.setConstant(1); alpha_phi.setConstant(1); n_phi.setConstant(1); sigma_gauss_phi.setConstant(1);
+mean_phi.setMin(mean_phi.getVal() - 0.001); mean_phi.setMax(mean_phi.getVal() + 0.001)
 
 model_2D_data.fitTo(data_psi)
 model_2D_data.fitTo(data_psi)
