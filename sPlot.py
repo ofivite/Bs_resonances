@@ -5,12 +5,18 @@ from RooSpace import *
 
 # gStyle.SetTitleFontSize(.085)
 
-left_discr =  5.3669 - 0.21; right_discr = 5.3669 + 0.21; nbins_discr = 42
+left_discr_data =  5.3669 - 0.21; right_discr_data = 5.3669 + 0.21; nbins_discr_data = 42
 left_discr_MC =  5.3669 - 0.06; right_discr_MC = 5.3669 + 0.06; nbins_discr_MC = 24
+
+left_phi_data = 0.99; right_phi_data = 1.045; nbins_phi_data = 55
+left_phi_MC = 1.0; right_phi_MC = 1.040; nbins_phi_MC = 40
+
 left_psi = 3.686 - 0.03; right_psi = 3.686 + 0.03; nbins_psi = 60
 left_X = 3.872 - 0.08; right_X = 3.872 + 0.08; nbins_X = 32
-left_phi = 0.99; right_phi = 1.045; nbins_phi = 55
-left_phi_MC = 1.0; right_phi_MC = 1.040; nbins_phi_MC = 40
+
+# var_discr.setRange('dicsr_range_MC', left_discr_MC, right_discr_MC)
+# PHI_mass_Cjp.setRange('phi_range_MC', left_phi_MC, right_phi_MC)
+
 
 file_data = ROOT.TFile('new.root')
 file_MC_psi = ROOT.TFile('BsToPsiPhi_matched_all_1519f1b.root')
@@ -21,20 +27,24 @@ file_MC_X = ROOT.TFile('BsToXPhi_matched_all_1892449.root')
 
 cuts_dR = '1 > 0'
 # cuts_dR = 'dR_mu1 < 0.003 && dR_mu2 < 0.003 && dR_pi1 < 0.01 && dR_pi2 < 0.05 && dR_K1 < 0.05 && dR_K2 < 0.05'
+
+cuts_Bs_data = 'BU_mass_Cjp > ' + str(left_discr_data) + ' && BU_mass_Cjp < ' + str(right_discr_data)   # + '&& PIPI_mass_Cjp > X_mass_Cjp - 3.0969 - 0.15'
+cuts_Bs_MC = 'BU_mass_Cjp > ' + str(left_discr_MC) + ' && BU_mass_Cjp < ' + str(right_discr_MC)  # + '&& PIPI_mass_Cjp > X_mass_Cjp - 3.0969 - 0.15'
+
+cuts_phi_data = 'PHI_mass_Cjp > ' + str(left_phi_data) + ' && PHI_mass_Cjp < ' + str(right_phi_data)
+cuts_phi_MC = 'PHI_mass_Cjp > ' + str(left_phi_MC) + ' && PHI_mass_Cjp < ' + str(right_phi_MC)  # TMath::Abs(PHI_mass_Cjp - 1.02)<0.01 &&
+
 cuts_psi = 'X_mass_Cjp >' + str(left_psi) + ' && X_mass_Cjp < ' + str(right_psi)  + ' && PIPI_mass_Cjp > 0.4 && PIPI_mass_Cjp < 0.6'
 cuts_X = 'X_mass_Cjp >' + str(left_X) + ' && X_mass_Cjp < ' + str(right_X)  + ' && PIPI_mass_Cjp > 0.65 && PIPI_mass_Cjp < 0.78'
-cuts_phi = 'PHI_mass_Cjp > ' + str(left_phi) + ' && PHI_mass_Cjp < ' + str(right_phi)
-cuts = 'BU_mass_Cjp > ' + str(left_discr) + ' && BU_mass_Cjp < ' + str(right_discr) + ' && ' + cuts_phi  # + '&& PIPI_mass_Cjp > X_mass_Cjp - 3.0969 - 0.15'
-# TMath::Abs(PHI_mass_Cjp - 1.02)<0.01 &&
 
-def plot_discr(title, data, model):
-    frame_discr = ROOT.RooPlot(" ", title, var_discr, left_discr, right_discr, nbins_discr);
+def plot_discr(data, model, title, left, right, nbins):
+    frame_discr = ROOT.RooPlot(" ", title, var_discr, left, right, nbins);
     data.plotOn(frame_discr)
     model.paramOn(frame_discr, RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_discr_param)
     frame_discr.getAttText().SetTextSize(0.053)
-    model.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
+    model.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
     model.plotOn(frame_discr, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
-    model.plotOn(frame_discr, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4) );
+    model.plotOn(frame_discr, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4));
     model.plotOn(frame_discr, RF.Components("model_sb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
     model.plotOn(frame_discr, RF.Components("model_ss_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kOrange+7), RF.LineWidth(4) );
 
@@ -55,12 +65,11 @@ def plot_control(title, data, model):
     # model.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     frame_control.Draw()
 
-def plot_phi(title, data, model):
-    frame_phi = ROOT.RooPlot(" ", title, PHI_mass_Cjp, left_phi, right_phi, nbins_phi);
+def plot_phi(data, model, title, left, right, nbins):
+    frame_phi = ROOT.RooPlot(" ", title, PHI_mass_Cjp, left, right, nbins);
     data.plotOn(frame_phi)
     model.paramOn(frame_phi, RF.Layout(0.55, 0.96, 0.9)) #, RF.Parameters(plot_X_param)
     frame_phi.getAttText().SetTextSize(0.053)
-    model.plotOn(frame_phi, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
     model.plotOn(frame_phi, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
     model.plotOn(frame_phi, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
     model.plotOn(frame_phi, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4) );
@@ -81,9 +90,6 @@ c.Divide(2,2)
 #_-_-_-_-_-_-      INCLUSIVE DATA      _-_-_-_-_-_-#
 ####################################################
 
-var_discr.setMin(left_discr); var_discr.setMax(right_discr)
-PHI_mass_Cjp.setMin(left_phi); PHI_mass_Cjp.setMax(right_phi)
-data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts)
 # model_discr.fitTo(data)
 # model_discr.fitTo(data)
 
@@ -100,31 +106,38 @@ data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_d
 #
 # frame_discr.Draw()
 
-#
-# ##########################################################
-# #_-_-_-_-_-_-          PSI(2S) DATA          _-_-_-_-_-_-#
+
+##########################################################
+#_-_-_-_-_-_-          PSI(2S) DATA          _-_-_-_-_-_-#
 # ##########################################################
 
+var_discr.setMin(left_discr_MC); var_discr.setMax(right_discr_MC)
+PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC)
+data_psi_MC = ROOT.RooDataSet('data_psi_MC', '', file_MC_psi.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2)), cuts_dR + '&&' + cuts_Bs_MC + '&&' + cuts_phi_MC+ '&&' + cuts_psi)
 
 
 c.cd(1)
 print '\n\n' + 30*'#' + '\n\n\n         MC psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n'
 
-data_psi = data.reduce(cuts_psi)
-data_psi_MC = ROOT.RooDataSet('data', '', file_MC_psi.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2)), cuts_dR + '&&' + cuts + '&&' + cuts_psi)
-
 # mean_phi.setConstant(1)
-model_2D.fitTo(data_psi_MC)
-# model_2D.fitTo(data_X_MC)
-# model_discr.fitTo(data_X)
-plot_discr('MC: m(J/#psi#pi^{+}#pi^{-}#phi)', data_psi_MC, model_2D)
+model_2D_MC.fitTo(data_psi_MC)
+model_2D_MC.fitTo(data_psi_MC)
+model_2D_MC.fitTo(data_psi_MC)
+
+plot_discr(data_psi_MC, model_2D_MC, 'MC: m(J/#psi#pi^{+}#pi^{-}#phi)', left_discr_MC, right_discr_MC, nbins_discr_MC)
 
 c.cd(2)
-plot_phi('MC: m(K^{+}K^{-})', data_psi_MC, model_2D)
+plot_phi(data_psi_MC, model_2D_MC, 'MC: m(K^{+}K^{-})', left_phi_MC, right_phi_MC, nbins_phi_MC)
 
 ###############
 #_-_-_-_-_-_-#
 #############
+
+var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data)
+PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data)
+
+data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data)
+data_psi = data.reduce(cuts_psi)
 
 c.cd(3)
 print '\n\n' + 30*'#' + '\n\n\n         Data psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n'
@@ -134,22 +147,22 @@ mean_Bs.setMin(5.367 - 0.01); mean_Bs.setMax(5.367 + 0.01)
 # a1.setVal(0.2); a2.setVal(0.2); a3.setVal(0.2); a4.setVal(0.2)
 # a1_phi.setVal(0.2); a2_phi.setVal(0.2); a3_phi.setVal(0.2); a4_phi.setVal(0.2)
 # N_sig_2D.setVal(100.); N_sig_2D.setMax(200.)
-N_bb_2D.setVal(10000.); N_sb_2D.setVal(20000.); N_bs_2D.setVal(500.); N_ss_2D.setVal(3000.);
+N_bb_2D.setVal(30000.); N_sb_2D.setVal(500.); N_bs_2D.setVal(500.); N_ss_2D.setVal(3000.);
 # N_bb_2D.setMin(5000.); N_sb_2D.setMin(10000.); N_bs_2D.setMin(0.); N_ss_2D.setMin(1000.);
 # N_bb_2D.setMax(30000.); N_sb_2D.setMax(30000.); N_bs_2D.setMax(1000.); N_ss_2D.setMax(4000.);
 # N_ss_2D.setConstant(1); N_bs_2D.setConstant(1); N_sb_2D.setConstant(1); N_bb_2D.setConstant(1);
 # sigma_phi_1.setConstant(1); sigma_phi_2.setConstant(1); fr_phi.setConstant(1);
 # mean_phi.setConstant(1); sigma_phi.setConstant(1); alpha_phi.setConstant(1); n_phi.setConstant(1);
-mean_phi.setConstant(1); sigma_phi.setConstant(1); gamma_BW_phi.setConstant(1)
+sigma_phi.setConstant(1); gamma_BW_phi.setConstant(1); # mean_phi.setConstant(1)
 
-model_2D.fitTo(data_psi)
-model_2D.fitTo(data_psi)
+model_2D_data.fitTo(data_psi)
+model_2D_data.fitTo(data_psi)
 # model_2D.fitTo(data_psi, RF.Extended())
 # model_discr.fitTo(data_X)
-plot_discr('Data: m(J/#psi#pi^{+}#pi^{-}#phi) from #psi(2S) region', data_psi, model_2D)
+plot_discr(data_psi, model_2D_data, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) from #psi(2S) region', left_discr_data, right_discr_data, nbins_discr_data)
 
 c.cd(4)
-plot_phi('Data: m(K^{+}K^{-}) from #psi(2S) region', data_psi, model_2D)
+plot_phi(data_psi, model_2D_data, 'Data: m(K^{+}K^{-}) from #psi(2S) region', left_phi_data, right_phi_data, nbins_phi_data)
 
 ##############
 #_-_-_-_-_-_-#
