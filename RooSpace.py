@@ -185,10 +185,10 @@ bkgr_bb_2 = ROOT.RooBernstein('bkgr_bb_2', '', PHI_mass_Cjp, ROOT.RooArgList(a1_
 #############################################################################################
 # Models
 
-N_ss_2D = ROOT.RooRealVar('N_ss_2D', '', 10000., 0., 100000.)
-N_bb_2D = ROOT.RooRealVar('N_bb_2D', '', 10000., 0., 100000.)
-N_sb_2D = ROOT.RooRealVar('N_sb_2D', '', 500., 0., 5000.)
-N_bs_2D = ROOT.RooRealVar('N_bs_2D', '', 500., 0., 5000.)
+N_ss_2D = ROOT.RooRealVar('N_ss_2D', '', 3000., 0., 10000.)
+N_bb_2D = ROOT.RooRealVar('N_bb_2D', '', 30000., 0., 40000.)
+N_sb_2D = ROOT.RooRealVar('N_sb_2D', '', 100., 0., 3500.)
+N_bs_2D = ROOT.RooRealVar('N_bs_2D', '', 1500., 0., 5000.)
 
 model_ss_2D = ROOT.RooProdPdf('model_ss_2D', 'model_ss_2D', ROOT.RooArgList(signal_Bs, signal_phi))
 model_bb_2D = ROOT.RooProdPdf('model_bb_2D', 'model_bb_2D', ROOT.RooArgList(bkgr_bb_1, bkgr_bb_2))

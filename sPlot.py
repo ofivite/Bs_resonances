@@ -137,7 +137,7 @@ mean_Bs.setMin(mean_Bs.getVal() - 0.005); mean_Bs.setMax(mean_Bs.getVal() + 0.00
 # a1.setVal(0.2); a2.setVal(0.2); a3.setVal(0.2); a4.setVal(0.2)
 # a1_phi.setVal(0.2); a2_phi.setVal(0.2); a3_phi.setVal(0.2); a4_phi.setVal(0.2)
 # N_sig_2D.setVal(100.); N_sig_2D.setMax(200.)
-N_bb_2D.setVal(30000.); N_sb_2D.setVal(1500.); N_bs_2D.setVal(500.); N_ss_2D.setVal(3000.);
+N_bb_2D.setVal(30000.); N_sb_2D.setVal(500.); N_bs_2D.setVal(4500.); N_ss_2D.setVal(3000.);
 # N_bb_2D.setMin(5000.); N_sb_2D.setMin(10000.); N_bs_2D.setMin(0.); N_ss_2D.setMin(1000.);
 # N_bb_2D.setMax(30000.); N_sb_2D.setMax(30000.); N_bs_2D.setMax(1000.); N_ss_2D.setMax(4000.);
 # N_ss_2D.setConstant(1); N_bs_2D.setConstant(1); N_sb_2D.setConstant(1); N_bb_2D.setConstant(1);
@@ -200,15 +200,15 @@ model_2D_data.fitTo(data_psi, RF.Extended(ROOT.kTRUE))
 model_2D_data.fitTo(data_psi, RF.Extended(ROOT.kTRUE))
 # model_2D.fitTo(data_psi, , RF.Extended(ROOT.kTRUE))
 
-plot_on_frame(var_discr, data_psi, model_2D_data, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) from #psi(2S) region', left_discr_data, right_discr_data, nbins_discr_data)
+# plot_on_frame(var_discr, data_psi, model_2D_data, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) from #psi(2S) region', left_discr_data, right_discr_data, nbins_discr_data)
 
 c.cd(4)
-plot_on_frame(PHI_mass_Cjp, data_psi, model_2D_data, 'Data: m(K^{+}K^{-}) from #psi(2S) region', left_phi_data, right_phi_data, nbins_phi_data)
+# plot_on_frame(PHI_mass_Cjp, data_psi, model_2D_data, 'Data: m(K^{+}K^{-}) from #psi(2S) region', left_phi_data, right_phi_data, nbins_phi_data)
 
-w = ROOT.RooWorkspace("w", True)
-Import = getattr(ROOT.RooWorkspace, 'import')
-Import(w, model_2D_data)
-w.writeToFile('model_2D_data_SC.root')
+# w = ROOT.RooWorkspace("w", True)
+# Import = getattr(ROOT.RooWorkspace, 'import')
+# Import(w, model_2D_data)
+# w.writeToFile('~/Study/Bs_resonances/model_2D_data_SC.root')
 
 
 ##        -------------        ##
@@ -225,10 +225,10 @@ c_sPlot.Divide(2,1)
 
 print '\n\n' + 30*'#' + '\n\n\n         Data psi(2S): splot now         \n\n\n' + 30*'#' + '\n\n'
 
-file_model_2D = ROOT.TFile('~/Study/Bs_resonances/model_2D_data_SC.root')
-w = file_model_2D.Get('w')
-model_2D_data = w.pdf('model_2D_data')
-model_2D_data.fitTo(data_psi, RF.Extended(ROOT.kTRUE))
+# file_model_2D = ROOT.TFile('~/Study/Bs_resonances/model_2D_data_SC.root')
+# w = file_model_2D.Get('w')
+# model_2D_data = w.pdf('model_2D_data')
+# model_2D_data.fitTo(data_psi, RF.Extended(ROOT.kTRUE))
 
 ROOT.RooStats.SPlot(
     'sData_psi', 'sData_psi', data_psi, model_2D_data,
