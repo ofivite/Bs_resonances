@@ -216,14 +216,17 @@ model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(sig_psi_1, 
 # model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
 #############################################################################################
 
-plot_discr_param = ROOT.RooArgSet(mean_Bs, gamma_BW_Bs, sigma_Bs, N_sig_Bs, N_bkgr_Bs, N_B0_refl)
-plot_psi_param = ROOT.RooArgSet(mean_psi, gamma_BW_psi, sigma_psi, N_sig_psi, N_bkgr_control)
+plot_discr_param = ROOT.RooArgSet(mean_Bs, sigma_Bs_1, sigma_Bs_2, fr_Bs, N_sig_Bs, N_bkgr_Bs)
+plot_psi_param = ROOT.RooArgSet(mean_psi, sigma_psi_1, sigma_psi_2, fr_psi, N_sig_psi, N_bkgr_control)
+plot_phi_param = ROOT.RooArgSet(mean_phi, gamma_BW_phi, sigma_phi, alpha_phi, N_sig_phi, N_bkgr_phi)
 plot_X_param = ROOT.RooArgSet(mean_X, gamma_BW_X, sigma_X, N_sig_X, N_bkgr_control)
 
 N_sig_Bs.setPlotLabel("N_{B_{s}^{0}}");
 N_sig_X.setPlotLabel('N_{X}')
 N_sig_psi.setPlotLabel('N_{#psi(2S)}')
+N_sig_phi.setPlotLabel('N_{#phi}')
 N_bkgr_control.setPlotLabel('N_{bkgr}')
+N_bkgr_phi.setPlotLabel('N_{bkgr}')
 N_bkgr_Bs.setPlotLabel('N_{bkgr}')
 N_B0_refl.setPlotLabel('N(B^{0}#rightarrow#psi(2S)K^{*0})')
 
@@ -253,3 +256,9 @@ sigma_Bs_1.setPlotLabel('#sigma_{1}[B_{s}^{0}]')
 sigma_Bs_2.setPlotLabel('#sigma_{2}[B_{s}^{0}]')
 gamma_BW_Bs.setPlotLabel('#Gamma_{BW}[B_{s}^{0}]')
 fr_Bs.setPlotLabel('fr[B_{s}^{0}]')
+#
+mean_phi.setPlotLabel('m[#phi]')
+sigma_phi.setPlotLabel('#sigma[B_{s}^{0}]')
+gamma_BW_phi.setPlotLabel('#Gamma_{BW}[#phi]')
+alpha_phi.setPlotLabel('#alpha[#phi]')
+n_phi.setPlotLabel('n[#phi]')
