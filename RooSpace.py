@@ -1,4 +1,5 @@
 import ROOT
+from ROOT import RooFit as RF
 from cuts import *
 
 var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}#phi) [GeV]', 5.1, 5.6)
@@ -93,7 +94,8 @@ gamma_BW_X = ROOT.RooRealVar("gamma_BW_X","gamma_BW_X", 0.005, 0., 1.)
 BW = ROOT.RooBreitWigner("BW", "BW", var_control, mass_BW, gamma_BW_X)
 
 # signal_X = ROOT.RooFFTConvPdf("signal_X", "signal_X", var_control, crystal, gauss_X)
-signal_X = ROOT.RooVoigtian("signal_X", "signal_X", var_control, mean_X, gamma_BW_X, sigma_X)
+# signal_X = ROOT.RooVoigtian("signal_X", "signal_X", var_control, mean_X, gamma_BW_X, sigma_X)
+signal_X = ROOT.RooAddPdf("signal_X", "signal_X", ROOT.RooArgList(sig_X_1, sig_X_2), ROOT.RooArgList(fr_X))
 
 bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2))
 # bkgr_control = ROOT.RooExponential('bkgr_control', '', var_control, exp_par)
@@ -224,11 +226,14 @@ control_models = {'X': model_X, 'psi': model_psi}
 model_control = control_models[mode]
 #############################################################################################
 
+#
 plot_discr_param = ROOT.RooArgSet(mean_Bs, sigma_Bs_1, sigma_Bs_2, fr_Bs, N_sig_Bs, N_bkgr_Bs)
 plot_psi_param = ROOT.RooArgSet(mean_psi, sigma_psi_1, sigma_psi_2, fr_psi, N_sig_psi, N_bkgr_control)
 plot_phi_param = ROOT.RooArgSet(mean_phi, gamma_BW_phi, sigma_phi, alpha_phi, N_sig_phi, N_bkgr_phi)
 plot_X_param = ROOT.RooArgSet(mean_X, gamma_BW_X, sigma_X, N_sig_X, N_bkgr_control)
+plot_control_param = {'X': plot_X_param, 'psi': plot_psi_param}
 
+#
 N_sig_Bs.setPlotLabel("N_{B_{s}^{0}}");
 N_sig_X.setPlotLabel('N_{X}')
 N_sig_psi.setPlotLabel('N_{#psi(2S)}')
@@ -270,3 +275,33 @@ sigma_phi.setPlotLabel('#sigma[B_{s}^{0}]')
 gamma_BW_phi.setPlotLabel('#Gamma_{BW}[#phi]')
 alpha_phi.setPlotLabel('#alpha[#phi]')
 n_phi.setPlotLabel('n[#phi]')
+
+def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par):
+    frame = ROOT.RooPlot(" ", title, roovar, left, right, nbins);
+    # if SumW2 == 1:
+    #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
+    # else:
+    #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
+    data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
+    model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
+    frame.getAttText().SetTextSize(0.053)
+    model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
+    model.plotOn(frame, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
+    model.plotOn(frame, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components("model_sb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+    model.plotOn(frame, RF.Components("model_ss_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kOrange+7), RF.LineWidth(4) );
+# , RF.Range(mean_phi.getValV() - 15 * gamma_BW_phi.getValV(), mean_phi.getValV() + 15 * gamma_BW_phi.getValV())
+    model.plotOn(frame, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components("sig_psi_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components("sig_psi_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    # model_X.plotOn(frame_control, RF.Components("sig_X_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    # model_X.plotOn(frame_control, RF.Components("sig_X_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    # model.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components("bkgr_control"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+    model.plotOn(frame, RF.Components("bkgr_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+    model.plotOn(frame, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
+    # model.plotOn(frame, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 15 * sigma_Bs.getValV(), mean_Bs.getValV() + 15 * sigma_Bs.getValV()));
+    model.plotOn(frame, RF.Components("signal_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+
+    frame.Draw()

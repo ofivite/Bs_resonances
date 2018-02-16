@@ -1,75 +1,14 @@
-import ROOT
-from ROOT import RooFit as RF, gStyle
-import math
 from RooSpace import *
 from cuts import *
 
-def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par):
-    frame = ROOT.RooPlot(" ", title, roovar, left, right, nbins);
-    # if SumW2 == 1:
-    #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
-    # else:
-    #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
-    data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
-    model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
-    frame.getAttText().SetTextSize(0.053)
-    model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
-    model.plotOn(frame, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
-    model.plotOn(frame, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("model_sb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-    model.plotOn(frame, RF.Components("model_ss_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kOrange+7), RF.LineWidth(4) );
-# , RF.Range(mean_phi.getValV() - 15 * gamma_BW_phi.getValV(), mean_phi.getValV() + 15 * gamma_BW_phi.getValV())
-    model.plotOn(frame, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("sig_psi_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("sig_psi_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    # model_X.plotOn(frame_control, RF.Components("sig_X_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    # model_X.plotOn(frame_control, RF.Components("sig_X_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    # model.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("bkgr_control"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-    model.plotOn(frame, RF.Components("bkgr_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-    model.plotOn(frame, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-    # model.plotOn(frame, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 15 * sigma_Bs.getValV(), mean_Bs.getValV() + 15 * sigma_Bs.getValV()));
-    model.plotOn(frame, RF.Components("signal_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-
-    frame.Draw()
-
 files_MC = {'X': 'BsToXPhi_matched_all_1892449.root', 'psi':'BsToPsiPhi_matched_all_1519f1b.root'}
+# files_MC = {'X': 'SimpleFileMC_b715x_0_14000.root', 'psi':'SimpleFileMC_b715psi_0_14000.root'}
 file_data = ROOT.TFile('new.root')
 file_MC = ROOT.TFile(files_MC[mode])
-# file_MC_psi = ROOT.TFile('BsToPsiPhi_matched_all_1519f1b.root')
-# file_MC_X = ROOT.TFile('BsToXPhi_matched_all_1892449.root')
-# file_MC_psi = ROOT.TFile('SimpleFileMC_b715psi_0_14000.root')
-# file_MC_X = ROOT.TFile('SimpleFileMC_b715x_0_14000.root')
 
 
 c = ROOT.TCanvas("c", "c", 1700, 650)
 c.Divide(3,1)
-
-####################################################
-#_-_-_-_-_-_-      INCLUSIVE DATA      _-_-_-_-_-_-#
-####################################################
-#
-# model_discr.fitTo(data)
-# model_discr.fitTo(data)
-#
-# # c.cd(1)
-# frame_discr = ROOT.RooPlot(" ", 'm(J/#psi#pi^{+}#pi^{-}#phi) inclusive', var_discr, left_discr, right_discr, nbins_discr);
-# data.plotOn(frame_discr)
-# model_discr.paramOn(frame_discr, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_discr_param))
-# # frame_discr.getAttText().SetTextSize(0.053)
-# model_discr.plotOn(frame_discr, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5))
-# model_discr.plotOn(frame_discr, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
-# # model_discr.plotOn(frame_discr, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 3 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 3 * sigma_Bs_1.getValV()));
-# # model_discr.plotOn(frame_discr, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 3 * sigma_Bs_2.getValV(), mean_Bs.getValV() + 3 * sigma_Bs_2.getValV()));
-# model_discr.plotOn(frame_discr, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 10 * sigma_Bs.getValV(), mean_Bs.getValV() + 10 * sigma_Bs.getValV()));
-#
-# frame_discr.Draw()
-
-
-#####################################################
-#_-_-_-_-_-_-          PSI(2S)          _-_-_-_-_-_-#
-# ###################################################
 
 var_discr.setMin(left_discr_MC); var_discr.setMax(right_discr_MC)
 PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC)
@@ -95,11 +34,17 @@ model_1D_Bs.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
 # mean_Bs.setConstant(1)
 # model_1D_Bs.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
 # model_1D_Bs.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
+
+# mean_phi.setVal(1.0196); #mean_phi.setConstant(1)
+# N_bkgr_phi.setVal(0); N_bkgr_phi.setConstant(1)
+model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
+model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
+model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
+# mean_phi.setConstant(1)
 # model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
-model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
-model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
-model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
 # model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
+# model_1D_phi.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
+
 model_control.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
 model_control.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
 model_control.fitTo(data_control_MC, RF.Extended(ROOT.kTRUE))
@@ -112,7 +57,7 @@ c.cd(2)
 plot_on_frame(PHI_mass_Cjp, data_control_MC, model_1D_phi, 'MC: m(K^{+}K^{-})', left_phi_MC, right_phi_MC, nbins_phi_MC, plot_phi_param)
 
 c.cd(3)
-plot_on_frame(var_control, data_control_MC, model_control, 'MC: m(J/#psi#pi^{+}#pi^{-})', left_control_MC, right_control_MC, nbins_control_MC, plot_psi_param)
+plot_on_frame(var_control, data_control_MC, model_control, 'MC: m(J/#psi#pi^{+}#pi^{-})', left_control_MC, right_control_MC, nbins_control_MC, plot_control_param[mode])
 
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); fr_Bs.setConstant(1);
 # sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1)
@@ -130,11 +75,13 @@ mean_Bs.setMin(mean_Bs.getVal() - 0.005); mean_Bs.setMax(mean_Bs.getVal() + 0.00
 sigma_phi.setConstant(1); alpha_phi.setConstant(1); n_phi.setConstant(1); gamma_BW_phi.setConstant(1);
 mean_phi.setConstant(1);
 sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1), fr_psi.setConstant(1)
-gamma_BW_X.setConstant(1); sigma_X.setConstant(1)
+sigma_X_1.setConstant(1); sigma_X_2.setConstant(1), fr_X.setConstant(1)
+# gamma_BW_X.setConstant(1); sigma_X.setConstant(1)
 
-#        -----------------------        ##
-#           sPlot & Sidebands           ##
-#        -----------------------        ##
+
+#    -----------------------------    ##
+#       DATA: sPlot & Sidebands       ##
+#    -----------------------------    ##
 
 
 var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data)
@@ -142,16 +89,27 @@ PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data)
 var_control.setMin(left_control_data); var_control.setMax(right_control_data)
 data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data)
 
-data_sig = data.reduce('TMath::Abs(X_mass_Cjp -' + str(mwn_data[mode][0]) + ')<' + str(window[mode]))
-data_sideband = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(mwn_data[mode][0]) + ')>' + str(window[mode] + 0.010) + ' && TMath::Abs(X_mass_Cjp - ' + str(mwn_data[mode][0]) + ')<' + str(1.5*window[mode] + 0.010))
+data_sig = data.reduce('TMath::Abs(X_mass_Cjp -' + str(means[mode]) + ')<' + str(window[mode]))
+data_sideband = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')>' + str(window[mode] + 0.010) + ' && TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')<' + str(1.5*window[mode] + 0.010))
 
 c_sPlot = ROOT.TCanvas("c_sPlot", "c_sPlot", 1700, 650)
 c_sPlot.Divide(3,2)
 
 #
 c_sPlot.cd(1)
+
+bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3))
+model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
+model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
+control_models = {'X': model_X, 'psi': model_psi}
+model_control = control_models[mode]
+
 model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
-plot_on_frame(var_control, data, model_control, 'Data: m(J/#psi#pi^{+}#pi^{-}) projection', left_control_data, right_control_data, nbins_control_data, plot_psi_param)
+model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+plot_on_frame(var_control, data, model_control, 'Data: m(J/#psi#pi^{+}#pi^{-}) projection', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode])
 
 #
 c_sPlot.cd(2)
@@ -210,71 +168,9 @@ c_sPlot.cd(6)
 model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
 model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
 model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
 plot_on_frame(PHI_mass_Cjp, data_side_weighted, model_1D_phi, 'Data: sPlot to m(K^{+}K^{-})', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param)
 
-
-
-
-
-# data_psi_Bs_weighted_sideb = data_psi_Bs_weighted.reduce('X_mass_Cjp < 3.67 || X_mass_Cjp > 3.7')
-# data_psi_Bs_weighted_sig = data_psi_Bs_weighted.reduce('X_mass_Cjp > 3.67 && X_mass_Cjp < 3.7')
-
-# c_sPlot.cd(2)
-# frame_2 = ROOT.RooPlot(" ", ' ', PHI_mass_Cjp, left_phi_data, right_phi_data, nbins_phi_data);
-# data_psi_Bs_weighted_sideb.plotOn(frame_2, RF.DataError(ROOT.RooAbsData.Auto))
-# frame_2.Draw()
-#
-# c_sPlot.cd(4)
-# frame_4 = ROOT.RooPlot(" ", ' ', PHI_mass_Cjp, left_phi_data, right_phi_data, nbins_phi_data);
-# data_psi_Bs_weighted_sig.plotOn(frame_4, RF.DataError(ROOT.RooAbsData.Auto))
-# frame_4.Draw()
-
-
-##        ---------------------        ##
-##           Double 1D SPLOTs          ##
-##        ---------------------        ##
-
-# c_sPlot = ROOT.TCanvas("c_sPlot", "c_sPlot", 1700, 650)
-# c_sPlot.Divide(2,2)
-#
-# c_sPlot.cd(1)
-# model_1D_Bs.fitTo(data_psi, RF.Extended(ROOT.kTRUE))
-# model_1D_Bs.fitTo(data_psi, RF.Extended(ROOT.kTRUE))
-# plot_on_frame(var_discr, data_psi, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data)
-#
-# sData_Bs_psi = ROOT.RooStats.SPlot(
-#     'sData_Bs_psi', 'sData_Bs_psi', data_psi, model_1D_Bs,
-#     ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs)
-# )
-# data_psi_Bs_weighted = ROOT.RooDataSet(data_psi.GetName(), data_psi.GetTitle(), data_psi, data_psi.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-#
-# c_sPlot.cd(2)
-# model_1D_phi.fitTo(data_psi_Bs_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-# model_1D_phi.fitTo(data_psi_Bs_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-# plot_on_frame(PHI_mass_Cjp, data_psi_Bs_weighted, model_1D_phi, 'Data: m(#phi) projection', left_phi_data, right_phi_data, nbins_phi_data)
-#
-#
-# sData_all_psi = ROOT.RooStats.SPlot(
-#     'sData_all_psi', 'sData_all_psi', data_psi_Bs_weighted, model_1D_phi,
-#     ROOT.RooArgList(N_sig_phi, N_bkgr_phi)
-# )
-#
-# data_psi_all_weighted = ROOT.RooDataSet(data_psi_Bs_weighted.GetName(), data_psi_Bs_weighted.GetTitle(), data_psi_Bs_weighted, data_psi_Bs_weighted.get(), '1 > 0', "N_sig_phi_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-#
-#
-# c_sPlot.cd(3)
-# print '\n\n' + 30*'#' + '\n\n\n         MC psi(2S): psi(2S) mass now         \n\n\n' + 30*'#' + '\n\n'
-#
-# model_psi.fitTo(data_psi_MC, RF.Extended(ROOT.kTRUE))
-# plot_on_frame(var_control, data_psi_MC, model_psi, 'MC: m(J/#psi#pi^{+}#pi^{-}) projection', left_psi, right_psi, nbins_psi)
-#
-# c_sPlot.cd(4)
-#
-# sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1), fr_psi.setConstant(1)
-# rrr_sig = model_psi.fitTo(data_psi_all_weighted, RF.Save(), RF.SumW2Error(ROOT.kTRUE), RF.Extended(ROOT.kTRUE))
-# # rrr_sig = model_X.fitTo(data_psi_all_weighted, RF.Save(), RF.SumW2Error(ROOT.kTRUE), RF.Extended(ROOT.kTRUE))
-# plot_on_frame(var_control, data_psi_all_weighted, model_psi, 'Data: Double 1D sPlot for #psi(2S) region', left_psi, right_psi, nbins_psi)
 
 
 ##        -------------        ##

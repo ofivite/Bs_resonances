@@ -4,16 +4,19 @@ mode = 'X'
 left_discr_data =  5.3669 - 0.21; right_discr_data = 5.3669 + 0.21; nbins_discr_data = 42
 left_discr_MC =  5.37 - 0.04; right_discr_MC = 5.37 + 0.04; nbins_discr_MC = 40
 
-left_phi_data = 1.0195 - 0.025; right_phi_data = 1.0195 + 0.025; nbins_phi_data = 50
-left_phi_MC = 1.0195 - 0.015; right_phi_MC = 1.0195 + 0.015; nbins_phi_MC = 50
+left_phi_data = 1.0195 - 0.025; right_phi_data = 1.0195 + 0.025; nbins_phi_data = 25
+# left_phi_MC = 1.0195 - 0.015; right_phi_MC = 1.0195 + 0.015; nbins_phi_MC = 50
+# left_phi_MC = 1.0195 - 0.015; right_phi_MC = 1.0195 + 0.015; nbins_phi_MC = 50
+lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.015, 1.0195 + 0.015, 50]}
+left_phi_MC, right_phi_MC, nbins_phi_MC = lrn_phi_MC[mode]
 
-# mwn = mean, window, nbins
-mwn_MC = {'X':[3.872, 0.08, 16], 'psi':[3.686, 0.02, 40]}
-mwn_data = {'X':[3.872, 0.08, 16], 'psi':[3.686, 0.06, 60]}
+# lrn = left, right, nbins
+lrn_control_MC = {'X': [3.872 - 0.05, 3.872 + 0.05, 50], 'psi': [3.686 - 0.02, 3.686 + 0.02, 40]}
+lrn_control_data = {'X': [3.872 - 0.08, 3.872 + 0.08, 64], 'psi': [3.686 - 0.06, 3.686 + 0.06, 60]}
+left_control_MC, right_control_MC, nbins_control_MC = lrn_control_MC[mode]
+left_control_data, right_control_data, nbins_control_data = lrn_control_data[mode]
 
-left_control_MC = mwn_MC[mode][0] - mwn_MC[mode][1]; right_control_MC = mwn_MC[mode][0] + mwn_MC[mode][1]; nbins_control_MC = mwn_MC[mode][2]
-left_control_data = mwn_data[mode][0] - mwn_data[mode][1]; right_control_data = mwn_data[mode][0] + mwn_data[mode][1]; nbins_control_data = mwn_data[mode][2]
-
+means = {'X': 3.872, 'psi': 3.686}
 window = {'X': 0.018, 'psi': 0.018}
 
 # var_discr.setRange('dicsr_range_MC', left_discr_MC, right_discr_MC)
