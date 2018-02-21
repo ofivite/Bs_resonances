@@ -1,4 +1,3 @@
-import ROOT
 from cuts import *
 from RooSpace import *
 
