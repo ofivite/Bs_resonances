@@ -7,12 +7,12 @@ left_discr_MC =  5.37 - 0.04; right_discr_MC = 5.37 + 0.04; nbins_discr_MC = 40
 left_phi_data = 1.0195 - 0.02; right_phi_data = 1.0195 + 0.02; nbins_phi_data = 20
 # left_phi_MC = 1.0195 - 0.015; right_phi_MC = 1.0195 + 0.015; nbins_phi_MC = 50
 # left_phi_MC = 1.0195 - 0.015; right_phi_MC = 1.0195 + 0.015; nbins_phi_MC = 50
-lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.015, 1.0195 + 0.015, 50]}
+lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.015, 1.0195 + 0.015, 30]}
 left_phi_MC, right_phi_MC, nbins_phi_MC = lrn_phi_MC[mode]
 
 # lrn = left, right, nbins
 lrn_control_MC = {'X': [3.872 - 0.05, 3.872 + 0.05, 50], 'psi': [3.686 - 0.02, 3.686 + 0.02, 40]}
-lrn_control_data = {'X': [3.872 - 0.055, 3.872 + 0.055, 55], 'psi': [3.686 - 0.06, 3.686 + 0.06, 60]}
+lrn_control_data = {'X': [3.872 - 0.06, 3.872 + 0.06, 40], 'psi': [3.686 - 0.06, 3.686 + 0.06, 60]}
 left_control_MC, right_control_MC, nbins_control_MC = lrn_control_MC[mode]
 left_control_data, right_control_data, nbins_control_data = lrn_control_data[mode]
 
