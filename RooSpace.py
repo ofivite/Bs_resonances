@@ -2,10 +2,10 @@ import ROOT
 from ROOT import RooFit as RF
 from cuts import *
 
-var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}#phi) [GeV]', 5.1, 5.6)
-var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{-}) [GeV]', 3.4, 4.2)
-PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{-})', 0.2, 1.2)
-PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{-})', 0., 2.)
+var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}#phi) [GeV]', 5.1, 5.6)
+var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
+PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}})', 0.2, 1.2)
+PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}})', 0., 2.)
 
 PHI_mass_Cjp.setBins(10000, "cache")
 
@@ -15,6 +15,13 @@ dR_pi1 = ROOT.RooRealVar('dR_pi1', '', 0., 0.5)
 dR_pi2 = ROOT.RooRealVar('dR_pi2', '', 0., 0.5)
 dR_K1 = ROOT.RooRealVar('dR_K1', '', 0., 0.5)
 dR_K2 = ROOT.RooRealVar('dR_K2', '', 0., 0.5)
+
+MoID_mu1 = ROOT.RooRealVar('MoID_mu1', '', -1., 1000000)
+MoID_mu2 = ROOT.RooRealVar('MoID_mu2', '', -1, 1000000)
+MoID_pi1 = ROOT.RooRealVar('MoID_pi1', '', -1, 1000000)
+MoID_pi2 = ROOT.RooRealVar('MoID_pi2', '', -1, 1000000)
+MoID_K1 = ROOT.RooRealVar('MoID_K1', '', -1, 1000000)
+MoID_K2 = ROOT.RooRealVar('MoID_K2', '', -1, 1000000)
 
 #############################################################################################
 # Bs
