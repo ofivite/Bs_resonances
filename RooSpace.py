@@ -212,13 +212,15 @@ model_bs_2D = ROOT.RooProdPdf('model_bs_2D', 'model_bs_2D', ROOT.RooArgList(bkgr
 
 model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
 model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
+# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs',ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+
 
 model_2D_data = ROOT.RooAddPdf('model_2D_data', 'model_2D_data', ROOT.RooArgList(model_ss_2D, model_bb_2D, model_sb_2D), ROOT.RooArgList(N_ss_2D, N_bb_2D, N_sb_2D))
 model_2D_MC = ROOT.RooAddPdf('model_2D_MC', 'model_2D_MC', ROOT.RooArgList(model_ss_2D, model_bb_2D), ROOT.RooArgList(N_ss_2D, N_bb_2D))
 
-# model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
 # model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
-model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(sig_Bs_1, sig_Bs_2, bkgr_Bs), ROOT.RooArgList(N_sig_1, N_sig_2, N_bkgr_Bs))
+# model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(sig_Bs_1, sig_Bs_2, bkgr_Bs), ROOT.RooArgList(N_sig_1, N_sig_2, N_bkgr_Bs))
 
 # model_control = ROOT.RooAddPdf('model_control', 'model_control', ROOT.RooArgList(signal_psi, signal_X, bkgr_control), ROOT.RooArgList(N_sig_psi, N_sig_X, N_bkgr_control))
 # model_control = ROOT.RooAddPdf('model_control', 'model_control', ROOT.RooArgList(sig_psi_1, sig_psi_2, signal_X, bkgr_control), ROOT.RooArgList(N_sig_psi_1, N_sig_psi_2, N_sig_X, N_bkgr_control))
@@ -293,6 +295,9 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par):
     model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
     frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
+    floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
+    print '\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30*'>' + '\n\n'
+
     model.plotOn(frame, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
     model.plotOn(frame, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4));
     model.plotOn(frame, RF.Components("model_sb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
@@ -310,5 +315,6 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par):
     model.plotOn(frame, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
     # model.plotOn(frame, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 15 * sigma_Bs.getValV(), mean_Bs.getValV() + 15 * sigma_Bs.getValV()));
     model.plotOn(frame, RF.Components("signal_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-
+    model.plotOn(frame, RF.Components("B0_refl"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl'), RF.Range(mean_Bs.getValV() - 5 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 5 * sigma_Bs_1.getValV()));
+    data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
     frame.Draw()

@@ -1,13 +1,16 @@
-mode = 'psi'
+mode = 'X'
 # gStyle.SetTitleFontSize(.085)
 
 left_discr_data =  5.3669 - 0.21; right_discr_data = 5.3669 + 0.21; nbins_discr_data = 42
 left_discr_MC =  5.3669 - 0.04; right_discr_MC = 5.3669 + 0.04; nbins_discr_MC = 40
 
-left_phi_data = 1.0195 - 0.018; right_phi_data = 1.0195 + 0.018; nbins_phi_data = 36
+# left_phi_data = 1.0195 - 0.017; right_phi_data = 1.0195 + 0.017; nbins_phi_data = 36
+lrn_phi_data = {'X': [1.0195 - 0.015, 1.0195 + 0.015, 30], 'psi': [1.0195 - 0.017, 1.0195 + 0.017, 34]}
+left_phi_data, right_phi_data, nbins_phi_data = lrn_phi_data[mode]
+
 # left_phi_MC = 1.0195 - 0.015; right_phi_MC = 1.0195 + 0.015; nbins_phi_MC = 50
 # left_phi_MC = 1.0195 - 0.015; right_phi_MC = 1.0195 + 0.015; nbins_phi_MC = 50
-lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.015, 1.0195 + 0.015, 30]}
+lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.0155, 1.0195 + 0.0155, 31]}
 left_phi_MC, right_phi_MC, nbins_phi_MC = lrn_phi_MC[mode]
 
 # lrn = left, right, nbins
@@ -36,6 +39,6 @@ cuts_control_data = 'X_mass_Cjp >' + str(left_control_data) + ' && X_mass_Cjp < 
 
 cuts_pipi = {'X': 'PIPI_mass_Cjp > 0.65 && PIPI_mass_Cjp < 0.78', 'psi': 'PIPI_mass_Cjp > 0.4 && PIPI_mass_Cjp < 0.6'}
 
-cuts_match_dR = 'dR_mu1 < 0.05 && dR_mu2 < 0.05 && dR_pi1 < 0.05 && dR_pi2 < 0.05 && dR_K1 < 0.05 < dR_K2 < 0.05'
+cuts_match_dR = 'dR_mu1 < 0.05 && dR_mu2 < 0.05 && dR_pi1 < 0.05 && dR_pi2 < 0.05 && dR_K1 < 0.05 && dR_K2 < 0.05'
 cuts_match_ID = {'X': 'MoID_mu1 == 443 && MoID_mu2 == 443 && MoID_pi1 == 113 && MoID_pi2 == 113 && MoID_K1 == 333 && MoID_K2 == 333',
                  'psi': 'MoID_mu1 == 443 && MoID_mu2 == 443 && MoID_pi1 == 100443 && MoID_pi2 == 100443 && MoID_K1 == 333 && MoID_K2 == 333'}
