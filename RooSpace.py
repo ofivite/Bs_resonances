@@ -238,7 +238,7 @@ model_control = control_models[mode]
 #
 plot_discr_param = ROOT.RooArgSet(mean_Bs, sigma_Bs_1, sigma_Bs_2, fr_Bs, N_sig_Bs, N_bkgr_Bs)
 plot_psi_param = ROOT.RooArgSet(mean_psi, sigma_psi_1, sigma_psi_2, fr_psi, N_sig_psi, N_bkgr_control)
-plot_phi_param = ROOT.RooArgSet(mean_phi, gamma_BW_phi, sigma_phi, alpha_phi, N_sig_phi, N_bkgr_phi)
+plot_phi_param = ROOT.RooArgSet(mean_phi, gamma_BW_phi, sigma_phi, alpha_phi, n_phi, N_sig_phi, N_bkgr_phi)
 plot_X_param = ROOT.RooArgSet(mean_X, sigma_X_1, sigma_X_2, fr_X, N_sig_X, N_bkgr_control)
 plot_control_param = {'X': plot_X_param, 'psi': plot_psi_param}
 
@@ -280,7 +280,7 @@ gamma_BW_Bs.setPlotLabel('#Gamma_{BW}[B_{s}^{0}]')
 fr_Bs.setPlotLabel('fr[B_{s}^{0}]')
 #
 mean_phi.setPlotLabel('m[#phi]')
-sigma_phi.setPlotLabel('#sigma[B_{s}^{0}]')
+sigma_phi.setPlotLabel('#sigma[#phi]')
 gamma_BW_phi.setPlotLabel('#Gamma_{BW}[#phi]')
 alpha_phi.setPlotLabel('#alpha[#phi]')
 n_phi.setPlotLabel('n[#phi]')

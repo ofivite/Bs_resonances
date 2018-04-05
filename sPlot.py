@@ -96,129 +96,129 @@ sigma_X_1.setConstant(1); sigma_X_2.setConstant(1), fr_X.setConstant(1)
 ##      DATA: sPlot & Sidebands       ##
 ##   -----------------------------    ##
 
-fr = {'X': fr_X.getVal(), 'psi':fr_psi.getVal()}
-sigma_1 = {'X': sigma_X_1.getVal(), 'psi':sigma_psi_1.getVal()}
-sigma_2 = {'X': sigma_X_2.getVal(), 'psi':sigma_psi_2.getVal()}
-sigma_eff = sqrt( fr[mode] * sigma_1[mode]**2 + (1 - fr[mode]) * sigma_2[mode]**2)
-window = 3 * sigma_eff
-wind_sideband_dist = 2 * sigma_eff
-
-var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data)
-PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data)
-var_control.setMin(left_control_data); var_control.setMax(right_control_data)
-data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
-
-
-c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 1700, 650)
+# fr = {'X': fr_X.getVal(), 'psi':fr_psi.getVal()}
+# sigma_1 = {'X': sigma_X_1.getVal(), 'psi':sigma_psi_1.getVal()}
+# sigma_2 = {'X': sigma_X_2.getVal(), 'psi':sigma_psi_2.getVal()}
+# sigma_eff = sqrt( fr[mode] * sigma_1[mode]**2 + (1 - fr[mode]) * sigma_2[mode]**2)
+# window = 3 * sigma_eff
+# wind_sideband_dist = 2 * sigma_eff
 #
-# bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
-model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
-model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
-control_models = {'X': model_X, 'psi': model_psi}
-model_control = control_models[mode]
-
-mean_X.setConstant(1); mean_psi.setConstant(1)
-model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
-model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
-mean_X.setConstant(0); mean_psi.setConstant(0)
-model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
-model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
-model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
-model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
-
+# var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data)
+# PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data)
+# var_control.setMin(left_control_data); var_control.setMax(right_control_data)
+# data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
+#
+#
+# c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 1700, 650)
+# #
+# # bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
+# model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
+# model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
+# control_models = {'X': model_X, 'psi': model_psi}
+# model_control = control_models[mode]
+#
+# mean_X.setConstant(1); mean_psi.setConstant(1)
 # model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
 # model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
-plot_on_frame(var_control, data, model_control, 'Data: m(J/#psi#pi^{+}#pi^{-}) projection', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode])
-
-
+# mean_X.setConstant(0); mean_psi.setConstant(0)
+# model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+# model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+# model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+# model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
 #
-c_sPlot = ROOT.TCanvas("c_sPlot", "c_sPlot", 1700, 850)
-c_sPlot.Divide(2,2)
-print '\n\n' + 30*'#' + '\n\n\n         Data psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n'
-
-means = {'X': mean_X.getVal(), 'psi':mean_psi.getVal()}
-data_sig = data.reduce('TMath::Abs(X_mass_Cjp -' + str(means[mode]) + ')<' + str(window))
-data_sideband = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')>' + str(window + wind_sideband_dist) + ' && TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')<' + str(1.5*window + wind_sideband_dist))
-
-N_bkgr_Bs.setVal(10000); N_bkgr_Bs.setMax(50000);
-N_bkgr_phi.setVal(10000); N_bkgr_phi.setMax(50000);
-N_bkgr_control.setVal(1000); N_bkgr_control.setMax(50000);
-
-# c_wo_refl = ROOT.TCanvas("c_wo_refl", "c_wo_refl", 1700, 850)
+# # model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+# # model_control.fitTo(data, RF.Extended(ROOT.kTRUE))
+# plot_on_frame(var_control, data, model_control, 'Data: m(J/#psi#pi^{+}#pi^{-}) projection', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode])
 #
-# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# plot_on_frame(var_discr, data_sig, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param)
+#
+# #
+# c_sPlot = ROOT.TCanvas("c_sPlot", "c_sPlot", 1700, 850)
+# c_sPlot.Divide(2,2)
+# print '\n\n' + 30*'#' + '\n\n\n         Data psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n'
+#
+# means = {'X': mean_X.getVal(), 'psi':mean_psi.getVal()}
+# data_sig = data.reduce('TMath::Abs(X_mass_Cjp -' + str(means[mode]) + ')<' + str(window))
+# data_sideband = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')>' + str(window + wind_sideband_dist) + ' && TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')<' + str(1.5*window + wind_sideband_dist))
+#
+# N_bkgr_Bs.setVal(10000); N_bkgr_Bs.setMax(50000);
+# N_bkgr_phi.setVal(10000); N_bkgr_phi.setMax(50000);
+# N_bkgr_control.setVal(1000); N_bkgr_control.setMax(50000);
+#
+# # c_wo_refl = ROOT.TCanvas("c_wo_refl", "c_wo_refl", 1700, 850)
+# #
+# # model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# # model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# # model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# # plot_on_frame(var_discr, data_sig, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param)
+# #
+# # c_sPlot.cd(1)
+# # model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# # model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# # model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# # plot_on_frame(var_discr, data_sig, model_discr, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param)
+# #
+# # ##########
+# # sData_Bs_psi_sig = ROOT.RooStats.SPlot(
+# #     'sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model_discr,
+# #     ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl)
+# # )
+# # data_sig_weighted = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+# # ##########
+#
 #
 # c_sPlot.cd(1)
-# model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# plot_on_frame(var_discr, data_sig, model_discr, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param)
+# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# # model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# plot_on_frame(var_discr, data_sig, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param)
 #
 # ##########
 # sData_Bs_psi_sig = ROOT.RooStats.SPlot(
-#     'sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model_discr,
-#     ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl)
+#     'sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model_1D_Bs,
+#     ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs)
 # )
 # data_sig_weighted = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
 # ##########
-
-
-c_sPlot.cd(1)
-model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-plot_on_frame(var_discr, data_sig, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param)
-
-##########
-sData_Bs_psi_sig = ROOT.RooStats.SPlot(
-    'sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model_1D_Bs,
-    ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs)
-)
-data_sig_weighted = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-##########
-
 #
-c_sPlot.cd(2)
-model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# #
+# c_sPlot.cd(2)
+# model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# # model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# # model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# mean_phi.setConstant(0)
 # model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
 # model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-mean_phi.setConstant(0)
-model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
 # model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
 # model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-plot_on_frame(PHI_mass_Cjp, data_sig_weighted, model_1D_phi, 'Data: sPlot to m(K^{+}K^{-})', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param)
-
+# # model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# # model_1D_phi.fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# plot_on_frame(PHI_mass_Cjp, data_sig_weighted, model_1D_phi, 'Data: sPlot to m(K^{+}K^{-})', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param)
 #
-c_sPlot.cd(3)
-mean_Bs.setConstant(1); mean_phi.setConstant(1)
-model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+# #
+# c_sPlot.cd(3)
+# mean_Bs.setConstant(1); mean_phi.setConstant(1)
 # model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-plot_on_frame(var_discr, data_sideband, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param)
-
-##########
-sData_Bs_psi_side = ROOT.RooStats.SPlot(
-    'sData_Bs_psi_side', 'sData_Bs_psi_side', data_sideband, model_1D_Bs,
-    ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs)
-)
-data_side_weighted = ROOT.RooDataSet(data_sideband.GetName(), data_sideband.GetTitle(), data_sideband, data_sideband.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-##########
-
+# model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+# model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+# # model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+# plot_on_frame(var_discr, data_sideband, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param)
 #
-c_sPlot.cd(4)
-model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# ##########
+# sData_Bs_psi_side = ROOT.RooStats.SPlot(
+#     'sData_Bs_psi_side', 'sData_Bs_psi_side', data_sideband, model_1D_Bs,
+#     ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs)
+# )
+# data_side_weighted = ROOT.RooDataSet(data_sideband.GetName(), data_sideband.GetTitle(), data_sideband, data_sideband.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+# ##########
+#
+# #
+# c_sPlot.cd(4)
 # model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-plot_on_frame(PHI_mass_Cjp, data_side_weighted, model_1D_phi, 'Data: sPlot to m(K^{+}K^{-})', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param)
+# model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# # model_1D_phi.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
+# plot_on_frame(PHI_mass_Cjp, data_side_weighted, model_1D_phi, 'Data: sPlot to m(K^{+}K^{-})', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param)
 
 
 
