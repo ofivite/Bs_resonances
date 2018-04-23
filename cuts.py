@@ -1,8 +1,8 @@
-mode = 'X'
+mode = 'psi'
 # gStyle.SetTitleFontSize(.085)
 
 left_discr_data =  5.3669 - 0.21; right_discr_data = 5.3669 + 0.21; nbins_discr_data = 42
-left_discr_MC =  5.3669 - 0.04; right_discr_MC = 5.3669 + 0.04; nbins_discr_MC = 40
+left_discr_MC =  5.3669 - 0.035; right_discr_MC = 5.3669 + 0.035; nbins_discr_MC = 35
 
 # left_phi_data = 1.0195 - 0.017; right_phi_data = 1.0195 + 0.017; nbins_phi_data = 36
 lrn_phi_data = {'X': [1.0195 - 0.015, 1.0195 + 0.015, 30], 'psi': [1.0195 - 0.017, 1.0195 + 0.017, 34]}
@@ -15,7 +15,7 @@ left_phi_MC, right_phi_MC, nbins_phi_MC = lrn_phi_MC[mode]
 
 # lrn = left, right, nbins
 lrn_control_MC = {'X': [3.872 - 0.05, 3.872 + 0.05, 50], 'psi': [3.686 - 0.02, 3.686 + 0.02, 40]}
-lrn_control_data = {'X': [3.872 - 0.06, 3.872 + 0.06, 60], 'psi': [3.686 - 0.06, 3.686 + 0.06, 60]}
+lrn_control_data = {'X': [3.872 - 0.05, 3.872 + 0.05, 50], 'psi': [3.686 - 0.05, 3.686 + 0.05, 50]}
 left_control_MC, right_control_MC, nbins_control_MC = lrn_control_MC[mode]
 left_control_data, right_control_data, nbins_control_data = lrn_control_data[mode]
 

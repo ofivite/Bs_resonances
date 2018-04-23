@@ -3,10 +3,11 @@ from ROOT import RooFit as RF
 from cuts import *
 import CMS_tdrStyle_lumi
 
-var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}#phi) [GeV]', 5.1, 5.6)
-var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
-PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0.2, 1.2)
-PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
+var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV/c^{2}]', 5.1, 5.6)
+var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV/c^{2}]', 3.4, 4.2)
+PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV/c^{2}]', 0.2, 1.2)
+PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV/c^{2}]', 0., 2.)
+SAMEEVENT = ROOT.RooRealVar('SAMEEVENT', 'SAMEEVENT', 0., 2.)
 
 PHI_mass_Cjp.setBins(10000, "cache")
 
@@ -66,17 +67,22 @@ mean_psi = ROOT.RooRealVar("mean_psi", "", 3.685, 3.675, 3.695)
 sigma_psi = ROOT.RooRealVar("sigma_psi", "", 0.02, 0.001, 0.05)
 sigma_psi_1 = ROOT.RooRealVar("sigma_psi_1", "", 0.02, 0.001, 0.05)
 sigma_psi_2 = ROOT.RooRealVar("sigma_psi_2", "", 0.01, 0.001, 0.05)
+sigma_psi_3 = ROOT.RooRealVar("sigma_psi_3", "", 0.01, 0.001, 0.05)
 # sigma_psi = ROOT.RooRealVar("sigma_psi", "", 0.01, 0.001, 0.5)
 gamma_BW_psi = ROOT.RooRealVar("gamma_BW_psi","gamma_BW_psi", 0.005, 0., 1.)
 
 N_sig_psi = ROOT.RooRealVar('N_sig_psi', '', 20000., 0., 100000)
 fr_psi = ROOT.RooRealVar('fr_psi', 'fr_psi', 0.5 , 0., 1.)
+fr_psi_1 = ROOT.RooRealVar('fr_psi_1', 'fr_psi_1', 0.5 , 0., 1.)
+fr_psi_2 = ROOT.RooRealVar('fr_psi_2', 'fr_psi_2', 0.5 , 0., 1.)
 N_sig_psi_1 = ROOT.RooFormulaVar('N_sig_psi_1', 'N_sig_psi * fr_psi', ROOT.RooArgList(N_sig_psi, fr_psi))
 N_sig_psi_2 = ROOT.RooFormulaVar('N_sig_psi_2', 'N_sig_psi * (1-fr_psi)', ROOT.RooArgList(N_sig_psi, fr_psi))
 sig_psi_1 = ROOT.RooGaussian("sig_psi_1", "", var_control, mean_psi, sigma_psi_1)
 sig_psi_2 = ROOT.RooGaussian("sig_psi_2", "", var_control, mean_psi, sigma_psi_2)
+sig_psi_3 = ROOT.RooGaussian("sig_psi_3", "", var_control, mean_psi, sigma_psi_3)
 
 signal_psi = ROOT.RooAddPdf("signal_psi", "signal_psi", ROOT.RooArgList(sig_psi_1, sig_psi_2), ROOT.RooArgList(fr_psi))
+# signal_psi = ROOT.RooAddPdf("signal_psi", "signal_psi", ROOT.RooArgList(sig_psi_1, sig_psi_2, sig_psi_3), ROOT.RooArgList(fr_psi_1, fr_psi_2), ROOT.kTRUE)
 # signal_psi = ROOT.RooVoigtian("signal_psi", "signal_psi", var_control, mean_psi, gamma_BW_psi, sigma_psi)
 # signal_psi = ROOT.RooGaussian("signal_psi", "", var_control, mean_psi, sigma_psi)
 
@@ -87,13 +93,18 @@ mean_X = ROOT.RooRealVar("mean_X", "", 3.8717, 3.8717 - 0.01, 3.8717 + 0.01)
 sigma_X = ROOT.RooRealVar("sigma_X", "", 0.005, 0.001, 0.08)
 sigma_X_1 = ROOT.RooRealVar("sigma_X_1", "", 0.005, 0.001, 0.02)
 sigma_X_2 = ROOT.RooRealVar("sigma_X_2", "", 0.005, 0.001, 0.02)
+sigma_X_3 = ROOT.RooRealVar("sigma_X_3", "", 0.005, 0.001, 0.02)
+
 N_sig_X = ROOT.RooRealVar('N_sig_X', '', 30000., 0., 100000)
 fr_X = ROOT.RooRealVar('fr_X', 'fr_X', 0.5 , 0., 1.)
+fr_X_1 = ROOT.RooRealVar('fr_X_1', 'fr_X_1', 0.5 , 0., 1.)
+fr_X_2 = ROOT.RooRealVar('fr_X_2', 'fr_X_2', 0.5 , 0., 1.)
 N_sig_X_1 = ROOT.RooFormulaVar('N_sig_X_1', 'N_sig_X * fr_X', ROOT.RooArgList(N_sig_X, fr_X))
 N_sig_X_2 = ROOT.RooFormulaVar('N_sig_X_2', 'N_sig_X * (1-fr_X)', ROOT.RooArgList(N_sig_X, fr_X))
 
 sig_X_1 = ROOT.RooGaussian("sig_X_1", "", var_control, mean_X, sigma_X_1)
 sig_X_2 = ROOT.RooGaussian("sig_X_2", "", var_control, mean_X, sigma_X_2)
+sig_X_3 = ROOT.RooGaussian("sig_X_3", "", var_control, mean_X, sigma_X_3)
 ###
 # sigma_CB = ROOT.RooRealVar("sigma_CB", "sigma_CB", 0.06, 0., 1.)
 # alpha_CB = ROOT.RooRealVar("alpha_CB", "alpha_CB", -0.1, -10., 10.)
@@ -108,6 +119,7 @@ BW = ROOT.RooBreitWigner("BW", "BW", var_control, mass_BW, gamma_BW_X)
 # signal_X = ROOT.RooFFTConvPdf("signal_X", "signal_X", var_control, crystal, gauss_X)
 # signal_X = ROOT.RooVoigtian("signal_X", "signal_X", var_control, mean_X, gamma_BW_X, sigma_X)
 signal_X = ROOT.RooAddPdf("signal_X", "signal_X", ROOT.RooArgList(sig_X_1, sig_X_2), ROOT.RooArgList(fr_X))
+# signal_X = ROOT.RooAddPdf("signal_X", "signal_X", ROOT.RooArgList(sig_X_1, sig_X_2, sig_X_3), ROOT.RooArgList(fr_X_1, fr_X_2), ROOT.kTRUE)
 
 bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2))
 # bkgr_control = ROOT.RooExponential('bkgr_control', '', var_control, exp_par)
@@ -323,8 +335,8 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
 # , RF.Range(mean_phi.getValV() - 15 * gamma_BW_phi.getValV(), mean_phi.getValV() + 15 * gamma_BW_phi.getValV())
     model.plotOn(frame, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     model.plotOn(frame, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("sig_psi_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("sig_psi_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components('sig_' + str(mode) + '_1'), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components('sig_' + str(mode) + '_1'), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     # model_X.plotOn(frame_control, RF.Components("sig_X_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     # model_X.plotOn(frame_control, RF.Components("sig_X_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     # model.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
