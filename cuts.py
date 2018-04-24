@@ -1,4 +1,4 @@
-mode = 'X'
+mode = 'psi'
 # gStyle.SetTitleFontSize(.085)
 
 left_discr_data =  5.3669 - 0.21; right_discr_data = 5.3669 + 0.21; nbins_discr_data = 42

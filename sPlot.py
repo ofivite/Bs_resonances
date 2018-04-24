@@ -163,7 +163,7 @@ CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
 
 ###
 means = {'X': mean_X.getVal(), 'psi':mean_psi.getVal()}
-y_sdb_l = {'X': 360, 'psi': 1000}; y_sig = {'X': 480, 'psi': 1500}; y_sdb_r = {'X': 530, 'psi': 1000}; 
+y_sdb_l = {'X': 360, 'psi': 1000}; y_sig = {'X': 430, 'psi': 1500}; y_sdb_r = {'X': 480, 'psi': 1000}; 
 line_width = 4
 #
 line_ll_sdb = ROOT.TLine(means[mode] - 1.5*window - wind_sideband_dist, 0, means[mode] - 1.5*window - wind_sideband_dist, y_sdb_l[mode])
