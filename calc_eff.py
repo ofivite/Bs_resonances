@@ -1,16 +1,16 @@
 from math import sqrt
 
-N_reco_psi = 73491.
-err_N_reco_psi = 306.
+N_reco_psi = 74899.
+err_N_reco_psi = 307.
 ##
-N_reco_X = 31267.
-err_N_reco_X = 202.
+N_reco_X = 31517.
+err_N_reco_X = 199.
 
 #-----------------------------
-N_data_psi = 2487.
-err_N_data_psi = 54.
+N_data_psi = 2511.
+err_N_data_psi = 57.
 ##
-N_data_X = 83.
+N_data_X = 90.   #83 +- 12; 90 +- 12
 err_N_data_X = 12.
 
 #-----------------------------
@@ -34,14 +34,15 @@ err_eff_reco_X = err_N_reco_X / DAS_X
 #-----------------------------
 total_eff_psi = eff_reco_psi * eff_filter_psi
 total_eff_X = eff_reco_X * eff_filter_X
-err_total_eff_psi = eff_reco_psi * err_eff_filter_psi + eff_filter_psi * err_eff_reco_psi
-err_total_eff_X =eff_reco_X * err_eff_filter_X + eff_filter_X * err_eff_reco_X
+err_total_eff_psi = total_eff_psi * sqrt( (err_eff_reco_psi / eff_reco_psi)**2 + (err_eff_filter_psi / eff_filter_psi)**2)
+err_total_eff_X = total_eff_X * sqrt( (err_eff_reco_X / eff_reco_X)**2 + (err_eff_filter_X / eff_filter_X)**2)
 
 #-----------------------------
 R_eps = total_eff_psi / total_eff_X
 R_n = N_data_X / N_data_psi
 Rs = R_eps * R_n
-err_Rs = R_eps * ( err_N_data_X / N_data_psi + err_N_data_psi * (N_data_X / N_data_psi**2) ) + R_n * ( err_total_eff_psi / total_eff_X + err_total_eff_X * (total_eff_psi / total_eff_X**2) )
+err_Rs_stat = Rs * sqrt( (err_N_data_X / N_data_X)**2 + (err_N_data_psi / N_data_psi)**2 )
+err_Rs_eff = Rs * sqrt( (err_total_eff_psi / total_eff_psi)**2 + (err_total_eff_X / total_eff_X )**2 )
 
 #-----------------------------
 print '\n'
@@ -54,4 +55,4 @@ print '\n'
 print 'total efficiency for psi =',  round(total_eff_psi, 10), '+-', round(err_total_eff_psi, 10)
 print 'total efficiency for X =',  round(total_eff_X, 10), '+-', round(err_total_eff_X, 10)
 print '\n'
-print 'Rs =', round(Rs, 10), '+-', round(err_Rs, 10)
+print 'Rs =', round(Rs, 10), '+-', round(err_Rs_stat, 10), '(stat.)', '+-', round(err_Rs_eff, 10), '(eff.)'

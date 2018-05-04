@@ -3,22 +3,29 @@ from ROOT import RooFit as RF
 from cuts import *
 import CMS_tdrStyle_lumi
 
-var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV/c^{2}]', 5.1, 5.6)
-var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV/c^{2}]', 3.4, 4.2)
-PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV/c^{2}]', 0.2, 1.2)
-PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV/c^{2}]', 0., 2.)
+var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
+var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
+PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0.2, 1.2)
+PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
 SAMEEVENT = ROOT.RooRealVar('SAMEEVENT', 'SAMEEVENT', 0., 2.)
 
 # PHI_mass_Cjp.setBins(10000, "cache")
 # PHI_mass_Cjp.setBins(nbins_phi_data)
 # PHI_mass_Cjp.setRange(left_phi_data, right_phi_data)
 
-dR_mu1 = ROOT.RooRealVar('dR_mu1', '', 0., 0.5)
-dR_mu2 = ROOT.RooRealVar('dR_mu2', '', 0., 0.5)
-dR_pi1 = ROOT.RooRealVar('dR_pi1', '', 0., 0.5)
-dR_pi2 = ROOT.RooRealVar('dR_pi2', '', 0., 0.5)
-dR_K1 = ROOT.RooRealVar('dR_K1', '', 0., 0.5)
-dR_K2 = ROOT.RooRealVar('dR_K2', '', 0., 0.5)
+dR_mu1 = ROOT.RooRealVar('dR_mu1', '', 0., 5.)
+dR_mu2 = ROOT.RooRealVar('dR_mu2', '', 0., 5.)
+dR_pi1 = ROOT.RooRealVar('dR_pi1', '', 0., 5.)
+dR_pi2 = ROOT.RooRealVar('dR_pi2', '', 0., 5.)
+dR_K1 = ROOT.RooRealVar('dR_K1', '', 0., 5.)
+dR_K2 = ROOT.RooRealVar('dR_K2', '', 0., 5.)
+
+dR_mu1_vv = ROOT.RooRealVar('dR_mu1_vv', '', 0., 5.)
+dR_mu2_vv = ROOT.RooRealVar('dR_mu2_vv', '', 0., 5.)
+dR_pi1_vv = ROOT.RooRealVar('dR_pi1_vv', '', 0., 5.)
+dR_pi2_vv = ROOT.RooRealVar('dR_pi2_vv', '', 0., 5.)
+dR_K1_vv = ROOT.RooRealVar('dR_K1_vv', '', 0., 5.)
+dR_K2_vv = ROOT.RooRealVar('dR_K2_vv', '', 0., 5.)
 
 MoID_mu1 = ROOT.RooRealVar('MoID_mu1', '', -1., 1000000)
 MoID_mu2 = ROOT.RooRealVar('MoID_mu2', '', -1, 1000000)
@@ -324,11 +331,11 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     # else:
     #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
-    model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
-    frame.getAttText().SetTextSize(0.053)
+    # model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
+    # frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
-    floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
-    print '\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30*'>' + '\n\n'
+    # floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
+    # print '\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30*'>' + '\n\n'
 
     model.plotOn(frame, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
     model.plotOn(frame, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4));

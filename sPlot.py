@@ -2,7 +2,8 @@ from RooSpace import *
 from cuts import *
 from math import sqrt
 
-files_MC = {'X': 'BsToXPhi_step3_6c21fba.root', 'psi':'BsToPsiPhi_step3_4a91161.root'}
+files_MC = {'X': 'BsToXPhi_Smatch_v1_min_e233994.root', 'psi':'BsToPsiPhi_Smatch_v1_min_e4a2edf.root'}
+# files_MC = {'X': 'BsToXPhi_step3_6c21fba.root', 'psi':'BsToPsiPhi_step3_4a91161.root'}
 # files_MC = {'X': 'BsToXPhi_matched_all_1892449.root', 'psi':'BsToPsiPhi_matched_all_1519f1b.root'}
 # files_MC = {'X': 'SimpleFileMC_b715x_0_14000.root', 'psi':'SimpleFileMC_b715psi_0_14000.root'}
 file_MC = ROOT.TFile(files_MC[mode])
@@ -38,12 +39,13 @@ model_1D_Bs.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 mean_Bs.setVal(5.366);
 mean_Bs.setMin(mean_Bs.getVal() - 0.005); mean_Bs.setMax(mean_Bs.getVal() + 0.005)
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1); fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
+a1.setConstant(1); a2.setConstant(1);
 model_1D_Bs.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 
 # frame = var_discr.frame()
 # data_MC.plotOn(frame)
 # model_1D_Bs.plotOn(frame)
-# ndf = 10; chi2 = frame.chiSquare(ndf)
+# ndf = 8; chi2 = frame.chiSquare(ndf)
 # frame.Draw()
 # print 'chi2 = ', chi2, '; ndf =', ndf
 
@@ -55,53 +57,55 @@ model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1); fr_phi.setConstant(1)
 sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
+a1_phi.setConstant(1); a2_phi.setConstant(1);
 gamma_BW_phi.setConstant(1);
 model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 
-# frame = PHI_mass_Cjp.frame()
-# data_MC.plotOn(frame)
-# model_1D_phi.plotOn(frame)
-# ndf = 9; chi2 = frame.chiSquare(ndf)
-# frame.Draw()
-# print 'chi2 = ', chi2, '; ndf =', ndf
-
-###-----###
-
+# # frame = PHI_mass_Cjp.frame()
+# # data_MC.plotOn(frame)
+# # model_1D_phi.plotOn(frame)
+# # ndf = 9; chi2 = frame.chiSquare(ndf)
+# # frame.Draw()
+# # print 'chi2 = ', chi2, '; ndf =', ndf
+#
+# ###-----###
+#
 model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1); fr_psi.setConstant(1); fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
 sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1); fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
+a1.setConstant(1); a2.setConstant(1)
 model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 
-# frame = var_control.frame()
-# data_MC.plotOn(frame)
-# model_control.plotOn(frame)
-# ndf = 8; chi2 = frame.chiSquare(ndf)
-# frame.Draw()
-# print 'chi2 = ', chi2, '; ndf =', ndf
+# # frame = var_control.frame()
+# # data_MC.plotOn(frame)
+# # model_control.plotOn(frame)
+# # ndf = 8; chi2 = frame.chiSquare(ndf)
+# # frame.Draw()
+# # print 'chi2 = ', chi2, '; ndf =', ndf
 
 ###-----###
 
-
+#
 c_MC_1 = ROOT.TCanvas("c_MC_1", "c_MC_1", 800, 600)
 plot_on_frame(var_discr, data_MC, model_1D_Bs, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}}#phi)', left_discr_MC, right_discr_MC, nbins_discr_MC, plot_discr_param, True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_1, 0, 0 );
 c_MC_1.Update(); c_MC_1.RedrawAxis(); c_MC_1.GetFrame().Draw();
-c_MC_1.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_Bs___' + str(mode) + '.pdf')
+# c_MC_1.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_Bs___' + str(mode) + '.pdf')
 
 #
 c_MC_2 = ROOT.TCanvas("c_MC_2", "c_MC_2", 800, 600)
 plot_on_frame(PHI_mass_Cjp, data_MC, model_1D_phi, 'MC: m(K^{+}K^{#font[122]{\55}})', left_phi_MC, right_phi_MC, nbins_phi_MC, plot_phi_param, True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_2, 0, 0 );
 c_MC_2.Update(); c_MC_2.RedrawAxis(); c_MC_2.GetFrame().Draw();
-c_MC_2.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_phi___' + str(mode) + '.pdf')
+# c_MC_2.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_phi___' + str(mode) + '.pdf')
 
 #
 c_MC_3 = ROOT.TCanvas("c_MC_3", "c_MC_3", 800, 600)
 plot_on_frame(var_control, data_MC, model_control, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}})', left_control_MC, right_control_MC, nbins_control_MC, plot_control_param[mode], True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_3, 0, 0 );
 c_MC_3.Update(); c_MC_3.RedrawAxis(); c_MC_3.GetFrame().Draw();
-c_MC_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_' + str(mode) + '.pdf')
+# c_MC_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_' + str(mode) + '.pdf')
 
 #
 mean_Bs.setMin(mean_Bs.getVal() - 0.005); mean_Bs.setMax(mean_Bs.getVal() + 0.005)
@@ -123,6 +127,8 @@ sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1)
 sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1); fr_psi.setConstant(1); fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
 sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1); fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
 # gamma_BW_X.setConstant(1); sigma_X.setConstant(1)
+a1_phi.setConstant(0); a2_phi.setConstant(0);
+a1.setConstant(0); a2.setConstant(0);
 
 
 ##   -----------------------------    ##
@@ -163,7 +169,7 @@ CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
 
 ###
 means = {'X': mean_X.getVal(), 'psi':mean_psi.getVal()}
-y_sdb_l = {'X': 360, 'psi': 1000}; y_sig = {'X': 430, 'psi': 1500}; y_sdb_r = {'X': 480, 'psi': 1000}; 
+y_sdb_l = {'X': 250, 'psi': 1000}; y_sig = {'X': 380, 'psi': 1500}; y_sdb_r = {'X': 420, 'psi': 1000};
 line_width = 4
 #
 line_ll_sdb = ROOT.TLine(means[mode] - 1.5*window - wind_sideband_dist, 0, means[mode] - 1.5*window - wind_sideband_dist, y_sdb_l[mode])
@@ -373,7 +379,7 @@ c_sPlot_4.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_4_
 # asResult = ac.GetHypoTest()
 # asResult.Print()
 #
-
+#
 # c_X.cd(3)
 #
 # data_not_niceX = data.reduce('TMath::Abs(BU_mass_Cjp -' + str(mean_Bs.getVal()) + ')>' + str(3 * sigma_Bs_eff) + '&& TMath::Abs(PHI_mass_Cjp -' + str(mean_phi.getVal()) + ') < 0.01')
@@ -384,7 +390,7 @@ c_sPlot_4.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_4_
 # model_control.fitTo(data_not_niceX, RF.Extended(ROOT.kTRUE))
 # plot_on_frame(var_control, data_not_niceX, model_control, 'Data: m(J/#psi#pi^{+}#pi^{-}) projection', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode])
 #
-
+#
 # w = ROOT.RooWorkspace("w", True)
 # Import = getattr(ROOT.RooWorkspace, 'import')
 # Import(w, model_control)
