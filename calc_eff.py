@@ -1,28 +1,48 @@
 from math import sqrt
 
-N_reco_psi = 74899.
-err_N_reco_psi = 307.
+# N_reco_psi = 74899.
+# err_N_reco_psi = 307.
+# ##
+# N_reco_X = 31517.
+# err_N_reco_X = 199.
+
+N_reco_psi = 72941.
+err_N_reco_psi = 268.
 ##
-N_reco_X = 31517.
-err_N_reco_X = 199.
+N_reco_X = 29082.
+err_N_reco_X = 196.
 
 #-----------------------------
-N_data_psi = 2511.
-err_N_data_psi = 57.
+# N_data_psi = 2511.
+# err_N_data_psi = 57.
+# ##
+# N_data_X = 90.   #83 +- 12; 90 +- 12
+# err_N_data_X = 12.
+
+N_data_psi = 44030. # 45828 +- 216
+err_N_data_psi = 213.
 ##
-N_data_X = 90.   #83 +- 12; 90 +- 12
-err_N_data_X = 12.
+N_data_X = 1301.   # 1238 +- 45;
+err_N_data_X = 41.
 
 #-----------------------------
-DAS_psi = 4033332.
-DAS_X   = 2747175.
-
+# DAS_psi = 4033332.
+# DAS_X   = 2747175.
+DAS_psi = 2940939.
+DAS_X   = 2119518.
 #-----------------------------
-eff_filter_psi = 0.0256162397293
-err_eff_filter_psi = 0.0004641394136
+# eff_filter_psi = 0.0256162397293
+# err_eff_filter_psi = 0.0004641394136
+#
+# ##
+# eff_filter_X = 0.0345138639742
+# err_eff_filter_X = 0.0005844468818
+
+eff_filter_psi = 0.0252452209
+err_eff_filter_psi = 0.0004197452
 ##
-eff_filter_X = 0.0345138639742
-err_eff_filter_X = 0.0005844468818
+eff_filter_X = 0.0356669123
+err_eff_filter_X = 0.0005628742
 
 #-----------------------------
 eff_reco_psi = N_reco_psi / DAS_psi
