@@ -9,6 +9,24 @@ PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}
 PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
 SAMEEVENT = ROOT.RooRealVar('SAMEEVENT', 'SAMEEVENT', 0., 2.)
 
+mu_max_pt = ROOT.RooRealVar('mu_max_pt', 'p_{T}^{max}(#mu) [GeV]', 0., 40.)
+mu_min_pt = ROOT.RooRealVar('mu_min_pt', 'p_{T}^{min}(#mu) [GeV]', 0., 20.)
+mu_max_eta = ROOT.RooRealVar('mu_max_eta', '#eta^{max}(#mu)', -2.5, 2.5)
+mu_min_eta = ROOT.RooRealVar('mu_min_eta', '#eta^{min}(#mu)', -2.5, 2.5)
+mu_max_pt.setBins(40); mu_min_pt.setBins(40); mu_max_eta.setBins(50); mu_min_eta.setBins(50);
+
+K_max_pt = ROOT.RooRealVar('K_max_pt', 'p_{T}^{max}(K) [GeV]', 0., 15.)
+K_min_pt = ROOT.RooRealVar('K_min_pt', 'p_{T}^{min}(K) [GeV]', 0., 15.)
+K_max_eta = ROOT.RooRealVar('K_max_eta', '#eta^{max}(K)', -2.5, 2.5)
+K_min_eta = ROOT.RooRealVar('K_min_eta', '#eta^{min}(K)', -2.5, 2.5)
+K_max_pt.setBins(30); K_min_pt.setBins(30); K_max_eta.setBins(50); K_min_eta.setBins(50);
+
+pi_max_pt = ROOT.RooRealVar('pi_max_pt', 'p_{T}^{max}(#pi) [GeV]', 0., 10.)
+pi_min_pt = ROOT.RooRealVar('pi_min_pt', 'p_{T}^{min}(#pi) [GeV]', 0., 4.)
+pi_max_eta = ROOT.RooRealVar('pi_max_eta', '#eta^{max}(#pi)', -2.5, 2.5)
+pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
+pi_max_pt.setBins(40); pi_min_pt.setBins(40); pi_max_eta.setBins(50); pi_min_eta.setBins(50);
+
 # PHI_mass_Cjp.setBins(10000, "cache")
 # PHI_mass_Cjp.setBins(nbins_phi_data)
 # PHI_mass_Cjp.setRange(left_phi_data, right_phi_data)
@@ -195,10 +213,12 @@ N_bkgr_phi = ROOT.RooRealVar('N_bkgr_phi', '', 10000., 0., 50000)
 #############################################################################################
 # B0->psi(2S)K*0 reflection
 
-file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_ws_data_cuts_dR0p05_SC.root')
+# file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_ws_data_cuts_dR0p05_SC.root')
+file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_dR0p05_from_a1c59b9.root')
 w = file_B0_refl_ws.Get('w')
 
-B0_refl = w.pdf('B0_refl')
+# B0_refl = w.pdf('B0_refl')
+B0_refl = w.pdf('B0_refl_SR')
 N_B0_refl = ROOT.RooRealVar('N_B0_refl', '', 990., 0., 1000.)
 
 #############################################################################################
@@ -245,7 +265,7 @@ model_bs_2D = ROOT.RooProdPdf('model_bs_2D', 'model_bs_2D', ROOT.RooArgList(bkgr
 
 model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
 model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
-# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs',ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
 
 
 model_2D_data = ROOT.RooAddPdf('model_2D_data', 'model_2D_data', ROOT.RooArgList(model_ss_2D, model_bb_2D, model_sb_2D), ROOT.RooArgList(N_ss_2D, N_bb_2D, N_sb_2D))
@@ -334,8 +354,8 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     # model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
     # frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
-    # floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
-    # print '\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30*'>' + '\n\n'
+    floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
+    print '\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30*'>' + '\n\n'
 
     model.plotOn(frame, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
     model.plotOn(frame, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4));
@@ -354,7 +374,7 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     model.plotOn(frame, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
     # model.plotOn(frame, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 15 * sigma_Bs.getValV(), mean_Bs.getValV() + 15 * sigma_Bs.getValV()));
     model.plotOn(frame, RF.Components("signal_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("B0_refl"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl'), RF.Range(mean_Bs.getValV() - 5 * sigma_Bs_1.getValV(), mean_Bs.getValV() + 5 * sigma_Bs_1.getValV()));
+    model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44));
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
 
     frame.GetYaxis().SetTitle('Candidates / (' + str((right - left) / nbins) + ')')

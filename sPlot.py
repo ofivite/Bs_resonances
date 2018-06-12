@@ -2,7 +2,8 @@ from RooSpace import *
 from cuts import *
 from math import sqrt
 
-files_MC = {'X': 'BsToXPhi_Smatch_v1_min_e233994.root', 'psi':'BsToPsiPhi_Smatch_v1_min_e4a2edf.root'}
+files_MC = {'X': 'BsToXPhi_Smatch_v1_min_e233994.root', 'psi':'BsToPsiPhi_Smatch_v1_min_with_pt&eta_8e25fe7.root'}
+# files_MC = {'X': 'BsToXPhi_Smatch_v1_min_e233994.root', 'psi':'BsToPsiPhi_Smatch_v1_min_e4a2edf.root'}
 # files_MC = {'X': 'BsToXPhi_step3_6c21fba.root', 'psi':'BsToPsiPhi_step3_4a91161.root'}
 # files_MC = {'X': 'BsToXPhi_matched_all_1892449.root', 'psi':'BsToPsiPhi_matched_all_1519f1b.root'}
 # files_MC = {'X': 'SimpleFileMC_b715x_0_14000.root', 'psi':'SimpleFileMC_b715psi_0_14000.root'}
@@ -10,19 +11,23 @@ file_MC = ROOT.TFile(files_MC[mode])
 
 # file_data = ROOT.TFile('new.root')
 # file_data = ROOT.TFile('new_noKaon_9988200.root')
-file_data = ROOT.TFile('new_noKaon_fabs_76e92fd.root')
-
+# file_data = ROOT.TFile('new_noKaon_fabs_76e92fd.root')
+file_data = ROOT.TFile('new_noKaon_fabs_with_pt&eta_979cfd3.root')
 
 
 # c = ROOT.TCanvas("c", "c", 1700, 650)
 # c.Divide(3,1)
 
-var_discr.setMin(left_discr_MC); var_discr.setMax(right_discr_MC)
-PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC)
-var_control.setMin(left_control_MC); var_control.setMax(right_control_MC)
+var_discr.setMin(left_discr_MC); var_discr.setMax(right_discr_MC); #var_discr.setBins(1000)
+PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC); #PHI_mass_Cjp.setBins(1000)
+var_control.setMin(left_control_MC); var_control.setMax(right_control_MC); #var_control.setBins(1000)
 
-data_MC = (ROOT.RooDataSet('data_MC', '', file_MC.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), ROOT.RooArgSet(MoID_mu1, MoID_mu2, MoID_pi1, MoID_pi2, MoID_K1, MoID_K2)), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2)),
+data_MC = (ROOT.RooDataSet('data_MC', '', file_MC.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp),
+ROOT.RooArgSet(MoID_mu1, MoID_mu2, MoID_pi1, MoID_pi2, MoID_K1, MoID_K2)), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta),
+ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2))),
                    cuts_Bs_MC + '&&' + cuts_phi_MC + '&&' + cuts_control_MC + ' && ' + cuts_pipi[mode] + '&&' + cuts_match_ID[mode] + '&&' + cuts_match_dR))
+
+# data_MC = ROOT.RooDataHist(data_MC_unbinned.GetName(), data_MC_unbinned.GetTitle(), ROOT.RooArgSet(var_discr, var_control, PHI_mass_Cjp), data_MC_unbinned)
 
 ##        ---------------       ##
 ##           FIT OF MC          ##
@@ -34,6 +39,7 @@ print '\n\n' + 30*'#' + '\n\n\n         MC psi(2S): Bs mass now         \n\n\n' 
 
 ###-----###
 
+N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 model_1D_Bs.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 model_1D_Bs.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 mean_Bs.setVal(5.366);
@@ -144,10 +150,11 @@ sigma_eff = sqrt( fr[mode] * sigma_1[mode]**2 + (1 - fr[mode]) * sigma_2[mode]**
 window = 3 * sigma_eff
 wind_sideband_dist = 2 * sigma_eff
 
-var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data)
-PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data)
-var_control.setMin(left_control_data); var_control.setMax(right_control_data)
-data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
+var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data); var_discr.setBins(nbins_discr_data)
+PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data); PHI_mass_Cjp.setBins(nbins_phi_data)
+var_control.setMin(left_control_data); var_control.setMax(right_control_data);  var_control.setBins(nbins_control_data)
+data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
+# data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
 
 
 c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
@@ -172,9 +179,9 @@ means = {'X': mean_X.getVal(), 'psi':mean_psi.getVal()}
 y_sdb_l = {'X': 250, 'psi': 1000}; y_sig = {'X': 380, 'psi': 1500}; y_sdb_r = {'X': 420, 'psi': 1000};
 line_width = 4
 #
-line_ll_sdb = ROOT.TLine(means[mode] - 1.5*window - wind_sideband_dist, 0, means[mode] - 1.5*window - wind_sideband_dist, y_sdb_l[mode])
+line_ll_sdb = ROOT.TLine(means[mode] - 2.*window - wind_sideband_dist, 0, means[mode] - 2.*window - wind_sideband_dist, y_sdb_l[mode])
 line_lr_sdb = ROOT.TLine(means[mode] - window - wind_sideband_dist, 0, means[mode] - window - wind_sideband_dist, y_sdb_l[mode])
-line_rl_sdb = ROOT.TLine(means[mode] + 1.5*window + wind_sideband_dist, 0, means[mode] + 1.5*window + wind_sideband_dist, y_sdb_r[mode])
+line_rl_sdb = ROOT.TLine(means[mode] + 2.*window + wind_sideband_dist, 0, means[mode] + 2.*window + wind_sideband_dist, y_sdb_r[mode])
 line_rr_sdb = ROOT.TLine(means[mode] + window + wind_sideband_dist, 0, means[mode] + window + wind_sideband_dist, y_sdb_r[mode])
 line_l_sig = ROOT.TLine(means[mode] - window, 0, means[mode] - window, y_sig[mode])
 line_r_sig = ROOT.TLine(means[mode] + window, 0, means[mode] + window, y_sig[mode])
@@ -194,11 +201,12 @@ c_inclus.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_inclus___
 print '\n\n' + 30*'#' + '\n\n\n         Data psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n'
 
 data_sig = data.reduce('TMath::Abs(X_mass_Cjp -' + str(means[mode]) + ')<' + str(window))
-data_sideband = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')>' + str(window + wind_sideband_dist) + ' && TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')<' + str(1.5*window + wind_sideband_dist))
+data_sideband = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')>' + str(window + wind_sideband_dist) + ' && TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')<' + str(2.*window + wind_sideband_dist))
 
 N_bkgr_Bs.setVal(10000); N_bkgr_Bs.setMax(50000);
 N_bkgr_phi.setVal(10000); N_bkgr_phi.setMax(50000);
 N_bkgr_control.setVal(1000); N_bkgr_control.setMax(50000);
+N_B0_refl.setVal(200.); N_B0_refl.setConstant(0)
 
 # c_wo_refl = ROOT.TCanvas("c_wo_refl", "c_wo_refl", 1700, 850)
 #
@@ -235,7 +243,7 @@ c_sPlot_1.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_1_
 ##########
 sData_Bs_psi_sig = ROOT.RooStats.SPlot(
     'sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model_1D_Bs,
-    ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs)
+    ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl)
 )
 data_sig_weighted_unbinned = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
 # data_sig_weighted = ROOT.RooDataHist(data_sig.GetName(), data_sig.GetTitle(), ROOT.RooArgSet(PHI_mass_Cjp), data_sig_weighted_unbinned)
@@ -290,6 +298,7 @@ asResult.Print()
 #
 c_sPlot_3 = ROOT.TCanvas("c_sPlot_3", "c_sPlot_3", 800, 600)
 mean_Bs.setConstant(1); mean_phi.setConstant(1)
+N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
 model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
 model_1D_Bs.fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
@@ -302,7 +311,7 @@ c_sPlot_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_3_
 ##########
 sData_Bs_psi_side = ROOT.RooStats.SPlot(
     'sData_Bs_psi_side', 'sData_Bs_psi_side', data_sideband, model_1D_Bs,
-    ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs)
+    ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl)
 )
 data_side_weighted = ROOT.RooDataSet(data_sideband.GetName(), data_sideband.GetTitle(), data_sideband, data_sideband.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
 ##########
