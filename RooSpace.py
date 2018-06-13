@@ -9,23 +9,23 @@ PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}
 PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
 SAMEEVENT = ROOT.RooRealVar('SAMEEVENT', 'SAMEEVENT', 0., 2.)
 
-mu_max_pt = ROOT.RooRealVar('mu_max_pt', 'p_{T}^{max}(#mu) [GeV]', 0., 40.)
-mu_min_pt = ROOT.RooRealVar('mu_min_pt', 'p_{T}^{min}(#mu) [GeV]', 0., 20.)
+mu_max_pt = ROOT.RooRealVar('mu_max_pt', 'p_{T}^{max}(#mu) [GeV]', 0., 400.)
+mu_min_pt = ROOT.RooRealVar('mu_min_pt', 'p_{T}^{min}(#mu) [GeV]', 0., 200.)
 mu_max_eta = ROOT.RooRealVar('mu_max_eta', '#eta^{max}(#mu)', -2.5, 2.5)
 mu_min_eta = ROOT.RooRealVar('mu_min_eta', '#eta^{min}(#mu)', -2.5, 2.5)
-mu_max_pt.setBins(40); mu_min_pt.setBins(40); mu_max_eta.setBins(50); mu_min_eta.setBins(50);
 
-K_max_pt = ROOT.RooRealVar('K_max_pt', 'p_{T}^{max}(K) [GeV]', 0., 15.)
-K_min_pt = ROOT.RooRealVar('K_min_pt', 'p_{T}^{min}(K) [GeV]', 0., 15.)
+K_max_pt = ROOT.RooRealVar('K_max_pt', 'p_{T}^{max}(K) [GeV]', 0., 150.)
+K_min_pt = ROOT.RooRealVar('K_min_pt', 'p_{T}^{min}(K) [GeV]', 0., 150.)
 K_max_eta = ROOT.RooRealVar('K_max_eta', '#eta^{max}(K)', -2.5, 2.5)
 K_min_eta = ROOT.RooRealVar('K_min_eta', '#eta^{min}(K)', -2.5, 2.5)
-K_max_pt.setBins(30); K_min_pt.setBins(30); K_max_eta.setBins(50); K_min_eta.setBins(50);
 
-pi_max_pt = ROOT.RooRealVar('pi_max_pt', 'p_{T}^{max}(#pi) [GeV]', 0., 10.)
-pi_min_pt = ROOT.RooRealVar('pi_min_pt', 'p_{T}^{min}(#pi) [GeV]', 0., 4.)
+pi_max_pt = ROOT.RooRealVar('pi_max_pt', 'p_{T}^{max}(#pi) [GeV]', 0., 100.)
+pi_min_pt = ROOT.RooRealVar('pi_min_pt', 'p_{T}^{min}(#pi) [GeV]', 0., 400.)
 pi_max_eta = ROOT.RooRealVar('pi_max_eta', '#eta^{max}(#pi)', -2.5, 2.5)
 pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
-pi_max_pt.setBins(40); pi_min_pt.setBins(40); pi_max_eta.setBins(50); pi_min_eta.setBins(50);
+
+BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
+BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
 
 # PHI_mass_Cjp.setBins(10000, "cache")
 # PHI_mass_Cjp.setBins(nbins_phi_data)
@@ -264,8 +264,8 @@ model_sb_2D = ROOT.RooProdPdf('model_sb_2D', 'model_sb_2D', ROOT.RooArgList(sign
 model_bs_2D = ROOT.RooProdPdf('model_bs_2D', 'model_bs_2D', ROOT.RooArgList(bkgr_bs, signal_phi))
 
 model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
-model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
-# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
+model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
 
 
 model_2D_data = ROOT.RooAddPdf('model_2D_data', 'model_2D_data', ROOT.RooArgList(model_ss_2D, model_bb_2D, model_sb_2D), ROOT.RooArgList(N_ss_2D, N_bb_2D, N_sb_2D))

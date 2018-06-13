@@ -9,25 +9,33 @@ files_MC = {'X': 'BsToXPhi_Smatch_v1_min_e233994.root', 'psi':'BsToPsiPhi_Smatch
 # files_MC = {'X': 'SimpleFileMC_b715x_0_14000.root', 'psi':'SimpleFileMC_b715psi_0_14000.root'}
 file_MC = ROOT.TFile(files_MC[mode])
 
-# file_data = ROOT.TFile('new.root')
-# file_data = ROOT.TFile('new_noKaon_9988200.root')
-# file_data = ROOT.TFile('new_noKaon_fabs_76e92fd.root')
 file_data = ROOT.TFile('new_noKaon_fabs_with_pt&eta_979cfd3.root')
-
+# file_data = ROOT.TFile('new_noKaon_fabs_76e92fd.root')
+# file_data = ROOT.TFile('new_noKaon_9988200.root')
+# file_data = ROOT.TFile('new.root')
 
 # c = ROOT.TCanvas("c", "c", 1700, 650)
 # c.Divide(3,1)
 
-var_discr.setMin(left_discr_MC); var_discr.setMax(right_discr_MC); #var_discr.setBins(1000)
-PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC); #PHI_mass_Cjp.setBins(1000)
-var_control.setMin(left_control_MC); var_control.setMax(right_control_MC); #var_control.setBins(1000)
+var_discr.setMin(left_discr_MC); var_discr.setMax(right_discr_MC); #var_discr.setBins(50)
+PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC); #PHI_mass_Cjp.setBins(50)
+var_control.setMin(left_control_MC); var_control.setMax(right_control_MC); #var_control.setBins(50)
+
+# data_MC_unbinned = (ROOT.RooDataSet('data_MC_unbinned', '', file_MC.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp),
+# ROOT.RooArgSet(MoID_mu1, MoID_mu2, MoID_pi1, MoID_pi2, MoID_K1, MoID_K2)), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2)),
+#                    cuts_Bs_MC + '&&' + cuts_phi_MC + '&&' + cuts_control_MC + ' && ' + cuts_pipi[mode] + '&&' + cuts_match_ID[mode] + '&&' + cuts_match_dR))
+#
+# data_MC = ROOT.RooDataHist(data_MC_unbinned.GetName(), data_MC_unbinned.GetTitle(), ROOT.RooArgSet(var_discr, var_control, PHI_mass_Cjp), data_MC_unbinned)
+
+# data_MC = (ROOT.RooDataSet('data_Mc', '', file_MC.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp),
+# ROOT.RooArgSet(MoID_mu1, MoID_mu2, MoID_pi1, MoID_pi2, MoID_K1, MoID_K2)), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2)),
+#                    cuts_Bs_MC + '&&' + cuts_phi_MC + '&&' + cuts_control_MC + ' && ' + cuts_pipi[mode] + '&&' + cuts_match_ID[mode] + '&&' + cuts_match_dR))
 
 data_MC = (ROOT.RooDataSet('data_MC', '', file_MC.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp),
 ROOT.RooArgSet(MoID_mu1, MoID_mu2, MoID_pi1, MoID_pi2, MoID_K1, MoID_K2)), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta),
-ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2))),
+ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2, BU_pt_Cjp, BU_eta_Cjp))),
                    cuts_Bs_MC + '&&' + cuts_phi_MC + '&&' + cuts_control_MC + ' && ' + cuts_pipi[mode] + '&&' + cuts_match_ID[mode] + '&&' + cuts_match_dR))
 
-# data_MC = ROOT.RooDataHist(data_MC_unbinned.GetName(), data_MC_unbinned.GetTitle(), ROOT.RooArgSet(var_discr, var_control, PHI_mass_Cjp), data_MC_unbinned)
 
 ##        ---------------       ##
 ##           FIT OF MC          ##
@@ -48,13 +56,6 @@ sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
 a1.setConstant(1); a2.setConstant(1);
 model_1D_Bs.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 
-# frame = var_discr.frame()
-# data_MC.plotOn(frame)
-# model_1D_Bs.plotOn(frame)
-# ndf = 8; chi2 = frame.chiSquare(ndf)
-# frame.Draw()
-# print 'chi2 = ', chi2, '; ndf =', ndf
-
 ###-----###
 
 mean_phi.setVal(1.0195);
@@ -67,15 +68,8 @@ a1_phi.setConstant(1); a2_phi.setConstant(1);
 gamma_BW_phi.setConstant(1);
 model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 
-# # frame = PHI_mass_Cjp.frame()
-# # data_MC.plotOn(frame)
-# # model_1D_phi.plotOn(frame)
-# # ndf = 9; chi2 = frame.chiSquare(ndf)
-# # frame.Draw()
-# # print 'chi2 = ', chi2, '; ndf =', ndf
-#
-# ###-----###
-#
+###-----###
+
 model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1); fr_psi.setConstant(1); fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
@@ -83,16 +77,8 @@ sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1); fr
 a1.setConstant(1); a2.setConstant(1)
 model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 
-# # frame = var_control.frame()
-# # data_MC.plotOn(frame)
-# # model_control.plotOn(frame)
-# # ndf = 8; chi2 = frame.chiSquare(ndf)
-# # frame.Draw()
-# # print 'chi2 = ', chi2, '; ndf =', ndf
-
 ###-----###
 
-#
 c_MC_1 = ROOT.TCanvas("c_MC_1", "c_MC_1", 800, 600)
 plot_on_frame(var_discr, data_MC, model_1D_Bs, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}}#phi)', left_discr_MC, right_discr_MC, nbins_discr_MC, plot_discr_param, True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_1, 0, 0 );
@@ -153,7 +139,7 @@ wind_sideband_dist = 2 * sigma_eff
 var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data); var_discr.setBins(nbins_discr_data)
 PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data); PHI_mass_Cjp.setBins(nbins_phi_data)
 var_control.setMin(left_control_data); var_control.setMax(right_control_data);  var_control.setBins(nbins_control_data)
-data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
+data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
 # data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
 
 
@@ -206,28 +192,8 @@ data_sideband = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(means[mode]) + ')>'
 N_bkgr_Bs.setVal(10000); N_bkgr_Bs.setMax(50000);
 N_bkgr_phi.setVal(10000); N_bkgr_phi.setMax(50000);
 N_bkgr_control.setVal(1000); N_bkgr_control.setMax(50000);
-N_B0_refl.setVal(200.); N_B0_refl.setConstant(0)
+N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
-# c_wo_refl = ROOT.TCanvas("c_wo_refl", "c_wo_refl", 1700, 850)
-#
-# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_1D_Bs.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# plot_on_frame(var_discr, data_sig, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
-#
-# c_sPlot.cd(1)
-# model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# model_discr.fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-# plot_on_frame(var_discr, data_sig, model_discr, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
-#
-# ##########
-# sData_Bs_psi_sig = ROOT.RooStats.SPlot(
-#     'sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model_discr,
-#     ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl)
-# )
-# data_sig_weighted = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', "N_sig_Bs_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-# ##########
 
 
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
