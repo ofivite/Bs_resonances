@@ -286,6 +286,9 @@ model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi,
 
 control_models = {'X': model_X, 'psi': model_psi}
 model_control = control_models[mode]
+N_control = {'X': N_sig_X, 'psi': N_sig_psi}
+mean_control = {'X': mean_X, 'psi': mean_psi}
+
 #############################################################################################
 
 #
@@ -374,14 +377,14 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     model.plotOn(frame, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
     # model.plotOn(frame, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 15 * sigma_Bs.getValV(), mean_Bs.getValV() + 15 * sigma_Bs.getValV()));
     model.plotOn(frame, RF.Components("signal_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
-    model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44));
+    if refl_ON: model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44));
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
 
-    frame.GetYaxis().SetTitle('Candidates / (' + str((right - left) / nbins) + ')')
+    frame.GetYaxis().SetTitle('Candidates / ' + str(int((right - left) / nbins * 1000.)) + ' MeV')
     frame.GetXaxis().SetTitleSize(0.04)
     frame.GetYaxis().SetTitleSize(0.04)
-    frame.GetXaxis().SetLabelSize(0.035)
-    frame.GetYaxis().SetLabelSize(0.035)
+    frame.GetXaxis().SetLabelSize(0.033)
+    frame.GetYaxis().SetLabelSize(0.033)
     frame.GetXaxis().SetTitleOffset(1.05)
     frame.GetYaxis().SetTitleOffset(1.3)
     frame.Draw()

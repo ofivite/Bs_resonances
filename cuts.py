@@ -1,4 +1,8 @@
-mode = 'psi'
+mode = 'X'
+refl_ON = False
+get_MC_N_evts = True
+refl_line = '_refl' if refl_ON else ''
+
 # gStyle.SetTitleFontSize(.085)
 
 left_discr_data =  5.3669 - 0.2; right_discr_data = 5.3669 + 0.2; nbins_discr_data = 40
