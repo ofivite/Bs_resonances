@@ -65,34 +65,34 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
 ###-----###
 
-mean_phi.setVal(1.0195);
-# gamma_BW_phi.setVal(0.004247); gamma_BW_phi.setConstant(1)
-model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-a1_phi.setConstant(1); a2_phi.setConstant(1);
-model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-
-sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1); fr_phi.setConstant(1)
-sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-gamma_BW_phi.setConstant(1);
-a1_phi.setConstant(0); a2_phi.setConstant(0);
-if get_MC_N_evts:
-    model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
-    model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
-
-# ###-----###
+# mean_phi.setVal(1.0195);
+# # gamma_BW_phi.setVal(0.004247); gamma_BW_phi.setConstant(1)
+# model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+# model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+# a1_phi.setConstant(1); a2_phi.setConstant(1);
+# model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 #
-# model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-# model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-# a1.setConstant(1); a2.setConstant(1)
-# model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-#
-# sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1); fr_psi.setConstant(1); fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
-# sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1); fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
-# a1.setConstant(0); a2.setConstant(0)
+# sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1); fr_phi.setConstant(1)
+# sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
+# gamma_BW_phi.setConstant(1);
+# a1_phi.setConstant(0); a2_phi.setConstant(0);
 # if get_MC_N_evts:
-#     model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
-#     model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
+#     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
+#     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
+
+###-----###
+
+model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+a1.setConstant(1); a2.setConstant(1)
+model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+
+sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1); fr_psi.setConstant(1); fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
+sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1); fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
+a1.setConstant(0); a2.setConstant(0)
+if get_MC_N_evts:
+    model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
+    model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 #
 # ###-----###
 #
@@ -102,20 +102,20 @@ if get_MC_N_evts:
 # c_MC_1.Update(); c_MC_1.RedrawAxis(); c_MC_1.GetFrame().Draw();
 # c_MC_1.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_Bs___' + str(mode) + '_______.pdf')
 #
-#
-c_MC_2 = ROOT.TCanvas("c_MC_2", "c_MC_2", 800, 600)
-plot_on_frame(PHI_mass_Cjp, data_MC, model_1D_phi, 'MC: m(K^{+}K^{#font[122]{\55}})', left_phi_MC, right_phi_MC, nbins_phi_MC, plot_phi_param, True)
-CMS_tdrStyle_lumi.CMS_lumi( c_MC_2, 0, 0 );
-c_MC_2.Update(); c_MC_2.RedrawAxis(); c_MC_2.GetFrame().Draw();
-# c_MC_2.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_phi___' + str(mode) + '.pdf')
-
 # #
-# c_MC_3 = ROOT.TCanvas("c_MC_3", "c_MC_3", 800, 600)
-# plot_on_frame(var_control, data_MC, model_control, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}})', left_control_MC, right_control_MC, nbins_control_MC, plot_control_param[mode], True)
-# CMS_tdrStyle_lumi.CMS_lumi( c_MC_3, 0, 0 );
-# c_MC_3.Update(); c_MC_3.RedrawAxis(); c_MC_3.GetFrame().Draw();
-# # c_MC_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_' + str(mode) + '.pdf')
+# c_MC_2 = ROOT.TCanvas("c_MC_2", "c_MC_2", 800, 600)
+# plot_on_frame(PHI_mass_Cjp, data_MC, model_1D_phi, 'MC: m(K^{+}K^{#font[122]{\55}})', left_phi_MC, right_phi_MC, nbins_phi_MC, plot_phi_param, True)
+# CMS_tdrStyle_lumi.CMS_lumi( c_MC_2, 0, 0 );
+# c_MC_2.Update(); c_MC_2.RedrawAxis(); c_MC_2.GetFrame().Draw();
+# # c_MC_2.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_phi___' + str(mode) + '.pdf')
+
 #
+c_MC_3 = ROOT.TCanvas("c_MC_3", "c_MC_3", 800, 600)
+plot_on_frame(var_control, data_MC, model_control, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}})', left_control_MC, right_control_MC, nbins_control_MC, plot_control_param[mode], True)
+CMS_tdrStyle_lumi.CMS_lumi( c_MC_3, 0, 0 );
+c_MC_3.Update(); c_MC_3.RedrawAxis(); c_MC_3.GetFrame().Draw();
+# c_MC_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_' + str(mode) + '.pdf')
+
 # #
 # mean_Bs.setMin(mean_Bs.getVal() - 0.005); mean_Bs.setMax(mean_Bs.getVal() + 0.005)
 # sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1); fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
