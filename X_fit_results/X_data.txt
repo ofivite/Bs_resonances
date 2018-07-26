@@ -1,0 +1,116 @@
+MC results match with 'free parameters' fits
+
+
+----- sPlot 1
+
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-108231 FROM HESSE     STATUS=OK             37 CALLS         170 TOTAL
+                     EDM=2.89578e-07    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_bkgr_Bs    1.14852e+04   1.12054e+02   1.93680e-05  -5.71138e-01
+   2  N_sig_Bs     1.38754e+02   3.47785e+01   3.42470e-05  -1.49628e+00
+   3  a1           2.51403e-07   8.61984e-07   7.48536e-08  -1.56979e+00
+   4  a2           9.68140e-08   3.31946e-07   7.48717e-08  -1.57017e+00
+                                 WARNING -   - ABOVE PARAMETER IS AT LIMIT.
+   5  mean_Bs      5.36556e+00   5.01890e-03   4.71392e-02  -1.05432e+00
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  5    ERR DEF=0.5
+  1.256e+04 -1.071e+03 -1.945e-09 -1.196e-09  2.833e-03 
+ -1.071e+03  1.210e+03  4.596e-09  2.217e-09 -2.833e-03 
+ -1.945e-09  4.596e-09  7.430e-13  2.861e-13 -5.278e-14 
+ -1.196e-09  2.217e-09  2.861e-13  1.102e-13 -2.702e-13 
+  2.833e-03 -2.833e-03 -5.278e-14 -2.702e-13  6.697e-06 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5
+        1  0.27480   1.000 -0.275 -0.000 -0.000  0.010
+        2  0.27631  -0.275  1.000  0.000  0.000 -0.031
+        3  0.99994  -0.000  0.000  1.000  1.000 -0.000
+        4  0.99994  -0.000  0.000  1.000  1.000 -0.000
+        5  0.04102   0.010 -0.031 -0.000 -0.000  1.000
+
+
+----- sPlot 2
+
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-994.832 FROM HESSE     STATUS=OK             35 CALLS         187 TOTAL
+                     EDM=9.41968e-07    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_bkgr_control   3.37579e+01   6.87522e+00   9.03690e-07  -1.51882e+00
+   2  N_sig_X      1.05008e+02   1.08866e+01   5.75581e-07  -1.50598e+00
+   3  a1           5.55112e-17   3.28719e-11   3.74507e-07  -1.57080e+00
+                                 WARNING -   - ABOVE PARAMETER IS AT LIMIT.
+   4  a2           4.87948e-07   6.14730e-01   5.00000e-01  -1.56940e+00
+   5  mean_X       3.87008e+00   6.89402e-04   1.21389e-05  -1.62240e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  5    ERR DEF=0.5
+  4.727e+01 -1.351e+01 -2.306e-19 -7.728e-11 -4.793e-04 
+ -1.351e+01  1.185e+02  2.341e-19  7.844e-11  4.793e-04 
+ -2.306e-19  2.341e-19  4.108e-27  1.377e-18  2.648e-23 
+ -7.728e-11  7.844e-11  1.377e-18  4.884e-07  8.875e-15 
+ -4.793e-04  4.793e-04  2.648e-23  8.875e-15  4.761e-07 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5
+        1  0.20158   1.000 -0.181 -0.000 -0.000 -0.101
+        2  0.18624  -0.181  1.000  0.000  0.000  0.064
+        3  0.03074  -0.000  0.000  1.000  0.031  0.000
+        4  0.03074  -0.000  0.000  0.031  1.000  0.000
+        5  0.11116  -0.101  0.064  0.000  0.000  1.000
+
+
+
+----- sPlot 3
+
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-7003.06 FROM HESSE     STATUS=OK             31 CALLS          92 TOTAL
+                     EDM=6.70533e-12    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_bkgr_Bs    1.00897e+03   3.32055e+01   2.62043e-04  -1.28572e+00
+   2  N_sig_Bs     8.03164e+00   1.00494e+01   2.88186e-04  -1.55287e+00
+   3  a1           1.18317e-06   2.86531e-06   3.40564e-06  -1.56862e+00
+   4  a2           3.80779e-07   9.22145e-07   1.93212e-06  -1.56956e+00
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  1.103e+03 -9.333e+01 -1.466e-09 -6.271e-11 
+ -9.333e+01  1.010e+02  1.463e-09  6.300e-11 
+ -1.466e-09  1.463e-09  8.210e-12  2.638e-12 
+ -6.271e-11  6.300e-11  2.638e-12  8.504e-13 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.27969   1.000 -0.280 -0.000 -0.000
+        2  0.27969  -0.280  1.000  0.000  0.000
+        3  0.99843  -0.000  0.000  1.000  0.998
+        4  0.99843  -0.000  0.000  0.998  1.000
+
+
+
+----- sPlot 4
+
+ ============== MATRIX FORCED POS-DEF BY ADDING 1964.929517 TO DIAGONAL.
+ FCN=-598.051 FROM HESSE     STATUS=NOT POSDEF     39 CALLS         158 TOTAL
+                     EDM=1.73382e+08    STRATEGY= 1      ERR MATRIX NOT POS-DEF
+  EXT PARAMETER                APPROXIMATE     INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_bkgr_control   8.03786e+00   5.63849e-03   6.69210e-05  -1.54544e+00
+   2  N_sig_X      9.38188e-07   2.99067e-06   1.45853e-04  -1.57079e+00
+                                 WARNING -   - ABOVE PARAMETER IS AT LIMIT.
+   3  a1           8.11457e-09   1.75446e-09   2.09206e-05  -1.57062e+00
+                                 WARNING -   - ABOVE PARAMETER IS AT LIMIT.
+   4  a2           6.25727e-08   6.23072e-02   1.39023e-04  -1.57030e+00
+                                 WARNING -   - ABOVE PARAMETER IS AT LIMIT.
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  3.179e-05 -1.004e-14 -3.342e-18 -2.406e-13 
+ -1.004e-14  8.944e-12  1.008e-16  7.259e-12 
+ -3.342e-18  1.008e-16  3.078e-18  2.212e-13 
+ -2.406e-13  7.259e-12  2.212e-13  1.593e-08 
+ERR MATRIX NOT POS-DEF
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.00000   1.000 -0.000 -0.000 -0.000
+        2  0.01923  -0.000  1.000  0.019  0.019
+        3  0.99900  -0.000  0.019  1.000  0.999
+        4  0.99900  -0.000  0.019  0.999  1.000
+

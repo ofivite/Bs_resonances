@@ -1,6 +1,6 @@
 mode = 'X'
 refl_ON = False
-get_MC_N_evts = True
+get_MC_N_evts = False
 refl_line = '_refl' if refl_ON else ''
 
 # gStyle.SetTitleFontSize(.085)
