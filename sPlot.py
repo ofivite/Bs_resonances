@@ -100,21 +100,21 @@ c_MC_1 = ROOT.TCanvas("c_MC_1", "c_MC_1", 800, 600)
 plot_on_frame(var_discr, data_MC, model_1D_Bs, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}}#phi)', left_discr_MC, right_discr_MC, nbins_discr_MC, plot_discr_param, True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_1, 0, 0 );
 c_MC_1.Update(); c_MC_1.RedrawAxis(); c_MC_1.GetFrame().Draw();
-c_MC_1.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_Bs___' + str(mode) + '.pdf')
+# c_MC_1.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_Bs___' + str(mode) + '.pdf')
 
 #
 c_MC_2 = ROOT.TCanvas("c_MC_2", "c_MC_2", 800, 600)
 plot_on_frame(PHI_mass_Cjp, data_MC, model_1D_phi, 'MC: m(K^{+}K^{#font[122]{\55}})', left_phi_MC, right_phi_MC, nbins_phi_MC, plot_phi_param, True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_2, 0, 0 );
 c_MC_2.Update(); c_MC_2.RedrawAxis(); c_MC_2.GetFrame().Draw();
-c_MC_2.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_phi___' + str(mode) + '.pdf')
+# c_MC_2.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_phi___' + str(mode) + '.pdf')
 
 #
 c_MC_3 = ROOT.TCanvas("c_MC_3", "c_MC_3", 800, 600)
 plot_on_frame(var_control, data_MC, model_control, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}})', left_control_MC, right_control_MC, nbins_control_MC, plot_control_param[mode], True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_3, 0, 0 );
 c_MC_3.Update(); c_MC_3.RedrawAxis(); c_MC_3.GetFrame().Draw();
-c_MC_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_' + str(mode) + '.pdf')
+# c_MC_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_MC_' + str(mode) + '.pdf')
 
 #
 mean_Bs.setMin(mean_Bs.getVal() - 0.005); mean_Bs.setMax(mean_Bs.getVal() + 0.005)
@@ -129,6 +129,13 @@ sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1); fr
 
 a1_phi.setConstant(0); a2_phi.setConstant(0);
 a1.setConstant(0); a2.setConstant(0);
+
+
+###-----###  Systematics variation here
+
+bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3))
+
+###-----###
 
 
     ##   -----------------------------    ##
@@ -203,7 +210,7 @@ if not get_MC_N_evts:
     line_ll_sdb.Draw(); line_lr_sdb.Draw(); line_rl_sdb.Draw(); line_rr_sdb.Draw(); line_l_sig.Draw(); line_r_sig.Draw()
 
     c_inclus.Update(); c_inclus.RedrawAxis(); c_inclus.GetFrame().Draw();
-    c_inclus.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_inclus___' + str(mode) + refl_line + '.pdf')
+    # c_inclus.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_inclus___' + str(mode) + refl_line + '.pdf')
     ###
 
 
@@ -238,7 +245,7 @@ if not get_MC_N_evts:
     plot_on_frame(var_discr, data_sig, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
     CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 );
     c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); c_sPlot_1.GetFrame().Draw();
-    c_sPlot_1.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
+    # c_sPlot_1.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
 
                 #--------------#
                 ##  sPlot II  ##
@@ -262,36 +269,36 @@ if not get_MC_N_evts:
     plot_on_frame(var_control, data_sig_weighted, model_control, 'Data: sPlot to m(K^{+}K^{-})', left_control_data, right_control_data, nbins_control_data, plot_control_param, False)
     CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 );
     c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); c_sPlot_2.GetFrame().Draw();
-    c_sPlot_2.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
+    # c_sPlot_2.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
 
 
-    ###---- Significance ----####
-
-    w = ROOT.RooWorkspace("w", True)
-    Import = getattr(ROOT.RooWorkspace, 'import')
-    Import(w, model_control)
-    mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-    mc.SetPdf(w.pdf(model_control.GetName()))
-    mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
-    # w.var("N_sig_X").setError(20.)
-    mc.SetObservables(ROOT.RooArgSet(w.var("X_mass_Cjp")))
-    mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var("N_bkgr_control"), w.var(mean_control[mode].GetName())))
-    mc.SetSnapshot(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
-    Import(w, mc)
-
-    sbModel = w.obj("ModelConfig")
-    sbModel.SetName("S+B_model")
-    poi = sbModel.GetParametersOfInterest().first()
-    bModel = sbModel.Clone()
-    bModel.SetName("B_only_model")
-    oldval = poi.getVal()
-    poi.setVal(0)
-    bModel.SetSnapshot(ROOT.RooArgSet(poi))
-    poi.setVal(oldval)
-    ac = ROOT.RooStats.AsymptoticCalculator(data_sig_weighted, sbModel, bModel)
-    ac.SetOneSidedDiscovery(True)
-    asResult = ac.GetHypoTest()
-    asResult.Print()
+    # ###---- Significance ----####
+    #
+    # w = ROOT.RooWorkspace("w", True)
+    # Import = getattr(ROOT.RooWorkspace, 'import')
+    # Import(w, model_control)
+    # mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
+    # mc.SetPdf(w.pdf(model_control.GetName()))
+    # mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
+    # # w.var("N_sig_X").setError(20.)
+    # mc.SetObservables(ROOT.RooArgSet(w.var("X_mass_Cjp")))
+    # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var("N_bkgr_control"), w.var(mean_control[mode].GetName())))
+    # mc.SetSnapshot(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
+    # Import(w, mc)
+    #
+    # sbModel = w.obj("ModelConfig")
+    # sbModel.SetName("S+B_model")
+    # poi = sbModel.GetParametersOfInterest().first()
+    # bModel = sbModel.Clone()
+    # bModel.SetName("B_only_model")
+    # oldval = poi.getVal()
+    # poi.setVal(0)
+    # bModel.SetSnapshot(ROOT.RooArgSet(poi))
+    # poi.setVal(oldval)
+    # ac = ROOT.RooStats.AsymptoticCalculator(data_sig_weighted, sbModel, bModel)
+    # ac.SetOneSidedDiscovery(True)
+    # asResult = ac.GetHypoTest()
+    # asResult.Print()
 
                 #---------------#
                 ##  sPlot III  ##
@@ -307,7 +314,7 @@ if not get_MC_N_evts:
     plot_on_frame(var_discr, data_sideband, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
     CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_3, 2, 0 );
     c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); c_sPlot_3.GetFrame().Draw();
-    c_sPlot_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_3_' + str(mode) + refl_line + '.pdf')
+    # c_sPlot_3.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_3_' + str(mode) + refl_line + '.pdf')
 
                 #--------------#
                 ##  sPlot IV  ##
@@ -328,7 +335,7 @@ if not get_MC_N_evts:
     plot_on_frame(var_control, data_side_weighted, model_control, 'Data: sPlot to m(K^{+}K^{-})', left_control_data, right_control_data, nbins_control_data, plot_control_param, False)
     CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_4, 2, 0 );
     c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); c_sPlot_4.GetFrame().Draw();
-    c_sPlot_4.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_4_' + str(mode) + refl_line + '.pdf')
+    # c_sPlot_4.SaveAs('~/Study/Bs_resonances/Bs_' + str(mode) + 'phi_plots/c_sPlot_4_' + str(mode) + refl_line + '.pdf')
 
 
 
