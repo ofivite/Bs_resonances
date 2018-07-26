@@ -1,4 +1,4 @@
-mode = 'X'
+mode = 'psi'
 refl_ON = False
 get_MC_N_evts = False
 refl_line = '_refl' if refl_ON else ''
@@ -19,7 +19,9 @@ left_phi_MC, right_phi_MC, nbins_phi_MC = lrn_phi_MC[mode]
 
 # lrn = left, right, nbins
 lrn_control_MC = {'X': [3.872 - 0.04, 3.872 + 0.04, 40], 'psi': [3.686 - 0.04, 3.686 + 0.04, 40]}
-lrn_control_data = {'X': [3.872 - 0.065, 3.872 + 0.065, 65], 'psi': [3.686 - 0.05, 3.686 + 0.05, 50]}
+# lrn_control_data = {'X': [3.872 - 0.065, 3.872 + 0.065, 65], 'psi': [3.686 - 0.05, 3.686 + 0.05, 50]}
+lrn_control_data = {'X': [3.872 - 0.06, 3.872 + 0.06, 30], 'psi': [3.686 - 0.05, 3.686 + 0.05, 50]}
+
 left_control_MC, right_control_MC, nbins_control_MC = lrn_control_MC[mode]
 left_control_data, right_control_data, nbins_control_data = lrn_control_data[mode]
 
