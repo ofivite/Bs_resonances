@@ -133,7 +133,9 @@ a1.setConstant(0); a2.setConstant(0);
 
 ###-----###  Systematics variation here
 
-bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3))
+# bkgr_control = ROOT.RooExponential('bkgr_control', '', var_control, exp_par)
+# model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
+# model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
 
 ###-----###
 

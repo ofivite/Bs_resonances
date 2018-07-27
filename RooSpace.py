@@ -153,8 +153,8 @@ BW = ROOT.RooBreitWigner("BW", "BW", var_control, mass_BW, gamma_BW_X)
 # signal_X = ROOT.RooFFTConvPdf("signal_X", "signal_X", var_control, crystal, gauss_X)
 
 # signal_X = sig_X_1
-signal_X = ROOT.RooAddPdf("signal_X", "signal_X", ROOT.RooArgList(sig_X_1, sig_X_2), ROOT.RooArgList(fr_X))  ## ---- BASELINE
-# signal_X = ROOT.RooAddPdf("signal_X", "signal_X", ROOT.RooArgList(sig_X_1, sig_X_2, sig_X_3), ROOT.RooArgList(fr_X_1, fr_X_2), ROOT.kTRUE)
+# signal_X = ROOT.RooAddPdf("signal_X", "signal_X", ROOT.RooArgList(sig_X_1, sig_X_2), ROOT.RooArgList(fr_X))  ## ---- BASELINE
+signal_X = ROOT.RooAddPdf("signal_X", "signal_X", ROOT.RooArgList(sig_X_1, sig_X_2, sig_X_3), ROOT.RooArgList(fr_X_1, fr_X_2), ROOT.kTRUE)
 # signal_X = ROOT.RooVoigtian("signal_X", "signal_X", var_control, mean_X, gamma_BW_X, sigma_X)
 # signal_X = ROOT.RooBreitWigner("signal_X", "signal_X", var_control, mean_X, gamma_BW_X)
 
@@ -164,10 +164,10 @@ bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgLis
 # bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3))
 # bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
 
-# bkgr_control = ROOT.RooChebyshev('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext))
-# bkgr_control = ROOT.RooChebyshev('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext, a2_ext))
-# bkgr_control = ROOT.RooChebyshev('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext, a2_ext, a3_ext))
-# bkgr_control = ROOT.RooChebyshev('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext, a2_ext, a3_ext, a4_ext))
+# bkgr_control = ROOT.RooChebychev('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext))
+# bkgr_control = ROOT.RooChebychev('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext, a2_ext))
+# bkgr_control = ROOT.RooChebychev('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext, a2_ext, a3_ext))
+# bkgr_control = ROOT.RooChebychev('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext, a2_ext, a3_ext, a4_ext))
 
 # bkgr_control = ROOT.RooPolynomial('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext))
 # bkgr_control = ROOT.RooPolynomial('bkgr_control', '', var_control, ROOT.RooArgList(a1_ext, a2_ext))
@@ -245,10 +245,10 @@ bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ph
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1, a2, a3))
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1, a2, a3, a4))
 
-# bkgr_phi = ROOT.RooChebyshev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext))
-# bkgr_phi = ROOT.RooChebyshev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext, a2_ext))
-# bkgr_phi = ROOT.RooChebyshev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext, a2_ext, a3_ext))
-# bkgr_phi = ROOT.RooChebyshev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext, a2_ext, a3_ext, a4_ext))
+# bkgr_phi = ROOT.RooChebychev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext))
+# bkgr_phi = ROOT.RooChebychev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext, a2_ext))
+# bkgr_phi = ROOT.RooChebychev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext, a2_ext, a3_ext))
+# bkgr_phi = ROOT.RooChebychev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext, a2_ext, a3_ext, a4_ext))
 
 # bkgr_phi = ROOT.RooPolynomial('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext))
 # bkgr_phi = ROOT.RooPolynomial('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext, a2_ext))
