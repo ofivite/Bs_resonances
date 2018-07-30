@@ -1,8 +1,8 @@
 mode = 'psi'
 refl_ON = False
 get_MC_N_evts = False
-sPlot_from = mode
-sPlot_to = 'Bs'
+sPlot_from = 'Bs'
+sPlot_to = mode
 
 refl_line = '_refl' if refl_ON else ''
 # gStyle.SetTitleFontSize(.085)

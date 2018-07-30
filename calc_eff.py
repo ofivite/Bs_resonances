@@ -2,12 +2,14 @@ from math import sqrt
 import numpy as np
 
 MC_evtN_var = 'control'
+sPlot_from = ['Bs', 'Bs']
+sPlot_to = ['psi', 'X']
 subtract_X, subtract_psi = False, True
 
 file_in_MC_psi = open('/home/yaourt/Study/Bs_resonances/MC_psi_fit_results/psi_MC_evtN.txt', 'r')
 file_in_MC_X = open('/home/yaourt/Study/Bs_resonances/MC_X_fit_results/X_MC_evtN.txt', 'r')
-file_in_data_psi = open('/home/yaourt/Study/Bs_resonances/psi->Bs/psi_data_evtN.txt', 'r')
-file_in_data_X = open('/home/yaourt/Study/Bs_resonances/X->Bs/X_data_evtN.txt', 'r')
+file_in_data_psi = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from[0] + '->' + sPlot_to[0] + '/psi_data_evtN.txt', 'r')
+file_in_data_X = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from[1] + '->' + sPlot_to[1] + '/X_data_evtN.txt', 'r')
 
 
 X_MC_evtN = dict(zip(['Bs', 'phi', 'control'], [map(float, x[:-2].split(' ')) for x in list(file_in_MC_X)]))
