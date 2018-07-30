@@ -1,13 +1,13 @@
 from math import sqrt
 import numpy as np
 
-evtN_var = 'control'
+MC_evtN_var = 'control'
 subtract_X, subtract_psi = False, True
 
-file_in_MC_psi = open('/home/yaourt/Study/Bs_resonances/psi_fit_results/psi_MC_evtN.txt', 'r')
-file_in_MC_X = open('/home/yaourt/Study/Bs_resonances/X_fit_results/X_MC_evtN.txt', 'r')
-file_in_data_psi = open('/home/yaourt/Study/Bs_resonances/psi_fit_results/psi_data_evtN.txt', 'r')
-file_in_data_X = open('/home/yaourt/Study/Bs_resonances/X_fit_results/X_data_evtN.txt', 'r')
+file_in_MC_psi = open('/home/yaourt/Study/Bs_resonances/MC_psi_fit_results/psi_MC_evtN.txt', 'r')
+file_in_MC_X = open('/home/yaourt/Study/Bs_resonances/MC_X_fit_results/X_MC_evtN.txt', 'r')
+file_in_data_psi = open('/home/yaourt/Study/Bs_resonances/psi->Bs/psi_data_evtN.txt', 'r')
+file_in_data_X = open('/home/yaourt/Study/Bs_resonances/X->Bs/X_data_evtN.txt', 'r')
 
 
 X_MC_evtN = dict(zip(['Bs', 'phi', 'control'], [map(float, x[:-2].split(' ')) for x in list(file_in_MC_X)]))
@@ -35,11 +35,11 @@ psi_data_evtN = dict(zip(['1', '2', '3', '4'], [map(float, x[:-2].split(' ')) fo
 # N_reco_X = 29082.
 # err_N_reco_X = 196.
 
-N_reco_psi, err_N_reco_psi = map(round, psi_MC_evtN[evtN_var])
-N_reco_X, err_N_reco_X = map(round, X_MC_evtN[evtN_var])
+N_reco_psi, err_N_reco_psi = map(round, psi_MC_evtN[MC_evtN_var])
+N_reco_X, err_N_reco_X = map(round, X_MC_evtN[MC_evtN_var])
 
 
-#-----------------------------
+#-------------------------------------------------------------------------------
 
 ######
 # Bs #
@@ -57,8 +57,8 @@ N_reco_X, err_N_reco_X = map(round, X_MC_evtN[evtN_var])
 # N_data_X = 90.   #83 +- 12; 90 +- 12
 # err_N_data_X = 12.
 
-N_data_psi_2, err_N_data_psi_2, N_data_psi_4, err_N_data_psi_4 = map(round,psi_data_evtN['2'] + psi_data_evtN['4'])
-N_data_X_2, err_N_data_X_2, N_data_X_4, err_N_data_X_4 = map(round,X_data_evtN['2'] + X_data_evtN['4'])
+N_data_psi_2, err_N_data_psi_2, N_data_psi_4, err_N_data_psi_4 = map(round, psi_data_evtN['2'] + psi_data_evtN['4'])
+N_data_X_2, err_N_data_X_2, N_data_X_4, err_N_data_X_4 = map(round, X_data_evtN['2'] + X_data_evtN['4'])
 
 if subtract_psi:
     N_data_psi, err_N_data_psi = N_data_psi_2 - N_data_psi_4, sqrt(err_N_data_psi_2**2 + err_N_data_psi_4**2)

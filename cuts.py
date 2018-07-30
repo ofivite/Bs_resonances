@@ -1,16 +1,17 @@
-mode = 'X'
+mode = 'psi'
 refl_ON = False
 get_MC_N_evts = False
-refl_line = '_refl' if refl_ON else ''
+sPlot_from = mode
+sPlot_to = 'Bs'
 
+refl_line = '_refl' if refl_ON else ''
 # gStyle.SetTitleFontSize(.085)
 
 left_discr_data =  5.3669 - 0.2; right_discr_data = 5.3669 + 0.2; nbins_discr_data = 40
 left_discr_MC =  5.3669 - 0.035; right_discr_MC = 5.3669 + 0.035; nbins_discr_MC = 35
 
-# left_phi_data = 1.0195 - 0.017; right_phi_data = 1.0195 + 0.017; nbins_phi_data = 36
-lrn_phi_data = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 32]}
-# lrn_phi_data = {'X': [1.0195 - 0.020, 1.0195 + 0.020, 40], 'psi': [1.0195 - 0.020, 1.0195 + 0.020, 40]}
+# lrn_phi_data = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 32]}
+lrn_phi_data = {'X': [1.0195 - 0.030, 1.0195 + 0.030, 30], 'psi': [1.0195 - 0.030, 1.0195 + 0.030, 30]}
 left_phi_data, right_phi_data, nbins_phi_data = lrn_phi_data[mode]
 
 # lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.0155, 1.0195 + 0.0155, 31]}

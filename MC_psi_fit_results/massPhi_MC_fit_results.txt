@@ -45,3 +45,33 @@ ERR MATRIX APPROXIMATE
        10  0.00000   0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  1.000
  ERR MATRIX APPROXIMATE
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MC phi with fixed parameters: 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-1.24657e+06 FROM HESSE     STATUS=OK             37 CALLS         115 TOTAL
+                     EDM=4.67838e-09    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_bkgr_phi   8.60977e+03   1.71135e+02   2.79432e-04  -7.14989e-01
+   2  N_sig_phi    7.78832e+04   3.13908e+02   1.16560e-03   5.91570e-01
+   3  a1_phi       3.07437e-01   1.01796e-01   1.15816e-03  -3.95345e-01
+   4  a2_phi       8.01191e-01   2.47745e-01   1.70093e-02   6.46481e-01
+   5  mean_phi     1.01938e+00   1.25038e-05   7.76776e-05  -1.23422e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  5    ERR DEF=0.5
+  2.929e+04 -2.066e+04  2.016e-02 -3.320e-01 -9.469e-05 
+ -2.066e+04  9.854e+04 -2.014e-02  3.317e-01  9.464e-05 
+  2.016e-02 -2.014e-02  1.054e-02  2.702e-02  4.692e-08 
+ -3.320e-01  3.317e-01  2.702e-02  7.144e-02 -1.109e-08 
+ -9.469e-05  9.464e-05  4.692e-08 -1.109e-08  1.563e-10 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5
+        1  0.38911   1.000 -0.385  0.001 -0.007 -0.044
+        2  0.38481  -0.385  1.000 -0.001  0.004  0.024
+        3  0.98564   0.001 -0.001  1.000  0.985  0.037
+        4  0.98563  -0.007  0.004  0.985  1.000 -0.003
+        5  0.23597  -0.044  0.024  0.037 -0.003  1.000
+
