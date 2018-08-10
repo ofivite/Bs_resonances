@@ -1,13 +1,116 @@
-from RooSpace import *
+from miniRooSpace import *
 from cuts import *
-from math import sqrt
 import numpy as np
+import glob, os, os.path
+
+
+filelist = glob.glob('Slices/*_' + mode + '*.pdf')
+for f in filelist:
+    os.remove(f)
+
+w_Bs, f_Bs = get_workspace('workspace_' + mode + '_Bs.root', 'workspace')
+model_1D_Bs = w_Bs.pdf('model_1D_Bs')
+signal_Bs = w_Bs.pdf('signal_Bs')
+
+w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
+w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
+# model_X = w_control.pdf('model_X')
+# model_psi = w_control.pdf('model_psi')
+signal_psi = w_psi.pdf('signal_psi')
+signal_X = w_X.pdf('signal_X')
+
+w_phi, f_phi = get_workspace('workspace_' + mode + '_phi.root', 'workspace')
+# signal_phi = w_phi.pdf('signal_phi')
+model_1D_phi = w_phi.pdf('model_1D_phi')
+signal_phi = w_phi.pdf('signal_phi')
+
+
+# bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
+# model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
+#
+# bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3))
+# model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
+# model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
+
+
+sigma_Bs_1 = w_Bs.var('sigma_Bs_1');  sigma_Bs_2 = w_Bs.var('sigma_Bs_2'); # sigma_Bs_3 = w_Bs.var('sigma_Bs_3')
+fr_Bs = w_Bs.var('fr_Bs'); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
+mean_Bs = w_Bs.var('mean_Bs');
+
+sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); # sigma_Bs_3.setConstant(1);
+fr_Bs.setConstant(1); # fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
+mean_Bs.setConstant(1)
+
+
+sigmaCB_phi_1 = w_phi.var('sigmaCB_phi_1'); alpha_phi_1 = w_phi.var('alpha_phi_1'); n_phi_1 = w_phi.var('n_phi_1')
+sigmaCB_phi_2 = w_phi.var('sigmaCB_phi_2'); alpha_phi_2 = w_phi.var('alpha_phi_2'); n_phi_2 = w_phi.var('n_phi_2')
+
+fr_phi = w_phi.var('fr_phi'); mean_phi = w_phi.var('mean_phi');
+
+sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1); fr_phi.setConstant(1)
+sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
+mean_phi.setConstant(1)
+
+sigma_psi_1 = w_psi.var('sigma_psi_1'); sigma_psi_2 = w_psi.var('sigma_psi_2'); # sigma_psi_3 = w_control.var('sigma_psi_3')
+fr_psi = w_psi.var('fr_psi'); #fr_psi_1 = w_control.var('fr_psi_1'); fr_psi_2 = w_control.var('fr_psi_2')
+mean_psi = w_psi.var('mean_psi'); mean_psi.setConstant(1)
+
+sigma_X_1 = w_X.var('sigma_X_1'); sigma_X_2 = w_X.var('sigma_X_2'); sigma_X_3 = w_X.var('sigma_X_3')
+fr_X = w_X.var('fr_X'); fr_X_1 = w_X.var('fr_X_1'); fr_X_2 = w_X.var('fr_X_2')
+mean_X = w_X.var('mean_X'); mean_X.setConstant(1);
+
+sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); # sigma_psi_3.setConstant(1);
+fr_psi.setConstant(1); # fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
+sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); #sigma_X_3.setConstant(1);
+fr_X.setConstant(1); # fr_X_1.setConstant(1); fr_X_2.setConstant(1)
+
+# a1_phi = w_phi.var('a1_phi'); a2_phi = w_phi.var('a2_phi'); a3_phi = ROOT.RooRealVar('a3_phi', 'a3_phi', 0.01, 0., 1.)
+# a1 = w_control.var('a1'); a2 = w_control.var('a2'); a3 = ROOT.RooRealVar('a3', 'a3', 0.01, 0., 1.)
+
+a1_phi = ROOT.RooRealVar('a1_phi', 'a1_phi', 0.01, 0., 1.); a2_phi = ROOT.RooRealVar('a2_phi', 'a2_phi', 0.01, 0., 1.); a3_phi = ROOT.RooRealVar('a3_phi', 'a3_phi', 0.01, 0., 1.)
+a1 = ROOT.RooRealVar('a1', 'a1', 0.01, 0., 1.); a2 = ROOT.RooRealVar('a2', 'a2', 0.01, 0., 1.); a3 = ROOT.RooRealVar('a3', 'a3', 0.01, 0., 1.)
+
+N_sig_X = w_X.var('N_sig_X'); N_sig_X.setConstant(0);
+N_sig_psi = w_psi.var('N_sig_psi'); N_sig_psi.setConstant(0);
+N_sig_phi = w_phi.var('N_sig_phi'); N_sig_phi.setConstant(0);
+N_sig_Bs = w_Bs.var('N_sig_Bs'); N_sig_Bs.setConstant(0);
+
+N_bkgr_control = w_psi.var('N_bkgr_control') if mode == 'psi' else w_X.var('N_bkgr_control')
+N_bkgr_control.setConstant(0);
+N_bkgr_phi = w_phi.var('N_bkgr_phi'); N_bkgr_phi.setConstant(0);
+N_bkgr_Bs = w_Bs.var('N_bkgr_Bs'); N_bkgr_Bs.setConstant(0);
+N_B0_refl = w_Bs.var('N_B0_refl'); N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
+
+
+###-----###  Systematics variation here
+
+###-----###
+
+
+bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
+bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1))
+bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3))
+
+model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
+model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
+model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
+model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+
+
+control_models = {'X': model_X, 'psi': model_psi}
+model_control = control_models[mode]
+N_control = {'X': N_sig_X, 'psi': N_sig_psi}
+mean_control = {'X': mean_X, 'psi': mean_psi}
 
 
 def fit_slice(data_slice):
     c = ROOT.TCanvas("c", "c", 800, 600)
-    # mean_Bs.setConstant(1); mean_phi.setConstant(1); mean_control[mode].setConstant(1);
-    N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
+
+    a1.setVal(0.04); a2.setVal(0.025); a3.setVal(0.015)
+
+    a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+    a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
+
 
     left = np.zeros(1); right = np.zeros(1)
     data_slice.getRange(PHI_mass_Cjp, left, right)
@@ -22,45 +125,51 @@ def fit_slice(data_slice):
 
     model_1D_Bs.fitTo(data_slice, RF.Extended(ROOT.kTRUE))
     model_1D_Bs.fitTo(data_slice, RF.Extended(ROOT.kTRUE))
+    model_1D_Bs.fitTo(data_slice, RF.Extended(ROOT.kTRUE))
     a1.setConstant(1); a2.setConstant(1); a3.setConstant(1);
+    model_1D_Bs.fitTo(data_slice, RF.Extended(ROOT.kTRUE))
     model_1D_Bs.fitTo(data_slice, RF.Extended(ROOT.kTRUE))
     a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
     # file_out_data.write(str(N_sig_Bs.getVal()) + ' ' + str(N_sig_Bs.getError()) + '\n')
 
-    plot_on_frame(var_discr, data_slice, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
+    plot_on_frame(var_discr, data_slice, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, None, False)
 
     CMS_tdrStyle_lumi.CMS_lumi( c, 2, 0 );
     c.Update(); c.RedrawAxis(); c.GetFrame().Draw();
-    plot_on_frame(var_discr, data_slice, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
+    plot_on_frame(var_discr, data_slice, model_1D_Bs, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) projection', left_discr_data, right_discr_data, nbins_discr_data, None, False)
 
-    c.SaveAs('~/Study/Bs_resonances/Slices/c_' + str(mode) + refl_line + '_' + str(round(left, 2)) + '_' + str(round(right, 2)) +'.pdf')
+    c.SaveAs('~/Study/Bs_resonances/Slices/c_' + str(mode) + refl_line + '_' + str(round(left, 3)) + '_' + str(round(right, 3)) +'.pdf')
 
 
 # --------------------------------------------------------- #
 
     sData_Bs_psi_side = ROOT.RooStats.SPlot(
         'sData_Bs_psi_side', 'sData_Bs_psi_side', data_slice, model_1D_Bs,
-        ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs) # N_B0_refl
+        ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl)
     )
     data_side_weighted = ROOT.RooDataSet(data_slice.GetName(), data_slice.GetTitle(), data_slice, data_slice.get(), '1 > 0', N_sig_Bs.GetName() + '_sw') ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+
 
     #
     c_sPlot = ROOT.TCanvas("c_sPlot", "c_sPlot", 800, 600)
     model_control.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE))
     model_control.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE))
+    a1.setConstant(1); a2.setConstant(1); a3.setConstant(1);
     model_control.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE))
+    a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
+
     # file_out_data.write(str(N_control[mode].getVal()) + ' ' + str(N_control[mode].getError()) + '\n')
     # file_out_data.close()
 
     # model_control.fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE), RF.SumW2Error(ROOT.kTRUE))
-    plot_on_frame(var_control, data_side_weighted, model_control, 'Data: sPlot to m(K^{+}K^{-})', left_control_data, right_control_data, nbins_control_data, plot_control_param, False)
+    plot_on_frame(var_control, data_side_weighted, model_control, 'Data: sPlot to m(K^{+}K^{-})', left_control_data, right_control_data, nbins_control_data, None, False)
     CMS_tdrStyle_lumi.CMS_lumi( c_sPlot, 2, 0 );
     c_sPlot.Update(); c_sPlot.RedrawAxis(); c_sPlot.GetFrame().Draw();
-    plot_on_frame(var_control, data_side_weighted, model_control, 'Data: sPlot to m(K^{+}K^{-})', left_control_data, right_control_data, nbins_control_data, plot_control_param, False)
+    plot_on_frame(var_control, data_side_weighted, model_control, 'Data: sPlot to m(K^{+}K^{-})', left_control_data, right_control_data, nbins_control_data, None, False)
 
-    c_sPlot.SaveAs('~/Study/Bs_resonances/Slices/c_sPlot_' + str(mode) + refl_line + '_' + str(round(left, 2)) + '_' + str(round(right, 2)) +'.pdf')
+    c_sPlot.SaveAs('~/Study/Bs_resonances/Slices/c_sPlot_' + str(mode) + refl_line + '_' + str(round(left, 3)) + '_' + str(round(right, 3)) +'.pdf')
 
-    return (N_sig_Bs.getVal(), N_sig_Bs.getError(), N_control[mode].getVal(), N_control[mode].getError())
+    return [N_sig_Bs.getVal(), N_sig_Bs.getError(), N_control[mode].getVal(), N_control[mode].getError()]
 
 
 file_data = ROOT.TFile('new_noKaon_fabs_with_pt&eta_979cfd3.root')
@@ -74,6 +183,15 @@ data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT
 cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode]))
 
 
-cuts = [(0.99, 1.), (1., 1.01), (1.03, 1.04), (1.04, 1.05)]
+cuts = [(0.99, 1.), (1., 1.01), (1.03, 1.0325), (1.0325, 1.035), (1.035, 1.0375), (1.0375, 1.04), (1.04, 1.0425), (1.0425, 1.045), (1.045, 1.0475), (1.0475, 1.05)]
 data_slices = [data.reduce('PHI_mass_Cjp > ' + str(cut[0]) + '&& PHI_mass_Cjp <' + str(cut[1])) for cut in cuts]
 events_sideband = map(fit_slice, data_slices)
+
+splotted_slice_numbers = [item[2] for item in events_sideband]
+splotted_slice_numbers_err = [item[3] for item in events_sideband]
+cuts_Xcoord = [(cut_range[0] + cut_range[1]) / 2. for cut_range in cuts]
+cuts_Xcoord_err = [(cut_range[1] - cut_range[0]) / 2. for cut_range in cuts]
+
+gr = ROOT.TGraphErrors(len(splotted_slice_numbers), np.array(cuts_Xcoord), np.array(splotted_slice_numbers), np.array(cuts_Xcoord_err), np.array(splotted_slice_numbers_err))
+c = ROOT.TCanvas()
+gr.Draw('AP')

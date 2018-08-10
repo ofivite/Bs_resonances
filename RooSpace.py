@@ -1,3 +1,7 @@
+import os
+import sys
+from datetime import datetime
+
 import ROOT
 from ROOT import RooFit as RF
 from cuts import *
@@ -436,3 +440,47 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     frame.GetXaxis().SetTitleOffset(1.05)
     frame.GetYaxis().SetTitleOffset(1.3)
     frame.Draw()
+
+
+def _import(wsp, obj):
+    getattr(wsp, 'import')(obj)
+
+def get_timestamp(fmt='%Y-%m-%d-%a-%H-%M'):
+    """Return formatted timestamp."""
+    return datetime.strftime(datetime.today(), fmt)
+
+def get_file(fname, mode='read'):
+    """Open and return a ROOT file."""
+    if os.path.exists(fname):
+        return ROOT.TFile(fname, mode)
+    else:
+        raise IOError('File %s does not exist!' % fname)
+
+def save_in_workspace(rfile, **argsets):
+    """Save RooFit objects in workspace and persistify.
+    Pass the different types of objects as a keyword arguments. e.g.
+    save_in_workspace(pdf=[pdf1, pdf2], variable=[var1, var2])
+    """
+
+    # from rplot.fixes import ROOT
+    import traceback
+    # Persistify variables, PDFs and datasets
+    workspace = ROOT.RooWorkspace('workspace', 'Workspace saved at %s' % get_timestamp())
+    keys = argsets.keys()
+    for key in keys:
+        print 'Importing RooFit objects in %s list.' % key
+        for arg in argsets[key]:
+            try:
+                _import(workspace, arg)
+            except TypeError:
+                print type(arg), arg
+                traceback.print_exc()
+    rfile.WriteTObject(workspace)
+    print 'Saving arguments to file: %s' % rfile.GetName()
+
+
+def get_workspace(fname, wname):
+    """Read and return RooWorkspace from file."""
+    ffile = get_file(fname, 'read')
+    workspace = ffile.Get(wname)
+    return workspace, ffile
