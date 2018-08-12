@@ -7,29 +7,29 @@ from ROOT import RooFit as RF
 from cuts import *
 import CMS_tdrStyle_lumi
 
-var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
-var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
-PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0.2, 1.2)
-PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
-SAMEEVENT = ROOT.RooRealVar('SAMEEVENT', 'SAMEEVENT', 0., 2.)
-
-mu_max_pt = ROOT.RooRealVar('mu_max_pt', 'p_{T}^{max}(#mu) [GeV]', 0., 400.)
-mu_min_pt = ROOT.RooRealVar('mu_min_pt', 'p_{T}^{min}(#mu) [GeV]', 0., 200.)
-mu_max_eta = ROOT.RooRealVar('mu_max_eta', '#eta^{max}(#mu)', -2.5, 2.5)
-mu_min_eta = ROOT.RooRealVar('mu_min_eta', '#eta^{min}(#mu)', -2.5, 2.5)
-
-K_max_pt = ROOT.RooRealVar('K_max_pt', 'p_{T}^{max}(K) [GeV]', 0., 150.)
-K_min_pt = ROOT.RooRealVar('K_min_pt', 'p_{T}^{min}(K) [GeV]', 0., 150.)
-K_max_eta = ROOT.RooRealVar('K_max_eta', '#eta^{max}(K)', -2.5, 2.5)
-K_min_eta = ROOT.RooRealVar('K_min_eta', '#eta^{min}(K)', -2.5, 2.5)
-
-pi_max_pt = ROOT.RooRealVar('pi_max_pt', 'p_{T}^{max}(#pi) [GeV]', 0., 100.)
-pi_min_pt = ROOT.RooRealVar('pi_min_pt', 'p_{T}^{min}(#pi) [GeV]', 0., 400.)
-pi_max_eta = ROOT.RooRealVar('pi_max_eta', '#eta^{max}(#pi)', -2.5, 2.5)
-pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
-
-BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
-BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
+# var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
+# var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
+# PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0.2, 1.2)
+# PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
+# SAMEEVENT = ROOT.RooRealVar('SAMEEVENT', 'SAMEEVENT', 0., 2.)
+#
+# mu_max_pt = ROOT.RooRealVar('mu_max_pt', 'p_{T}^{max}(#mu) [GeV]', 0., 400.)
+# mu_min_pt = ROOT.RooRealVar('mu_min_pt', 'p_{T}^{min}(#mu) [GeV]', 0., 200.)
+# mu_max_eta = ROOT.RooRealVar('mu_max_eta', '#eta^{max}(#mu)', -2.5, 2.5)
+# mu_min_eta = ROOT.RooRealVar('mu_min_eta', '#eta^{min}(#mu)', -2.5, 2.5)
+#
+# K_max_pt = ROOT.RooRealVar('K_max_pt', 'p_{T}^{max}(K) [GeV]', 0., 150.)
+# K_min_pt = ROOT.RooRealVar('K_min_pt', 'p_{T}^{min}(K) [GeV]', 0., 150.)
+# K_max_eta = ROOT.RooRealVar('K_max_eta', '#eta^{max}(K)', -2.5, 2.5)
+# K_min_eta = ROOT.RooRealVar('K_min_eta', '#eta^{min}(K)', -2.5, 2.5)
+#
+# pi_max_pt = ROOT.RooRealVar('pi_max_pt', 'p_{T}^{max}(#pi) [GeV]', 0., 100.)
+# pi_min_pt = ROOT.RooRealVar('pi_min_pt', 'p_{T}^{min}(#pi) [GeV]', 0., 400.)
+# pi_max_eta = ROOT.RooRealVar('pi_max_eta', '#eta^{max}(#pi)', -2.5, 2.5)
+# pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
+#
+# BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
+# BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
 
 #############################################################################################
 # B0->psi(2S)K*0 reflection
