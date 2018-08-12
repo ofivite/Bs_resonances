@@ -61,9 +61,10 @@ model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 a1_phi.setConstant(1); a2_phi.setConstant(1);
 model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-
 a1_phi.setConstant(0); a2_phi.setConstant(0);
+
 if get_MC_N_evts:
+    
     sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1); fr_phi.setConstant(1)
     sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
     gamma_BW_phi.setConstant(1);
@@ -82,7 +83,6 @@ model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 a1.setConstant(1); a2.setConstant(1)
 model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-
 a1.setConstant(0); a2.setConstant(0)
 
 f_out = ROOT.TFile('workspace_' + mode + '_control.root', 'recreate')

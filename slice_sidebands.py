@@ -1,4 +1,4 @@
-from miniRooSpace import *
+from RooSpace import *
 from cuts import *
 import numpy as np
 import glob, os, os.path
@@ -9,20 +9,20 @@ for f in filelist:
     os.remove(f)
 
 w_Bs, f_Bs = get_workspace('workspace_' + mode + '_Bs.root', 'workspace')
-model_1D_Bs = w_Bs.pdf('model_1D_Bs')
-signal_Bs = w_Bs.pdf('signal_Bs')
+# model_1D_Bs = w_Bs.pdf('model_1D_Bs')
+# signal_Bs = w_Bs.pdf('signal_Bs')
 
 w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
 w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
-# model_X = w_control.pdf('model_X')
-# model_psi = w_control.pdf('model_psi')
-signal_psi = w_psi.pdf('signal_psi')
-signal_X = w_X.pdf('signal_X')
+# # model_X = w_control.pdf('model_X')
+# # model_psi = w_control.pdf('model_psi')
+# signal_psi = w_psi.pdf('signal_psi')
+# signal_X = w_X.pdf('signal_X')
 
 w_phi, f_phi = get_workspace('workspace_' + mode + '_phi.root', 'workspace')
+# # signal_phi = w_phi.pdf('signal_phi')
+# model_1D_phi = w_phi.pdf('model_1D_phi')
 # signal_phi = w_phi.pdf('signal_phi')
-model_1D_phi = w_phi.pdf('model_1D_phi')
-signal_phi = w_phi.pdf('signal_phi')
 
 
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
@@ -33,31 +33,31 @@ signal_phi = w_phi.pdf('signal_phi')
 # model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
 
 
-sigma_Bs_1 = w_Bs.var('sigma_Bs_1');  sigma_Bs_2 = w_Bs.var('sigma_Bs_2'); # sigma_Bs_3 = w_Bs.var('sigma_Bs_3')
-fr_Bs = w_Bs.var('fr_Bs'); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
-mean_Bs = w_Bs.var('mean_Bs');
+sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var('sigma_Bs_2').getVal()); # sigma_Bs_3 = w_Bs.var('sigma_Bs_3')
+fr_Bs.setVal(w_Bs.var('fr_Bs').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
+mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
 
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); # sigma_Bs_3.setConstant(1);
 fr_Bs.setConstant(1); # fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
 mean_Bs.setConstant(1)
 
 
-sigmaCB_phi_1 = w_phi.var('sigmaCB_phi_1'); alpha_phi_1 = w_phi.var('alpha_phi_1'); n_phi_1 = w_phi.var('n_phi_1')
-sigmaCB_phi_2 = w_phi.var('sigmaCB_phi_2'); alpha_phi_2 = w_phi.var('alpha_phi_2'); n_phi_2 = w_phi.var('n_phi_2')
+sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
+sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
 
-fr_phi = w_phi.var('fr_phi'); mean_phi = w_phi.var('mean_phi');
+fr_phi.setVal(w_phi.var('fr_phi').getVal()); mean_phi.setVal(w_phi.var('mean_phi').getVal());
 
 sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1); fr_phi.setConstant(1)
 sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
 mean_phi.setConstant(1)
 
-sigma_psi_1 = w_psi.var('sigma_psi_1'); sigma_psi_2 = w_psi.var('sigma_psi_2'); # sigma_psi_3 = w_control.var('sigma_psi_3')
-fr_psi = w_psi.var('fr_psi'); #fr_psi_1 = w_control.var('fr_psi_1'); fr_psi_2 = w_control.var('fr_psi_2')
-mean_psi = w_psi.var('mean_psi'); mean_psi.setConstant(1)
+sigma_psi_1.setVal(w_psi.var('sigma_psi_1').getVal()); sigma_psi_2.setVal(w_psi.var('sigma_psi_2').getVal()); # sigma_psi_3 = w_control.var('sigma_psi_3')
+fr_psi.setVal(w_psi.var('fr_psi').getVal()); #fr_psi_1 = w_control.var('fr_psi_1'); fr_psi_2 = w_control.var('fr_psi_2')
+mean_psi.setVal(w_psi.var('mean_psi').getVal()); mean_psi.setConstant(1)
 
-sigma_X_1 = w_X.var('sigma_X_1'); sigma_X_2 = w_X.var('sigma_X_2'); sigma_X_3 = w_X.var('sigma_X_3')
-fr_X = w_X.var('fr_X'); fr_X_1 = w_X.var('fr_X_1'); fr_X_2 = w_X.var('fr_X_2')
-mean_X = w_X.var('mean_X'); mean_X.setConstant(1);
+sigma_X_1.setVal(w_X.var('sigma_X_1').getVal()); sigma_X_2.setVal(w_X.var('sigma_X_2').getVal()); #sigma_X_3.setVal(w_X.var('sigma_X_3').getVal())
+fr_X.setVal(w_X.var('fr_X').getVal()); # fr_X_1.setVal(w_X.var('fr_X_1').getVal()); fr_X_2.setVal(w_X.var('fr_X_2').getVal())
+mean_X.setVal(w_X.var('mean_X').getVal()); mean_X.setConstant(1);
 
 sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); # sigma_psi_3.setConstant(1);
 fr_psi.setConstant(1); # fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
@@ -67,19 +67,20 @@ fr_X.setConstant(1); # fr_X_1.setConstant(1); fr_X_2.setConstant(1)
 # a1_phi = w_phi.var('a1_phi'); a2_phi = w_phi.var('a2_phi'); a3_phi = ROOT.RooRealVar('a3_phi', 'a3_phi', 0.01, 0., 1.)
 # a1 = w_control.var('a1'); a2 = w_control.var('a2'); a3 = ROOT.RooRealVar('a3', 'a3', 0.01, 0., 1.)
 
-a1_phi = ROOT.RooRealVar('a1_phi', 'a1_phi', 0.01, 0., 1.); a2_phi = ROOT.RooRealVar('a2_phi', 'a2_phi', 0.01, 0., 1.); a3_phi = ROOT.RooRealVar('a3_phi', 'a3_phi', 0.01, 0., 1.)
-a1 = ROOT.RooRealVar('a1', 'a1', 0.01, 0., 1.); a2 = ROOT.RooRealVar('a2', 'a2', 0.01, 0., 1.); a3 = ROOT.RooRealVar('a3', 'a3', 0.01, 0., 1.)
+# a1_phi = ROOT.RooRealVar('a1_phi', 'a1_phi', 0.01, 0., 1.); a2_phi = ROOT.RooRealVar('a2_phi', 'a2_phi', 0.01, 0., 1.); a3_phi = ROOT.RooRealVar('a3_phi', 'a3_phi', 0.01, 0., 1.)
+# a1 = ROOT.RooRealVar('a1', 'a1', 0.01, 0., 1.); a2 = ROOT.RooRealVar('a2', 'a2', 0.01, 0., 1.); a3 = ROOT.RooRealVar('a3', 'a3', 0.01, 0., 1.)
 
-N_sig_X = w_X.var('N_sig_X'); N_sig_X.setConstant(0);
-N_sig_psi = w_psi.var('N_sig_psi'); N_sig_psi.setConstant(0);
-N_sig_phi = w_phi.var('N_sig_phi'); N_sig_phi.setConstant(0);
-N_sig_Bs = w_Bs.var('N_sig_Bs'); N_sig_Bs.setConstant(0);
-
-N_bkgr_control = w_psi.var('N_bkgr_control') if mode == 'psi' else w_X.var('N_bkgr_control')
-N_bkgr_control.setConstant(0);
-N_bkgr_phi = w_phi.var('N_bkgr_phi'); N_bkgr_phi.setConstant(0);
-N_bkgr_Bs = w_Bs.var('N_bkgr_Bs'); N_bkgr_Bs.setConstant(0);
+# N_sig_X = w_X.var('N_sig_X'); N_sig_X.setConstant(0);
+# N_sig_psi = w_psi.var('N_sig_psi'); N_sig_psi.setConstant(0);
+# N_sig_phi = w_phi.var('N_sig_phi'); N_sig_phi.setConstant(0);
+# N_sig_Bs = w_Bs.var('N_sig_Bs'); N_sig_Bs.setConstant(0);
+#
+# N_bkgr_control = w_psi.var('N_bkgr_control') if mode == 'psi' else w_X.var('N_bkgr_control')
+# N_bkgr_control.setConstant(0);
+# N_bkgr_phi = w_phi.var('N_bkgr_phi'); N_bkgr_phi.setConstant(0);
+# N_bkgr_Bs = w_Bs.var('N_bkgr_Bs'); N_bkgr_Bs.setConstant(0);
 N_B0_refl = w_Bs.var('N_B0_refl'); N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
+N_bkgr_Bs.setMax(100000.); N_bkgr_phi.setMax(100000.); N_bkgr_control.setMax(100000.);
 
 
 ###-----###  Systematics variation here
@@ -88,7 +89,7 @@ N_B0_refl = w_Bs.var('N_B0_refl'); N_B0_refl.setVal(0.); N_B0_refl.setConstant(1
 
 
 bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
-bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1))
+bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2))
 bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3))
 
 model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
@@ -106,7 +107,7 @@ mean_control = {'X': mean_X, 'psi': mean_psi}
 def fit_slice(data_slice):
     c = ROOT.TCanvas("c", "c", 800, 600)
 
-    a1.setVal(0.04); a2.setVal(0.025); a3.setVal(0.015)
+    # a1.setVal(0.04); a2.setVal(0.025); a3.setVal(0.015)
 
     a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
     a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
@@ -184,6 +185,7 @@ cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cut
 
 
 cuts = [(0.99, 1.), (1., 1.01), (1.03, 1.0325), (1.0325, 1.035), (1.035, 1.0375), (1.0375, 1.04), (1.04, 1.0425), (1.0425, 1.045), (1.045, 1.0475), (1.0475, 1.05)]
+# cuts = [(0.99, 1.), (1., 1.01), (1.03, 1.035), (1.035, 1.04), (1.04, 1.045), (1.045, 1.05)]
 data_slices = [data.reduce('PHI_mass_Cjp > ' + str(cut[0]) + '&& PHI_mass_Cjp <' + str(cut[1])) for cut in cuts]
 events_sideband = map(fit_slice, data_slices)
 
