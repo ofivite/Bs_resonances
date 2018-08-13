@@ -1,4 +1,4 @@
-mode = 'psi'
+mode = 'X'
 refl_ON = False
 get_MC_N_evts = False
 sPlot_from = 'Bs'
