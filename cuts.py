@@ -1,8 +1,9 @@
 mode = 'X'
 refl_ON = False
 get_MC_N_evts = False
-sPlot_from = 'Bs'
-sPlot_to = mode
+
+sPlot_from = 'Bs'; sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi'
+sPlot_to = 'control'
 
 refl_line = '_refl' if refl_ON else ''
 # gStyle.SetTitleFontSize(.085)
