@@ -296,19 +296,23 @@ a2_bb_2 = ROOT.RooRealVar('a2_bb_2', 'a2_bb_2', 0.01, 0., 1.)
 a3_bb_2 = ROOT.RooRealVar('a3_bb_2', 'a3_bb_2', 0.01, 0., 1.)
 a4_bb_2 = ROOT.RooRealVar('a4_bb_2', 'a4_bb_2', 0.01, 0., 1.)
 
-bkgr_sb = ROOT.RooBernstein('bkgr_sb', '', PHI_mass_Cjp, ROOT.RooArgList(a1_sb, a2_sb, a3_sb))
-bkgr_bs = ROOT.RooBernstein('bkgr_bs', '', var_discr, ROOT.RooArgList(a1_bs, a2_bs, a3_bs))
-bkgr_bb_1 = ROOT.RooBernstein('bkgr_bb_1', '', var_discr, ROOT.RooArgList(a1_bb_1, a2_bb_1, a3_bb_1))
-bkgr_bb_2 = ROOT.RooBernstein('bkgr_bb_2', '', PHI_mass_Cjp, ROOT.RooArgList(a1_bb_2, a2_bb_2, a3_bb_2))
+bkgr_sb = ROOT.RooBernstein('bkgr_sb', '', PHI_mass_Cjp, ROOT.RooArgList(a1_sb, a2_sb, a3_sb))# , a4_sb))
+bkgr_bs = ROOT.RooBernstein('bkgr_bs', '', var_discr, ROOT.RooArgList(a1_bs, a2_bs, a3_bs))# , a4_bs))
+bkgr_bb_1 = ROOT.RooBernstein('bkgr_bb_1', '', var_discr, ROOT.RooArgList(a1_bb_1, a2_bb_1, a3_bb_1))# , a4_bb_1))
+bkgr_bb_2 = ROOT.RooBernstein('bkgr_bb_2', '', PHI_mass_Cjp, ROOT.RooArgList(a1_bb_2, a2_bb_2, a3_bb_2))# , a4_bb_2))
 
 
 #############################################################################################
 # Models
 
-N_ss_2D = ROOT.RooRealVar('N_ss_2D', '', 2700., 1500., 4000.)
-N_bb_2D = ROOT.RooRealVar('N_bb_2D', '', 30000., 20000., 40000.)
-N_sb_2D = ROOT.RooRealVar('N_sb_2D', '', 300., 0., 600.)
-N_bs_2D = ROOT.RooRealVar('N_bs_2D', '', 300., 0., 600.)
+N_ss_2D_vals = {'X': [200., 0., 400. ], 'psi': [2500., 2000., 4000.]}
+N_ss_2D = ROOT.RooRealVar('N_ss_2D', '', N_ss_2D_vals[mode][0], N_ss_2D_vals[mode][1], N_ss_2D_vals[mode][2])
+N_bb_2D = ROOT.RooRealVar('N_bb_2D', '', 30000., 20000., 60000.)
+N_sb_2D = ROOT.RooRealVar('N_sb_2D', '', 300., 0., 50000.)
+N_bs_2D = ROOT.RooRealVar('N_bs_2D', '', 300., 0., 50000.)
+
+control_signals = {'X': signal_X, 'psi': signal_psi}
+signal_control = control_signals[mode]
 
 model_ss_2D = ROOT.RooProdPdf('model_ss_2D', 'model_ss_2D', ROOT.RooArgList(signal_Bs, signal_phi))
 model_bb_2D = ROOT.RooProdPdf('model_bb_2D', 'model_bb_2D', ROOT.RooArgList(bkgr_bb_1, bkgr_bb_2))
@@ -320,7 +324,8 @@ model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(si
 model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
 
 
-model_2D_data = ROOT.RooAddPdf('model_2D_data', 'model_2D_data', ROOT.RooArgList(model_ss_2D, model_bb_2D, model_sb_2D), ROOT.RooArgList(N_ss_2D, N_bb_2D, N_sb_2D))
+model_2D_data = ROOT.RooAddPdf('model_2D_data', 'model_2D_data', ROOT.RooArgList(model_ss_2D, model_bb_2D, model_sb_2D, model_bs_2D), ROOT.RooArgList(N_ss_2D, N_bb_2D, N_sb_2D, N_bs_2D))
+# model_2D_data = ROOT.RooAddPdf('model_2D_data', 'model_2D_data', ROOT.RooArgList(model_ss_2D, model_bb_2D, model_sb_2D), ROOT.RooArgList(N_ss_2D, N_bb_2D, N_sb_2D))
 model_2D_MC = ROOT.RooAddPdf('model_2D_MC', 'model_2D_MC', ROOT.RooArgList(model_ss_2D, model_bb_2D), ROOT.RooArgList(N_ss_2D, N_bb_2D))
 
 model_discr = ROOT.RooAddPdf('model_discr', 'model_discr', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
@@ -406,7 +411,7 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     # else:
     #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
-    # model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
+    model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
     # frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
     floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
