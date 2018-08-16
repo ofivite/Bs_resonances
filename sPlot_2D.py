@@ -8,6 +8,8 @@ file_data = ROOT.TFile('new_noKaon_fabs_with_pt&eta_979cfd3.root')
 # file_data = ROOT.TFile('new_noKaon_9988200.root')
 # file_data = ROOT.TFile('new.root')
 
+file_out_data = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from_1 + '+' + sPlot_from_2 + '->' + sPlot_to + '/' + mode + '_data_evtN.txt', 'w')
+
 w_Bs, f_Bs = get_workspace('workspace_' + mode + '_Bs.root', 'workspace')
 w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
 w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
@@ -93,7 +95,7 @@ cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cut
 ##           2D SPLOT          ##
 ##        -------------        ##
 
-c_sPlot = ROOT.TCanvas("c_sPlot", "c_sPlot", 1700, 650)
+c_sPlot = ROOT.TCanvas("c_sPlot", "c_sPlot", 2100, 1100)
 c_sPlot.Divide(3,2)
 c_sPlot.cd(1)
 
@@ -114,6 +116,9 @@ N_ss_2D.setConstant(0)
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
 
+file_out_data.write(str(N_ss_2D.getVal()) + ' ' + str(N_ss_2D.getError()) + '\n')
+file_out_data.write(str(N_sb_2D.getVal()) + ' ' + str(N_sb_2D.getError()) + '\n')
+file_out_data.write(str(N_bs_2D.getVal()) + ' ' + str(N_bs_2D.getError()) + '\n\n')
 
 # # N_ss_2D.setConstant(1);
 #
@@ -162,17 +167,20 @@ model[sPlot_to].fitTo(data_weighted_ss, RF.Extended(ROOT.kTRUE))
 a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
 a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
 
-# rrr_sig = model_control.fitTo(data_weighted_ss, RF.Save(), RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE),
 
 c_sPlot.cd(4)
+file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
 plot_on_frame(var_to_plot[sPlot_to], data_weighted_ss, model[sPlot_to], 'SS', left_from[sPlot_to], right_from[sPlot_to], nbins_from[sPlot_to], plot_param_from[sPlot_to], False)
 
 c_sPlot.cd(5)
 model[sPlot_to].fitTo(data_weighted_sb, RF.Extended(ROOT.kTRUE))
+file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
 plot_on_frame(var_to_plot[sPlot_to], data_weighted_sb, model[sPlot_to], 'SB', left_from[sPlot_to], right_from[sPlot_to], nbins_from[sPlot_to], plot_param_from[sPlot_to], False)
 
 c_sPlot.cd(6)
 model[sPlot_to].fitTo(data_weighted_bs, RF.Extended(ROOT.kTRUE))
+file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
 plot_on_frame(var_to_plot[sPlot_to], data_weighted_bs, model[sPlot_to], 'BS', left_from[sPlot_to], right_from[sPlot_to], nbins_from[sPlot_to], plot_param_from[sPlot_to], False)
 
-c_sPlot.SaveAs('~/Study/Bs_resonances/' + mode + '_2D.pdf')
+file_out_data.close()
+c_sPlot.SaveAs('~/Study/Bs_resonances/' + sPlot_from_1 + '+' + sPlot_from_2 + '->' + sPlot_to + '/' + mode + '_2D.pdf')

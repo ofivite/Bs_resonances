@@ -329,7 +329,7 @@ nbins_from = {'Bs': nbins_discr_data, 'phi': nbins_phi_data, 'control': nbins_co
 
 model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
 signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
-
+N = {'Bs': N_sig_Bs, 'phi': N_sig_phi, 'control': N_control[mode]}
 # ----------------------------------------------------------------------------------------------------------------------------
 
 model_ss_2D = ROOT.RooProdPdf('model_ss_2D', 'model_ss_2D', ROOT.RooArgList(signal[sPlot_from_1], signal[sPlot_from_2]))
