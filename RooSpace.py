@@ -31,7 +31,7 @@ pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
 BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
 BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
 
-# PHI_mass_Cjp.setBins(10000, "cache")
+PHI_mass_Cjp.setBins(10000, "cache")
 # PHI_mass_Cjp.setBins(nbins_phi_data)
 # PHI_mass_Cjp.setRange(left_phi_data, right_phi_data)
 
@@ -214,12 +214,6 @@ a2_phi = ROOT.RooRealVar('a2_phi', 'a2_phi', 0.01, 0., 1.)
 a3_phi = ROOT.RooRealVar('a3_phi', 'a3_phi', 0.01, 0., 1.)
 a4_phi = ROOT.RooRealVar('a4_phi', 'a4_phi', 0.01, 0., 1.)
 
-# signal_phi = ROOT.RooGenericPdf("signal_phi", "signal_phi", "(1. / ( TMath::Power( (PHI_mass_Cjp * PHI_mass_Cjp - mean_phi * mean_phi) , 2) + TMath::Power( mean_phi * gamma_BW_phi , 2))) ", ROOT.RooArgList(PHI_mass_Cjp, mean_phi, gamma_BW_phi))
-# signal_phi = ROOT.RooVoigtian("signal_phi", "signal_phi", PHI_mass_Cjp, mean_phi, gamma_BW_phi, sigma_phi)
-# signal_phi = ROOT.RooGaussian('signal_phi', '', PHI_mass_Cjp, mean_phi, sigma_phi)
-# signal_phi = ROOT.RooAddPdf("signal_phi", "signal_phi", ROOT.RooArgList(sig_phi_1, sig_phi_2), ROOT.RooArgList(fr_phi))
-# signal_phi = ROOT.RooCBShape('signal_phi', '', PHI_mass_Cjp, mean_phi, sigma_phi, alpha_phi, n_phi)
-
 CB_phi_1 = ROOT.RooCBShape('CB_phi_1', '', PHI_mass_Cjp, mean_phi, sigmaCB_phi_1, alpha_phi_1, n_phi_1)
 CB_phi_2 = ROOT.RooCBShape('CB_phi_2', '', PHI_mass_Cjp, mean_phi, sigmaCB_phi_2, alpha_phi_2, n_phi_2)
 gauss_phi = ROOT.RooGaussian('gauss_phi', '', PHI_mass_Cjp, mean_zero_phi, sigma_gauss_phi)
@@ -227,14 +221,14 @@ relBW_phi = ROOT.RooGenericPdf("relBW_phi", "relBW_phi", "(1. / ( TMath::Power( 
 BW_phi = ROOT.RooBreitWigner('BW_phi', '', PHI_mass_Cjp, mean_zero_phi, gamma_BW_phi)
 voig_phi = ROOT.RooVoigtian("voig_phi", "voig_phi", PHI_mass_Cjp, mean_zero_phi, gamma_BW_phi, sigma_phi)
 
-
-signal_phi = ROOT.RooAddPdf("signal_phi", "signal_phi", ROOT.RooArgList(CB_phi_1, CB_phi_2), ROOT.RooArgList(fr_phi)) ## ---- BASELINE
+# signal_phi = ROOT.RooAddPdf("signal_phi", "signal_phi", ROOT.RooArgList(CB_phi_1, CB_phi_2), ROOT.RooArgList(fr_phi)) ## ---- BASELINE
 # signal_phi =  ROOT.RooGenericPdf("signal_phi", '', "(1. / ( TMath::Power( (PHI_mass_Cjp * PHI_mass_Cjp - mean_phi * mean_phi) , 2) + TMath::Power( mean_phi * gamma_BW_phi , 2))) ", ROOT.RooArgList(PHI_mass_Cjp, mean_phi, gamma_BW_phi))
 # signal_phi = ROOT.RooFFTConvPdf('signal_phi', '', PHI_mass_Cjp, CB_phi_1, BW_phi)
-# signal_phi = ROOT.RooFFTConvPdf('signal_phi', '', PHI_mass_Cjp, CB_phi_1, gauss_phi)
+# signal_phi = ROOT.RooFFTConvPdf('signal_phi', '', PHI_mass_Cjp, gauss_phi, CB_phi_1)
 # signal_phi = ROOT.RooFFTConvPdf('signal_phi', '', PHI_mass_Cjp, CB_phi_1, voig_phi)
-# signal_phi = ROOT.RooFFTConvPdf('signal_phi', '', PHI_mass_Cjp, relBW_phi, gauss_phi)
+signal_phi = ROOT.RooFFTConvPdf('signal_phi', '', PHI_mass_Cjp, relBW_phi, gauss_phi)
 # signal_phi = ROOT.RooFFTConvPdf('signal_phi', '', PHI_mass_Cjp, relBW_phi, BW_phi)
+# signal_phi = relBW_phi
 
 N_sig_phi = ROOT.RooRealVar('N_sig_phi', '', 20000., 0., 100000)
 
