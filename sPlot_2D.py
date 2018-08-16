@@ -24,9 +24,9 @@ fr_Bs.setVal(w_Bs.var('fr_Bs').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs
 mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
 
 sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
-sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
-fr_phi.setVal(w_phi.var('fr_phi').getVal());
-# gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
+# sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
+# fr_phi.setVal(w_phi.var('fr_phi').getVal());
+gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
 # sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
 # sigma_phi.setVal(w_phi.var('sigma_phi').getVal());
 # mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
@@ -99,8 +99,8 @@ c_sPlot = ROOT.TCanvas("c_sPlot", "c_sPlot", 2100, 1100)
 c_sPlot.Divide(3,2)
 c_sPlot.cd(1)
 
-# mean_control[mode].setConstant(1); mean_Bs.setConstant(1); mean_phi.setConstant(1)
-# N_ss_2D.setConstant(1); N_sb_2D.setConstant(1);
+mean_control[mode].setConstant(1); mean_Bs.setConstant(1); mean_phi.setConstant(1)
+N_ss_2D.setConstant(1); N_sb_2D.setConstant(1);
 
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
