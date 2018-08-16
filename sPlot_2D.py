@@ -21,12 +21,13 @@ sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var(
 fr_Bs.setVal(w_Bs.var('fr_Bs').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
 mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
 
-sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
-sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
-fr_phi.setVal(w_phi.var('fr_phi').getVal());
-
-# gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal()); sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal()); mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
+# sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
+# sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
+# fr_phi.setVal(w_phi.var('fr_phi').getVal());
+gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
+# sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
 # sigma_phi.setVal(w_phi.var('sigma_phi').getVal());
+# mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
 mean_phi.setVal(w_phi.var('mean_phi').getVal());
 
 sigma_psi_1.setVal(w_psi.var('sigma_psi_1').getVal()); sigma_psi_2.setVal(w_psi.var('sigma_psi_2').getVal());
@@ -174,4 +175,4 @@ c_sPlot.cd(6)
 model[sPlot_to].fitTo(data_weighted_bs, RF.Extended(ROOT.kTRUE))
 plot_on_frame(var_to_plot[sPlot_to], data_weighted_bs, model[sPlot_to], 'BS', left_from[sPlot_to], right_from[sPlot_to], nbins_from[sPlot_to], plot_param_from[sPlot_to], False)
 
-c_sPlot.SaveAs('~/Study/Bs_resonances/' + mode + '_ 2D.pdf')
+c_sPlot.SaveAs('~/Study/Bs_resonances/' + mode + '_2D.pdf')
