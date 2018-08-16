@@ -15,8 +15,8 @@ file_in_data_X = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from[1] + '->'
 
 X_MC_evtN = dict(zip(['Bs', 'phi', 'control'], [map(float, x[:-2].split(' ')) for x in list(file_in_MC_X)]))
 psi_MC_evtN = dict(zip(['Bs', 'phi', 'control'], [map(float, x[:-2].split(' ')) for x in list(file_in_MC_psi)]))
-X_data_evtN = dict(zip([str(x) for x in range(1, N)], [map(float, x[:-2].split(' ')) for x in list(file_in_data_X)]))
-psi_data_evtN = dict(zip([str(x) for x in range(1, N)], [map(float, x[:-2].split(' ')) for x in list(file_in_data_psi)]))
+X_data_evtN = dict(zip([str(x) for x in range(1, N + 1)], [map(float, x[:-2].split(' ')) for x in list(file_in_data_X)]))
+psi_data_evtN = dict(zip([str(x) for x in range(1, N + 1)], [map(float, x[:-2].split(' ')) for x in list(file_in_data_psi)]))
 
 N_data_psi_2, err_N_data_psi_2, N_data_psi_4, err_N_data_psi_4 = map(round, psi_data_evtN['2'] + psi_data_evtN['4'])
 N_data_X_2, err_N_data_X_2, N_data_X_4, err_N_data_X_4 = map(round, X_data_evtN['2'] + X_data_evtN['4'])

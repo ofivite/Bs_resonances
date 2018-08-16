@@ -220,8 +220,8 @@ relBW_phi = ROOT.RooGenericPdf("relBW_phi", "relBW_phi", "(1. / ( TMath::Power( 
 BW_phi = ROOT.RooBreitWigner('BW_phi', '', PHI_mass_Cjp, mean_zero_phi, gamma_BW_phi)
 voig_phi = ROOT.RooVoigtian("voig_phi", "voig_phi", PHI_mass_Cjp, mean_zero_phi, gamma_BW_phi, sigma_phi)
 
-# signal_phi = ROOT.RooAddPdf("CB+CB", "signal_phi", ROOT.RooArgList(CB_phi_1, CB_phi_2), ROOT.RooArgList(fr_phi)) ## ---- BASELINE
-signal_phi =  ROOT.RooGenericPdf("relBW", '', "(1. / ( TMath::Power( (PHI_mass_Cjp * PHI_mass_Cjp - mean_phi * mean_phi) , 2) + TMath::Power( mean_phi * gamma_BW_phi , 2))) ", ROOT.RooArgList(PHI_mass_Cjp, mean_phi, gamma_BW_phi))
+signal_phi = ROOT.RooAddPdf("CB+CB", "signal_phi", ROOT.RooArgList(CB_phi_1, CB_phi_2), ROOT.RooArgList(fr_phi)) ## ---- BASELINE
+# signal_phi =  ROOT.RooGenericPdf("relBW", '', "(1. / ( TMath::Power( (PHI_mass_Cjp * PHI_mass_Cjp - mean_phi * mean_phi) , 2) + TMath::Power( mean_phi * gamma_BW_phi , 2))) ", ROOT.RooArgList(PHI_mass_Cjp, mean_phi, gamma_BW_phi))
 # signal_phi = ROOT.RooFFTConvPdf('CBxBW', '', PHI_mass_Cjp, CB_phi_1, BW_phi)
 # signal_phi = ROOT.RooFFTConvPdf('CBxGauss', '', PHI_mass_Cjp, CB_phi_1, gauss_phi )
 # signal_phi = ROOT.RooFFTConvPdf('CBxVoig', '', PHI_mass_Cjp, CB_phi_1, voig_phi)
@@ -297,11 +297,12 @@ bkgr_bb_2 = ROOT.RooBernstein('bkgr_bb_2', '', PHI_mass_Cjp, ROOT.RooArgList(a1_
 #############################################################################################
 # Models
 
-N_ss_2D_vals = {'X': [200., 0., 400. ], 'psi': [2500., 2000., 4000.]}
+N_ss_2D_vals = {'X': [120., 40., 190. ], 'psi': [2500., 2000., 3500.]}
+N_sb_2D_vals = {'X': [100., 0., 500. ], 'psi': [500., 0., 1000.]}
 N_ss_2D = ROOT.RooRealVar('N_ss_2D', '', N_ss_2D_vals[mode][0], N_ss_2D_vals[mode][1], N_ss_2D_vals[mode][2])
-N_bb_2D = ROOT.RooRealVar('N_bb_2D', '', 30000., 20000., 60000.)
-N_sb_2D = ROOT.RooRealVar('N_sb_2D', '', 300., 0., 50000.)
+N_sb_2D = ROOT.RooRealVar('N_sb_2D', '', N_sb_2D_vals[mode][0], N_sb_2D_vals[mode][1], N_sb_2D_vals[mode][2])
 N_bs_2D = ROOT.RooRealVar('N_bs_2D', '', 300., 0., 50000.)
+N_bb_2D = ROOT.RooRealVar('N_bb_2D', '', 30000., 20000., 60000.)
 # ----------------------------------------------------------------------------------------------------------------------------
 
 

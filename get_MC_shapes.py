@@ -34,8 +34,8 @@ print '\n\n' + 30*'#' + '\n\n\n         MC psi(2S): Bs mass now         \n\n\n' 
 
 ###-----###
 
-N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
-
+# N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
+#
 # model_1D_Bs.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 # model_1D_Bs.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 # mean_Bs.setMin(mean_Bs.getVal() - 0.005); mean_Bs.setMax(mean_Bs.getVal() + 0.005)
@@ -44,7 +44,10 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 # a1.setConstant(0); a2.setConstant(0);
 #
 # if get_MC_N_evts:
-#     sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1); fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
+#     sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
+#     sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
+#     fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
+#
 #     model_1D_Bs.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 #     model_1D_Bs.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 #     file_out_MC.write(str(N_sig_Bs.getVal()) + ' ' + str(N_sig_Bs.getError()) + '\n')
@@ -69,9 +72,10 @@ model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 a1_phi.setConstant(0); a2_phi.setConstant(0);
 
 if get_MC_N_evts:
-    sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1); fr_phi.setConstant(1)
+    sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
     sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-    gamma_BW_phi.setConstant(1);
+    gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
+    fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
 
     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
@@ -94,8 +98,13 @@ f_out.Close()
 # f_out.Close()
 #
 # if get_MC_N_evts:
-#     sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1); fr_psi.setConstant(1); fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
-#     sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1); fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
+#     sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1);
+#     sigma_psi.setConstant(1); gamma_BW_psi.setConstant(1)
+#     fr_psi.setConstant(1);  fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
+#
+#     sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1);
+#     sigma_X.setConstant(1); gamma_BW_X.setConstant(1)
+#     fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
 #
 #     model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 #     model_control.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
