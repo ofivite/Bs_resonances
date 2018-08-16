@@ -173,3 +173,5 @@ plot_on_frame(var_to_plot[sPlot_to], data_weighted_sb, model[sPlot_to], 'SB', le
 c_sPlot.cd(6)
 model[sPlot_to].fitTo(data_weighted_bs, RF.Extended(ROOT.kTRUE))
 plot_on_frame(var_to_plot[sPlot_to], data_weighted_bs, model[sPlot_to], 'BS', left_from[sPlot_to], right_from[sPlot_to], nbins_from[sPlot_to], plot_param_from[sPlot_to], False)
+
+c_sPlot.SaveAs('~/Study/Bs_resonances/' + mode + '_ 2D.pdf')
