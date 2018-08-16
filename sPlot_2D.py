@@ -118,7 +118,7 @@ model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
 
 file_out_data.write(str(N_ss_2D.getVal()) + ' ' + str(N_ss_2D.getError()) + '\n')
 file_out_data.write(str(N_sb_2D.getVal()) + ' ' + str(N_sb_2D.getError()) + '\n')
-file_out_data.write(str(N_bs_2D.getVal()) + ' ' + str(N_bs_2D.getError()) + '\n\n')
+file_out_data.write(str(N_bs_2D.getVal()) + ' ' + str(N_bs_2D.getError()) + '\n')
 
 # # N_ss_2D.setConstant(1);
 #
