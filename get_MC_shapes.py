@@ -85,9 +85,10 @@ if not get_MC_N_evts:
 
 ###-----###
 
+mean_control[mode].setConstant(1)
 model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-a1.setConstant(1); a2.setConstant(1)
+a1.setConstant(1); a2.setConstant(1); mean_control[mode].setConstant(0)
 model_control.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 a1.setConstant(0); a2.setConstant(0)
 #

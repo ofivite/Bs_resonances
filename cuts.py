@@ -1,6 +1,6 @@
-mode = 'psi'
+mode = 'X'
 refl_ON = False
-get_MC_N_evts = True
+get_MC_N_evts = False
 
 sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
 sPlot_cut = 'control'; sPlot_from = 'Bs'; sPlot_to = 'phi'
