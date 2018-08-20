@@ -2,8 +2,11 @@ mode = 'psi'
 refl_ON = False
 get_MC_N_evts = False
 
-sPlot_from = 'Bs'; sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi'
-sPlot_to = 'control'
+sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
+sPlot_cut = 'control'; sPlot_from = 'Bs'; sPlot_to = 'phi'
+if sPlot_from != 'Bs': refl_ON = False
+sPlot_from_text = mode if sPlot_from == 'control' else sPlot_from
+sPlot_to_text = mode if sPlot_to == 'control' else sPlot_to
 
 refl_line = '_refl' if refl_ON else ''
 # gStyle.SetTitleFontSize(.085)

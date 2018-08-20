@@ -165,15 +165,15 @@ writeExtraText  = True
 extraText       = "Preliminary"
 extraTextFont   = 52
 
-lumiTextSize    = 0.6
+lumiTextSize    = 0.35
 lumiTextOffset  = 0.2
 
-cmsTextSize     = 0.75
+cmsTextSize     = 0.45
 cmsTextOffset   = 0.1
 
-relPosX         = - 0.013
-relPosY         = 0.035
-relExtraDY      = 1.2
+relPosX         =  0.005
+relPosY         =  0.015
+relExtraDY      = 0.2
 
 extraOverCmsTextSize  = 0.76
 
