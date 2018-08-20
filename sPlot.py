@@ -172,11 +172,14 @@ c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
 
 model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-a1.setConstant(1); a2.setConstant(1); a3.setConstant(1);
-a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1);
+a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
+a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
+
 model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
+a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
+a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
 
 file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
 plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False)
@@ -201,11 +204,13 @@ c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600)
 model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
 model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
 model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
-a1.setConstant(1); a2.setConstant(1); a3.setConstant(1);
-a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1);
+a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
+a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
 model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
-a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
+a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
+a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
 
 
 file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
@@ -254,12 +259,14 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
 model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
 model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-a1.setConstant(1); a2.setConstant(1); a3.setConstant(1);
-a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1);
+a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
+a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
 model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
 model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
+a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
+a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
 
 file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
 plot_on_frame(var[sPlot_from], data_sideband, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False)
@@ -283,11 +290,13 @@ c_sPlot_4 = ROOT.TCanvas("c_sPlot_4", "c_sPlot_4", 800, 600)
 model[sPlot_to].fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE))
 model[sPlot_to].fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE))
 model[sPlot_to].fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE))
-a1.setConstant(1); a2.setConstant(1); a3.setConstant(1);
-a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1);
+a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
+a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
 model[sPlot_to].fitTo(data_side_weighted, RF.Extended(ROOT.kTRUE))
-a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
+a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
+a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
 
 file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
 file_out_data.close()

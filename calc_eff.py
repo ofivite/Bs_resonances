@@ -2,10 +2,10 @@ from math import sqrt
 import numpy as np
 
 MC_evtN_var = 'control'
-is2D = True
-subtract_X, subtract_psi = (False, True) if not is2D else (False, False)
+is2D = False
+subtract_X, subtract_psi = (False, False) if not is2D else (False, False)
 
-sPlot_from, sPlot_to, N = (['Bs+phi', 'Bs+phi'], ['control', 'control'], 6) if is2D else (['Bs', 'Bs'], ['psi', 'X'], 4)
+sPlot_from, sPlot_to, N = (['Bs+phi', 'Bs+phi'], ['control', 'control'], 6) if is2D else (['Bs', 'Bs'], ['phi', 'phi'], 4)
 
 file_in_MC_psi = open('/home/yaourt/Study/Bs_resonances/MC_psi_fit_results/psi_MC_evtN.txt', 'r')
 file_in_MC_X = open('/home/yaourt/Study/Bs_resonances/MC_X_fit_results/X_MC_evtN.txt', 'r')
