@@ -58,16 +58,14 @@ print '\n\n' + 30*'#' + '\n\n\n         MC psi(2S): Bs mass now         \n\n\n' 
 
 ###-----###
 
-mean_phi.setVal(1.02); mean_phi.setConstant(1);
+mean_phi.setVal(1.0195); mean_phi.setConstant(1);
+# N_bkgr_phi.setMax(0.)
 gamma_BW_phi.setVal(0.0042); gamma_BW_phi.setConstant(1);
 model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-# a1_phi.setConstant(1); a2_phi.setConstant(1);
-mean_phi.setConstant(0)
+a1_phi.setConstant(1); a2_phi.setConstant(1);  mean_phi.setConstant(0);
 model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-a1_phi.setConstant(1); a2_phi.setConstant(1);
-model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+# model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 
 a1_phi.setConstant(0); a2_phi.setConstant(0);
 
