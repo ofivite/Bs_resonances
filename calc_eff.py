@@ -1,7 +1,7 @@
 from math import sqrt
 import numpy as np
 
-MC_evtN_var = 'control'
+MC_evtN_var = 'phi'
 is2D = False
 subtract_X, subtract_psi = (False, False) if not is2D else (False, False)
 
@@ -18,6 +18,8 @@ psi_MC_evtN = dict(zip(['Bs', 'phi', 'control'], [map(float, x[:-2].split(' ')) 
 X_data_evtN = dict(zip([str(x) for x in range(1, N + 1)], [map(float, x[:-2].split(' ')) for x in list(file_in_data_X)]))
 psi_data_evtN = dict(zip([str(x) for x in range(1, N + 1)], [map(float, x[:-2].split(' ')) for x in list(file_in_data_psi)]))
 
+file_in_MC_psi.close(); file_in_MC_X.close(); file_in_data_psi.close(); file_in_data_X.close();
+
 N_data_psi_2, err_N_data_psi_2, N_data_psi_4, err_N_data_psi_4 = map(round, psi_data_evtN['2'] + psi_data_evtN['4'])
 N_data_X_2, err_N_data_X_2, N_data_X_4, err_N_data_X_4 = map(round, X_data_evtN['2'] + X_data_evtN['4'])
 
@@ -33,6 +35,41 @@ if subtract_X:
     N_data_X, err_N_data_X = N_data_X_2 - N_data_X_4, sqrt(err_N_data_X_2**2 + err_N_data_X_4**2)
 else:
     N_data_X, err_N_data_X = (N_data_X_2, err_N_data_X_2) if not is2D else (N_data_X_4, err_N_data_X_4)
+
+
+######
+# Bs #
+
+DAS_psi = 4033332.
+DAS_X   = 2747175.
+
+######
+# B+ #
+
+# DAS_psi = 2940939.
+# DAS_X   = 2119518.
+
+#-----------------------------
+
+######
+# Bs #
+
+eff_filter_psi = 0.0256162397293
+err_eff_filter_psi = 0.0004641394136
+##
+eff_filter_X = 0.0345138639742
+err_eff_filter_X = 0.0005844468818
+
+######
+# B+ #
+
+# eff_filter_psi = 0.0252452209
+# err_eff_filter_psi = 0.0004197452
+# ##
+# eff_filter_X = 0.0356669123
+# err_eff_filter_X = 0.0005628742
+
+#-----------------------------
 
 ######
 # Bs #
@@ -82,39 +119,6 @@ else:
 # N_data_X = 1301.   # 1238 +- 45;
 # err_N_data_X = 41.
 
-#-----------------------------
-
-######
-# Bs #
-
-DAS_psi = 4033332.
-DAS_X   = 2747175.
-
-######
-# B+ #
-
-# DAS_psi = 2940939.
-# DAS_X   = 2119518.
-
-#-----------------------------
-
-######
-# Bs #
-
-eff_filter_psi = 0.0256162397293
-err_eff_filter_psi = 0.0004641394136
-##
-eff_filter_X = 0.0345138639742
-err_eff_filter_X = 0.0005844468818
-
-######
-# B+ #
-
-# eff_filter_psi = 0.0252452209
-# err_eff_filter_psi = 0.0004197452
-# ##
-# eff_filter_X = 0.0356669123
-# err_eff_filter_X = 0.0005628742
 
 #-----------------------------
 eff_reco_psi = N_reco_psi / DAS_psi
