@@ -1,5 +1,5 @@
 mode = 'psi'
-refl_ON = False
+refl_ON = True
 get_MC_N_evts = False
 
 sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
