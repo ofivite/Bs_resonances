@@ -94,7 +94,9 @@ signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, s
 # bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
 # bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2))
 # bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3))
-bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3, a4))
+# bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3, a4))
+bkgr_Bs = ROOT.RooChebychev('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1_ext, a2_ext))
+# bkgr_Bs = ROOT.RooChebychev('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1_ext, a2_ext, a3_ext, a4_ext))
 
 N_bkgr_Bs = ROOT.RooRealVar('N_bkgr_Bs', '', 30000., 0., 100000)
 
