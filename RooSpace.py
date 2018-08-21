@@ -87,8 +87,8 @@ sig_Bs_1 = ROOT.RooGaussian("sig_Bs_1", "", var_discr, mean_Bs, sigma_Bs_1)
 sig_Bs_2 = ROOT.RooGaussian("sig_Bs_2", "", var_discr, mean_Bs, sigma_Bs_2)
 sig_Bs_3 = ROOT.RooGaussian("sig_Bs_3", "", var_discr, mean_Bs, sigma_Bs_3)
 
-signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2), ROOT.RooArgList(fr_Bs))  ## ---- BASELINE
-# signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2, sig_Bs_3), ROOT.RooArgList(fr_Bs_1, fr_Bs_2))
+# signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2), ROOT.RooArgList(fr_Bs))  ## ---- BASELINE
+signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2, sig_Bs_3), ROOT.RooArgList(fr_Bs_1, fr_Bs_2))
 # signal_Bs = ROOT.RooVoigtian("signal_Bs", "signal_Bs", var_discr, mean_Bs, gamma_BW_Bs, sigma_Bs)
 
 # bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
@@ -236,8 +236,8 @@ N_sig_phi = ROOT.RooRealVar('N_sig_phi', '', 20000., 0., 100000)
 # signal_phi = relBW_phi
 
 
-bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi))
-# bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi))   ## ---- BASELINE
+# bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi))
+bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi))   ## ---- BASELINE
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
 
 # bkgr_phi = ROOT.RooChebychev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext))
