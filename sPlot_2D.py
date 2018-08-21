@@ -24,9 +24,9 @@ fr_Bs.setVal(w_Bs.var('fr_Bs').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs
 mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
 
 sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
-# sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
-# fr_phi.setVal(w_phi.var('fr_phi').getVal());
-gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
+sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
+fr_phi.setVal(w_phi.var('fr_phi').getVal());
+# gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
 # sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
 # sigma_phi.setVal(w_phi.var('sigma_phi').getVal());
 # mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
@@ -82,11 +82,6 @@ sigma_1 = {'X': sigma_X_1.getVal(), 'psi':sigma_psi_1.getVal()}
 sigma_2 = {'X': sigma_X_2.getVal(), 'psi':sigma_psi_2.getVal()}
 sigma_eff = sqrt( fr[mode] * sigma_1[mode]**2 + (1 - fr[mode]) * sigma_2[mode]**2)
 
-# window = 3 * sigma_eff
-# wind_sideband_dist = 2 * sigma_eff
-window = 0.01
-wind_sideband_dist = 0.005
-
 data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
 cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode]))
 
@@ -103,7 +98,7 @@ mean_control[mode].setConstant(1); mean_Bs.setConstant(1); mean_phi.setConstant(
 # N_ss_2D.setConstant(1); N_sb_2D.setConstant(1);
 
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
-# model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
+model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
 
 a1_bb_1.setConstant(1); a2_bb_1.setConstant(1); a3_bb_1.setConstant(1); a4_bb_1.setConstant(1);
 a1_bb_2.setConstant(1); a2_bb_2.setConstant(1); a3_bb_2.setConstant(1); a4_bb_2.setConstant(1);
@@ -111,15 +106,16 @@ a1_bs.setConstant(1); a2_bs.setConstant(1); a3_bs.setConstant(1); a4_bs.setConst
 a1_sb.setConstant(1); a2_sb.setConstant(1); a3_sb.setConstant(1); a4_sb.setConstant(1);
 # N_ss_2D.setConstant(0); N_sb_2D.setConstant(0)
 mean_control[mode].setConstant(0); mean_Bs.setConstant(0); mean_phi.setConstant(0)
-mean_phi.setRange(mean_phi.getVal() - 0.001, mean_phi.getVal() + 0.001)
+# mean_phi.setRange(mean_phi.getVal() - 0.001, mean_phi.getVal() + 0.001)
 
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
-
-mean_phi.setConstant(0);
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
 
-mean_phi.setConstant(1); mean_Bs.setConstant(0)
-model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
+# mean_phi.setConstant(0);
+# model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
+#
+# mean_phi.setConstant(1); mean_Bs.setConstant(0)
+# model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
 
 # mean_phi.setConstant(0); mean_Bs.setConstant(1); N_ss_2D.setConstant(1)
 # a1_bb_1.setConstant(0); a2_bb_1.setConstant(0); a3_bb_1.setConstant(0); a4_bb_1.setConstant(0);
@@ -154,13 +150,13 @@ file_out_data.write(str(N_bs_2D.getVal()) + ' ' + str(N_bs_2D.getError()) + '\n'
 # model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
 # print '\n\n\n\n\n\n\n 3333\n\n' + str(N_ss_2D.getVal()) + '\n\n\n\n\n'
 
-plot_on_frame(var_to_plot[sPlot_from_1], data, model_2D_data, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) from #psi(2S) region', left_from[sPlot_from_1], right_from[sPlot_from_1], nbins_from[sPlot_from_1], plot_param_from[sPlot_from_1], False)
+plot_on_frame(var[sPlot_from_1], data, model_2D_data, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) from #psi(2S) region', left[sPlot_from_1], right[sPlot_from_1], nbins[sPlot_from_1], plot_param[sPlot_from_1], False)
 print '\n\n\n\n\n\n\n 4444\n\n' + str(N_ss_2D.getVal()) + '\n\n\n\n\n'
 
 c_sPlot.cd(2)
 print '\n\n\n\n\n\n\n 5555\n\n' + str(N_ss_2D.getVal()) + '\n\n\n\n\n'
 
-plot_on_frame(var_to_plot[sPlot_from_2], data, model_2D_data, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) from #psi(2S) region', left_from[sPlot_from_2], right_from[sPlot_from_2], nbins_from[sPlot_from_2], plot_param_from[sPlot_from_2], False)
+plot_on_frame(var[sPlot_from_2], data, model_2D_data, 'Data: m(J/#psi#pi^{+}#pi^{-}#phi) from #psi(2S) region', left[sPlot_from_2], right[sPlot_from_2], nbins[sPlot_from_2], plot_param[sPlot_from_2], False)
 print '\n\n\n\n\n\n\n 6666\n\n' + str(N_ss_2D.getVal()) + '\n\n\n\n\n'
 
 
@@ -169,35 +165,35 @@ ROOT.RooStats.SPlot(
     'sData_psi', 'sData_psi', data, model_2D_data,
     ROOT.RooArgList(N_ss_2D, N_bb_2D, N_sb_2D, N_bs_2D)
 )
+
+data_weighted_ss = ROOT.RooDataSet(data.GetName(), data.GetTitle(), data, data.get(), '1 > 0', "N_ss_2D_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+data_weighted_sb = ROOT.RooDataSet(data.GetName(), data.GetTitle(), data, data.get(), '1 > 0', "N_sb_2D_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+data_weighted_bs = ROOT.RooDataSet(data.GetName(), data.GetTitle(), data, data.get(), '1 > 0', "N_bs_2D_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+
 #
-# #
-# data_weighted_ss = ROOT.RooDataSet(data.GetName(), data.GetTitle(), data, data.get(), '1 > 0', "N_ss_2D_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-# data_weighted_sb = ROOT.RooDataSet(data.GetName(), data.GetTitle(), data, data.get(), '1 > 0', "N_sb_2D_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-# data_weighted_bs = ROOT.RooDataSet(data.GetName(), data.GetTitle(), data, data.get(), '1 > 0', "N_bs_2D_sw") ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-#
-# model[sPlot_to].fitTo(data_weighted_ss, RF.Extended(ROOT.kTRUE))
-# model[sPlot_to].fitTo(data_weighted_ss, RF.Extended(ROOT.kTRUE))
-# a1.setConstant(1); a2.setConstant(1); a3.setConstant(1);
-# a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1);
-#
-# model[sPlot_to].fitTo(data_weighted_ss, RF.Extended(ROOT.kTRUE))
-# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
-#
-#
-# c_sPlot.cd(4)
-# file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
-# plot_on_frame(var_to_plot[sPlot_to], data_weighted_ss, model[sPlot_to], 'SS', left_from[sPlot_to], right_from[sPlot_to], nbins_from[sPlot_to], plot_param_from[sPlot_to], False)
-#
-# c_sPlot.cd(5)
-# model[sPlot_to].fitTo(data_weighted_sb, RF.Extended(ROOT.kTRUE))
-# file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
-# plot_on_frame(var_to_plot[sPlot_to], data_weighted_sb, model[sPlot_to], 'SB', left_from[sPlot_to], right_from[sPlot_to], nbins_from[sPlot_to], plot_param_from[sPlot_to], False)
-#
-# c_sPlot.cd(6)
-# model[sPlot_to].fitTo(data_weighted_bs, RF.Extended(ROOT.kTRUE))
-# file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
-# plot_on_frame(var_to_plot[sPlot_to], data_weighted_bs, model[sPlot_to], 'BS', left_from[sPlot_to], right_from[sPlot_to], nbins_from[sPlot_to], plot_param_from[sPlot_to], False)
-#
+model[sPlot_to].fitTo(data_weighted_ss, RF.Extended(ROOT.kTRUE))
+model[sPlot_to].fitTo(data_weighted_ss, RF.Extended(ROOT.kTRUE))
+a1.setConstant(1); a2.setConstant(1); a3.setConstant(1);
+a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1);
+
+model[sPlot_to].fitTo(data_weighted_ss, RF.Extended(ROOT.kTRUE))
+a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
+a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+
+
+c_sPlot.cd(4)
+file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
+plot_on_frame(var[sPlot_to], data_weighted_ss, model[sPlot_to], 'SS', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], plot_param[sPlot_to], False)
+
+c_sPlot.cd(5)
+model[sPlot_to].fitTo(data_weighted_sb, RF.Extended(ROOT.kTRUE))
+file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
+plot_on_frame(var[sPlot_to], data_weighted_sb, model[sPlot_to], 'SB', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], plot_param[sPlot_to], False)
+
+c_sPlot.cd(6)
+model[sPlot_to].fitTo(data_weighted_bs, RF.Extended(ROOT.kTRUE))
+file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
+plot_on_frame(var[sPlot_to], data_weighted_bs, model[sPlot_to], 'BS', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], plot_param[sPlot_to], False)
+
 file_out_data.close()
-# c_sPlot.SaveAs('~/Study/Bs_resonances/' + sPlot_from_1 + '+' + sPlot_from_2 + '->' + sPlot_to + '/' + mode + '_2D.pdf')
+c_sPlot.SaveAs('~/Study/Bs_resonances/' + sPlot_from_1 + '+' + sPlot_from_2 + '->' + sPlot_to + '/' + mode + '_2D.pdf')
