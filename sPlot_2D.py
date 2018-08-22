@@ -23,10 +23,10 @@ gamma_BW_Bs.setVal(w_Bs.var('gamma_BW_Bs').getVal());
 # fr_Bs.setVal(w_Bs.var('fr_Bs').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
 mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
 
-sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
-sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
-fr_phi.setVal(w_phi.var('fr_phi').getVal());
-# gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
+# sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
+# sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
+# fr_phi.setVal(w_phi.var('fr_phi').getVal());
+gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
 # sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
 # sigma_phi.setVal(w_phi.var('sigma_phi').getVal());
 # mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
