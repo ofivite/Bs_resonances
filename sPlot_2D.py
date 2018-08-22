@@ -104,8 +104,10 @@ a1_bb_1.setConstant(1); a2_bb_1.setConstant(1); a3_bb_1.setConstant(1); a4_bb_1.
 a1_bb_2.setConstant(1); a2_bb_2.setConstant(1); a3_bb_2.setConstant(1); a4_bb_2.setConstant(1);
 a1_bs.setConstant(1); a2_bs.setConstant(1); a3_bs.setConstant(1); a4_bs.setConstant(1);
 a1_sb.setConstant(1); a2_sb.setConstant(1); a3_sb.setConstant(1); a4_sb.setConstant(1);
+
 # N_ss_2D.setConstant(0); N_sb_2D.setConstant(0)
-# mean_control[mode].setConstant(0); mean_Bs.setConstant(0); mean_phi.setConstant(0)
+mean_control[mode].setConstant(0);
+# mean_Bs.setConstant(0); mean_phi.setConstant(0)
 # mean_phi.setRange(mean_phi.getVal() - 0.001, mean_phi.getVal() + 0.001)
 
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
