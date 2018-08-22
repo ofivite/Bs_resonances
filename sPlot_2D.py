@@ -27,9 +27,9 @@ mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
 # sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
 # fr_phi.setVal(w_phi.var('fr_phi').getVal());
 gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
-# sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
+sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
 # sigma_phi.setVal(w_phi.var('sigma_phi').getVal());
-# mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
+mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
 mean_phi.setVal(w_phi.var('mean_phi').getVal());
 
 sigma_psi_1.setVal(w_psi.var('sigma_psi_1').getVal()); sigma_psi_2.setVal(w_psi.var('sigma_psi_2').getVal());
@@ -105,7 +105,7 @@ a1_bb_2.setConstant(1); a2_bb_2.setConstant(1); a3_bb_2.setConstant(1); a4_bb_2.
 a1_bs.setConstant(1); a2_bs.setConstant(1); a3_bs.setConstant(1); a4_bs.setConstant(1);
 a1_sb.setConstant(1); a2_sb.setConstant(1); a3_sb.setConstant(1); a4_sb.setConstant(1);
 # N_ss_2D.setConstant(0); N_sb_2D.setConstant(0)
-mean_control[mode].setConstant(0); mean_Bs.setConstant(0); mean_phi.setConstant(0)
+# mean_control[mode].setConstant(0); mean_Bs.setConstant(0); mean_phi.setConstant(0)
 # mean_phi.setRange(mean_phi.getVal() - 0.001, mean_phi.getVal() + 0.001)
 
 model_2D_data.fitTo(data, RF.Extended(ROOT.kTRUE))
