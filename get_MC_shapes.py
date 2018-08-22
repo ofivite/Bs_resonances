@@ -60,7 +60,7 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 ###-----###
 
 mean_phi.setVal(1.0195); mean_phi.setConstant(1);
-# gamma_BW_phi.setVal(0.0042); gamma_BW_phi.setConstant(1);
+gamma_BW_phi.setVal(0.0042); gamma_BW_phi.setConstant(1);
 model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
 a1_phi.setConstant(1); a2_phi.setConstant(1);  mean_phi.setConstant(0);
