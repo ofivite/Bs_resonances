@@ -119,7 +119,7 @@ c_MC_1 = ROOT.TCanvas("c_MC_1", "c_MC_1", 800, 600)
 plot_on_frame(var_discr, data_MC, model_1D_Bs, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}}#phi)', left_discr_MC, right_discr_MC, nbins_discr_MC, plot_discr_param, True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_1, 0, 0 );
 c_MC_1.Update(); c_MC_1.RedrawAxis(); c_MC_1.GetFrame().Draw();
-if not get_MC_N_evts: c_MC_1.SaveAs('~/Study/Bs_resonances/MC_'  + mode + '_fit_results/c_MC_Bs___' + str(mode) + '.pdf')
+# if not get_MC_N_evts: c_MC_1.SaveAs('~/Study/Bs_resonances/MC_'  + mode + '_fit_results/c_MC_Bs___' + str(mode) + '.pdf')
 
 # #
 # c_MC_2 = ROOT.TCanvas("c_MC_2", "c_MC_2", 800, 600)
