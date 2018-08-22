@@ -16,11 +16,11 @@ w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
 w_phi, f_phi = get_workspace('workspace_' + mode + '_phi.root', 'workspace')
 
 
-sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var('sigma_Bs_2').getVal());
+# sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var('sigma_Bs_2').getVal());
 # sigma_Bs_3.setVal(w_Bs.var('sigma_Bs_3').getVal());
-# sigma_Bs.setVal(w_Bs.var('sigma_Bs').getVal());
-# gamma_BW_Bs.setVal(w_Bs.var('gamma_BW_Bs').getVal());
-fr_Bs.setVal(w_Bs.var('fr_Bs').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
+sigma_Bs.setVal(w_Bs.var('sigma_Bs').getVal());
+gamma_BW_Bs.setVal(w_Bs.var('gamma_BW_Bs').getVal());
+# fr_Bs.setVal(w_Bs.var('fr_Bs').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
 mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
 
 sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
