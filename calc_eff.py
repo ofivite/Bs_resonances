@@ -2,7 +2,7 @@ from math import sqrt
 import numpy as np
 
 MC_evtN_var = 'phi'
-is2D = True
+is2D = False
 subtract_X, subtract_psi = (False, False) if not is2D else (False, False)
 
 sPlot_from, sPlot_to, N = (['Bs+phi', 'Bs+phi'], ['control', 'control'], 6) if is2D else (['Bs', 'Bs'], ['phi', 'phi'], 4)

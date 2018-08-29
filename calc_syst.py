@@ -1,6 +1,6 @@
 from math import sqrt
 
-b = 0.058 ## used to be 0.057 for some reason. 0.058 is for the ci 028fc
+b = 0.057 ## used to be 0.057 for some reason. 0.058 is for the ci 028fc; now it is indeed 0.057, but before it was 0.058 (hmm)
 MC_variable = 0.06
 MC_stat = b + 0.001  ## rounding ???????? originally 0.0014826768
 phi_sig_model = 0.053
