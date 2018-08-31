@@ -128,7 +128,7 @@ CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
 ##  Draw lines  ##
 #----------------#
 
-y_sdb_l = {'control': 950 if mode == 'X' else 1750}; y_sig = {'control': 1220 if mode == 'X' else 2400 }; y_sdb_r = {'control': 1290 if mode == 'X' else 2750 };
+y_sdb_l = {'control': 950 if mode == 'X' else 1750}; y_sig = {'control': 1280 if mode == 'X' else 2400 }; y_sdb_r = {'control': 1420 if mode == 'X' else 2750 };
 line_width = 4
 
 line_ll_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, y_sdb_l['control'])
