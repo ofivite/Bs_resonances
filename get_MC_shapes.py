@@ -110,7 +110,7 @@ if not get_MC_N_evts:
     save_in_workspace(f_out, pdf = [model_control])  #   signal_X
     f_out.Close()
 
-
+#
 if get_MC_N_evts: file_out_MC.close()
 
 ###-----###

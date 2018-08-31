@@ -435,7 +435,7 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     if refl_ON: model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44));
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
 
-    frame.GetYaxis().SetTitle('Candidates / ' + str(int((right - left) / nbins * 1000.)) + ' MeV')
+    frame.GetYaxis().SetTitle('Candidates / ' + str(int(round((right - left) * 1000. / nbins, 0))) + ' MeV')
     frame.GetXaxis().SetTitleSize(0.04)
     frame.GetYaxis().SetTitleSize(0.04)
     frame.GetXaxis().SetLabelSize(0.033)
