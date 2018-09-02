@@ -5,8 +5,9 @@ from RooSpace import *
 CMS_tdrStyle_lumi.extraText       = "Simulation Preliminary"
 CMS_tdrStyle_lumi.setTDRStyle()
 
-wind = 0.015300207788743353
-wind_sideband_dist = 0.010200138525828902
+# wind = 0.015300207788743353
+wind = 0.0098 * 3
+wind_sideband_dist = 0.0098 * 2
 mean = 3.6862420523971746
 
 # file_B0_refl = ROOT.TFile('~/Study/Bs_resonances/SimpleFileMC_b715x_0_14000_BdToPsiKstar_wo_phi_match_v6_488_496_1245c8f.root')
