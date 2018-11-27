@@ -3,8 +3,8 @@ from cuts import *
 from math import sqrt
 
 
-# file_data = ROOT.TFile('new_noKaon_fabs_with_pt&eta_979cfd3.root')
-file_data = ROOT.TFile('~/Study/Bs_resonances_ML/masses_tree_RF_0p9_both.root')
+file_data = ROOT.TFile('new_noKaon_fabs_with_pt&eta_979cfd3.root')
+# file_data = ROOT.TFile('~/Study/Bs_resonances_ML/masses_tree_RF_0p9_both.root')
 # file_data = ROOT.TFile('new_noKaon_fabs_76e92fd.root')
 # file_data = ROOT.TFile('new_noKaon_9988200.root')
 # file_data = ROOT.TFile('new.root')
@@ -107,8 +107,9 @@ wind_sideband_dist = 0.005 if sPlot_cut == 'phi' else 2*sigma_eff
 
 # data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
 # cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode]))
-data = ROOT.RooDataSet('data', '', file_data.Get('masses_tree'), ROOT.RooArgSet(var_discr, var_control, PHI_mass_Cjp),
-        cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data)
+data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
+cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode]))
+
 
 # data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
 
