@@ -153,7 +153,7 @@ line_ll_sdb.SetLineColor(ROOT.kBlue-8); line_lr_sdb.SetLineColor(ROOT.kBlue-8); 
 line_ll_sdb.Draw(); line_lr_sdb.Draw(); line_rl_sdb.Draw(); line_rr_sdb.Draw(); line_l_sig.Draw(); line_r_sig.Draw()
 
 c_inclus.Update(); c_inclus.RedrawAxis(); # c_inclus.GetFrame().Draw();
-# c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(mode) + refl_line + '.pdf')
+c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(mode) + refl_line + '.pdf')
 ###
 
 
@@ -168,7 +168,7 @@ data_sideband = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' - ' + s
 # data_sig = data
 # data_sideband = data
 
-if refl_ON and mode == 'psi':  N_B0_refl.setVal(200.); N_B0_refl.setConstant(0)
+if refl_ON and mode == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
 else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
             #-------------#
@@ -187,6 +187,8 @@ model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
 a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
 a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 
 
 # w = ROOT.RooWorkspace("w", True)
@@ -219,7 +221,7 @@ a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setC
 plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False)
 
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
-# c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
+c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
 
             #--------------#
             ##  sPlot II  ##
@@ -252,7 +254,7 @@ plot_on_frame(var[sPlot_to], data_sig_weighted, model[sPlot_to], ' ', left[sPlot
 
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
 # c_sPlot_2.GetFrame().Draw();
-# c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
+c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
 
 
 # ###---- Significance ----####
@@ -307,7 +309,7 @@ plot_on_frame(var[sPlot_from], data_sideband, model[sPlot_from], '', left[sPlot_
 
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_3, 2, 0 );
 c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
-# c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_3_' + str(mode) + refl_line + '.pdf')
+c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_3_' + str(mode) + refl_line + '.pdf')
 
             #--------------#
             ##  sPlot IV  ##
@@ -339,4 +341,4 @@ a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setC
 plot_on_frame(var[sPlot_to], data_side_weighted, model[sPlot_to], '', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], None, False)
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_4, 2, 0 );
 c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
-# c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_4_' + str(mode) + refl_line + '.pdf')
+c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_4_' + str(mode) + refl_line + '.pdf')
