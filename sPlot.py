@@ -3,7 +3,7 @@ from cuts import *
 from math import sqrt
 
 
-file_data = ROOT.TFile('new_noKaon_fabs_with_pt&eta_979cfd3.root')
+file_data = ROOT.TFile('new_2_with_more_3dcbf2.root')
 # file_data = ROOT.TFile('~/Study/Bs_resonances_ML/masses_tree_RF_0p9_both.root')
 # file_data = ROOT.TFile('new_noKaon_fabs_76e92fd.root')
 # file_data = ROOT.TFile('new_noKaon_9988200.root')
@@ -168,7 +168,7 @@ data_sideband = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' - ' + s
 # data_sig = data
 # data_sideband = data
 
-if refl_ON and mode == 'psi':  N_B0_refl.setVal(200.); N_B0_refl.setConstant(0)
+if refl_ON and mode == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
 else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
             #-------------#
@@ -187,33 +187,35 @@ model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
 a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
 a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 
 
-w = ROOT.RooWorkspace("w", True)
-Import = getattr(ROOT.RooWorkspace, 'import')
-Import(w, model[sPlot_from])
-mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-mc.SetPdf(w.pdf(model[sPlot_from].GetName()))
-mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
-# w.var("N_sig_X").setError(20.)
-mc.SetObservables(ROOT.RooArgSet(w.var(var[sPlot_from].GetName())))
-mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var(N_bkgr[sPlot_from].GetName()), w.var(mean[sPlot_from].GetName())))
-mc.SetSnapshot(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
-Import(w, mc)
-
-sbModel = w.obj("ModelConfig")
-sbModel.SetName("S+B_model")
-poi = sbModel.GetParametersOfInterest().first()
-bModel = sbModel.Clone()
-bModel.SetName("B_only_model")
-oldval = poi.getVal()
-poi.setVal(0)
-bModel.SetSnapshot(ROOT.RooArgSet(poi))
-poi.setVal(oldval)
-ac = ROOT.RooStats.AsymptoticCalculator(data_sig, sbModel, bModel)
-ac.SetOneSidedDiscovery(True)
-asResult = ac.GetHypoTest()
-asResult.Print()
+# w = ROOT.RooWorkspace("w", True)
+# Import = getattr(ROOT.RooWorkspace, 'import')
+# Import(w, model[sPlot_from])
+# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
+# mc.SetPdf(w.pdf(model[sPlot_from].GetName()))
+# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
+# # w.var("N_sig_X").setError(20.)
+# mc.SetObservables(ROOT.RooArgSet(w.var(var[sPlot_from].GetName())))
+# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var(N_bkgr[sPlot_from].GetName()), w.var(mean[sPlot_from].GetName())))
+# mc.SetSnapshot(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
+# Import(w, mc)
+#
+# sbModel = w.obj("ModelConfig")
+# sbModel.SetName("S+B_model")
+# poi = sbModel.GetParametersOfInterest().first()
+# bModel = sbModel.Clone()
+# bModel.SetName("B_only_model")
+# oldval = poi.getVal()
+# poi.setVal(0)
+# bModel.SetSnapshot(ROOT.RooArgSet(poi))
+# poi.setVal(oldval)
+# ac = ROOT.RooStats.AsymptoticCalculator(data_sig, sbModel, bModel)
+# ac.SetOneSidedDiscovery(True)
+# asResult = ac.GetHypoTest()
+# asResult.Print()
 
 # file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
 plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False)
