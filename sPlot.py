@@ -129,6 +129,10 @@ model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
 plot_on_frame(var[sPlot_cut], data, model[sPlot_cut], '', left[sPlot_cut], right[sPlot_cut], nbins[sPlot_cut], None, False)
 CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
 
+f_control = ROOT.TFile('workspace_' + mode + '_control_floatparam.root', 'recreate')
+save_in_workspace(f_control, pdf = [model_control])  #   signal_X
+f_control.Close()
+
 #----------------#
 ##  Draw lines  ##
 #----------------#
@@ -223,6 +227,12 @@ plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from]
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
 
+
+f_1 = ROOT.TFile('workspace_' + mode + '_Bs_floatparam.root', 'recreate')
+save_in_workspace(f_1, pdf = [model[sPlot_from]])  #   signal_X
+f_1.Close()
+
+
             #--------------#
             ##  sPlot II  ##
             #--------------#
@@ -255,6 +265,10 @@ plot_on_frame(var[sPlot_to], data_sig_weighted, model[sPlot_to], ' ', left[sPlot
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
 # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
+
+f_2 = ROOT.TFile('workspace_' + mode + '_phi_floatparam.root', 'recreate')
+save_in_workspace(f_2, pdf = [model[sPlot_to]])  #   signal_X
+f_2.Close()
 
 
 # ###---- Significance ----####
