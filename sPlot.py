@@ -47,22 +47,22 @@ fr_X.setVal(w_X.var('fr_X').getVal()); # fr_X_1.setVal(w_X.var('fr_X_1').getVal(
 mean_X.setVal(w_X.var('mean_X').getVal());
 
 
-# sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
-# sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
-# fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
-#
-# sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
-# sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-# gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
-# fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
-#
-# sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1);
-# sigma_psi.setConstant(1); gamma_BW_psi.setConstant(1)
-# fr_psi.setConstant(1);  fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
-#
-# sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1);
-# sigma_X.setConstant(1); gamma_BW_X.setConstant(1)
-# fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
+sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
+sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
+fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
+
+sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
+sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
+gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
+fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
+
+sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1);
+sigma_psi.setConstant(1); gamma_BW_psi.setConstant(1)
+fr_psi.setConstant(1);  fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
+
+sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1);
+sigma_X.setConstant(1); gamma_BW_X.setConstant(1)
+fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
 
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
@@ -108,7 +108,7 @@ wind_sideband_dist = 0.005 if sPlot_cut == 'phi' else 2*sigma_eff
 # data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
 # cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode]))
 data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
-cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode]))
+cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data )) # + ' && ' + cuts_pipi[mode]
 
 
 # data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
@@ -129,9 +129,9 @@ model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
 plot_on_frame(var[sPlot_cut], data, model[sPlot_cut], '', left[sPlot_cut], right[sPlot_cut], nbins[sPlot_cut], None, False)
 CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
 
-f_control = ROOT.TFile('workspace_' + mode + '_control_floatparam.root', 'recreate')
-save_in_workspace(f_control, pdf = [model_control])  #   signal_X
-f_control.Close()
+# f_control = ROOT.TFile('workspace_' + mode + '_control_floatparam.root', 'recreate')
+# save_in_workspace(f_control, pdf = [model_control])  #   signal_X
+# f_control.Close()
 
 #----------------#
 ##  Draw lines  ##
@@ -225,12 +225,12 @@ a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setC
 plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False)
 
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
-# c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
+c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '_wo_pipi_cut.pdf')
 
 
-f_1 = ROOT.TFile('workspace_' + mode + '_Bs_floatparam.root', 'recreate')
-save_in_workspace(f_1, pdf = [model[sPlot_from]])  #   signal_X
-f_1.Close()
+# f_1 = ROOT.TFile('workspace_' + mode + '_Bs_floatparam.root', 'recreate')
+# save_in_workspace(f_1, pdf = [model[sPlot_from]])  #   signal_X
+# f_1.Close()
 
 
             #--------------#
@@ -264,11 +264,11 @@ plot_on_frame(var[sPlot_to], data_sig_weighted, model[sPlot_to], ' ', left[sPlot
 
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
 # c_sPlot_2.GetFrame().Draw();
-# c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
+c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '_wo_pipi_cut.pdf')
 
-f_2 = ROOT.TFile('workspace_' + mode + '_phi_floatparam.root', 'recreate')
-save_in_workspace(f_2, pdf = [model[sPlot_to]])  #   signal_X
-f_2.Close()
+# f_2 = ROOT.TFile('workspace_' + mode + '_phi_floatparam.root', 'recreate')
+# save_in_workspace(f_2, pdf = [model[sPlot_to]])  #   signal_X
+# f_2.Close()
 
 
 # ###---- Significance ----####
