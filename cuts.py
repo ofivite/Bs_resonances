@@ -1,5 +1,5 @@
 mode = 'psi'
-refl_ON = False
+refl_ON = True
 get_MC_N_evts = False
 
 ### ----------      options are Bs, phi, control
