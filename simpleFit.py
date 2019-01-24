@@ -104,3 +104,8 @@ plot_on_frame(var_to_fit, data, model_to_fit, 'MC: m(K^{+}K^{#font[122]{\55}})',
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_3, 0, 0 );
 c_MC_3.Update(); c_MC_3.RedrawAxis(); c_MC_3.GetFrame().Draw();
 c_MC_3.SaveAs('~/Study/Bs_resonances/delta_gen_mass_phi.pdf')
+
+
+f_out = ROOT.TFile('workspace_psi_delta_gen_phi.root', 'recreate')
+save_in_workspace(f_out, pdf = [model_to_fit])  #   signal_X
+f_out.Close()
