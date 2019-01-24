@@ -11,6 +11,8 @@ sPlot_to_text = mode if sPlot_to == 'control' else sPlot_to
 refl_line = '_refl' if refl_ON else ''
 # gStyle.SetTitleFontSize(.085)
 
+left_jpsi = 3.094 - 0.1; right_jpsi = 3.094 + 0.1; nbins_jpsi = 100
+
 left_discr_data =  5.3669 - 0.2; right_discr_data = 5.3669 + 0.2; nbins_discr_data = 40
 left_discr_MC =  5.3669 - 0.035; right_discr_MC = 5.3669 + 0.035; nbins_discr_MC = 35
 

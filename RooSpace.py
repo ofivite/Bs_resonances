@@ -11,6 +11,10 @@ var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}
 var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
 PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0.2, 1.2)
 PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
+jpsi_mass = ROOT.RooRealVar('JPSI_mass_Cmumu', 'm(#mu^{+}#mu^{-}) [GeV]', 1., 4.)
+gen_phi_mass = ROOT.RooRealVar('gen_phi_mass', 'm_{gen}(K^{+}K^{-}) [GeV]', 0., 3.)
+delta_phi_mass = ROOT.RooRealVar('delta_phi_mass', 'm(K^{+}K^{-}) - m_{gen}(K^{+}K^{-}) [GeV]', -0.1, 0.1)
+
 SAMEEVENT = ROOT.RooRealVar('SAMEEVENT', 'SAMEEVENT', 0., 2.)
 
 mu_max_pt = ROOT.RooRealVar('mu_max_pt', 'p_{T}^{max}(#mu) [GeV]', 0., 400.)
@@ -322,10 +326,10 @@ model_control = control_models[mode]
 N_control = {'X': N_sig_X, 'psi': N_sig_psi}
 mean_control = {'X': mean_X, 'psi': mean_psi}
 
-var = {'Bs': var_discr, 'phi': PHI_mass_Cjp, 'control': var_control}
-left = {'Bs': left_discr_data, 'phi': left_phi_data, 'control': left_control_data}
-right = {'Bs': right_discr_data, 'phi': right_phi_data, 'control': right_control_data}
-nbins = {'Bs': nbins_discr_data, 'phi': nbins_phi_data, 'control': nbins_control_data}
+var = {'Bs': var_discr, 'phi': PHI_mass_Cjp, 'control': var_control, 'jpsi': nbins_jpsi}
+left = {'Bs': left_discr_data, 'phi': left_phi_data, 'control': left_control_data, 'jpsi': left_jpsi}
+right = {'Bs': right_discr_data, 'phi': right_phi_data, 'control': right_control_data, 'jpsi': right_jpsi}
+nbins = {'Bs': nbins_discr_data, 'phi': nbins_phi_data, 'control': nbins_control_data, 'jpsi': nbins_jpsi}
 
 model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
 signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
@@ -411,11 +415,11 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     # else:
     #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
-    # model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
+    model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
     # frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
     floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
-    print '\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30*'>' + '\n\n'
+    print('\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30* '>' + '\n\n')
 
     model.plotOn(frame, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
     model.plotOn(frame, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4));
@@ -471,15 +475,15 @@ def save_in_workspace(rfile, **argsets):
     workspace = ROOT.RooWorkspace('workspace', 'Workspace saved at %s' % get_timestamp())
     keys = argsets.keys()
     for key in keys:
-        print 'Importing RooFit objects in %s list.' % key
+        print ('Importing RooFit objects in %s list.' % key)
         for arg in argsets[key]:
             try:
                 _import(workspace, arg)
             except TypeError:
-                print type(arg), arg
+                print (type(arg), arg)
                 traceback.print_exc()
     rfile.WriteTObject(workspace)
-    print 'Saving arguments to file: %s' % rfile.GetName()
+    print ('Saving arguments to file: %s' % rfile.GetName())
 
 
 def get_workspace(fname, wname):
