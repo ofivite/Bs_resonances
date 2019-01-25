@@ -31,22 +31,7 @@ data = data.reduce(cuts_match_ID[mode] + '&&' + 'TMath::Min(dR_mu1, dR_mu1_vv) <
 # signal_phi = ROOT.RooFFTConvPdf('relBWxGauss', '', PHI_mass_Cjp, relBW_phi, gauss_phi)
 # signal_phi = ROOT.RooFFTConvPdf('relBWxBW', '', PHI_mass_Cjp, relBW_phi, BW_phi)
 
-mean_delta = ROOT.RooRealVar("mean_delta", "", 0., -0.1, 0.1)
-# sigma_X = ROOT.RooRealVar("sigma_X", "", 0.005, 0.001, 0.1)
-sigma_delta_1 = ROOT.RooRealVar("sigma_delta_1", "", 0.005, 0.0001, 0.02)
-sigma_delta_2 = ROOT.RooRealVar("sigma_delta_2", "", 0.005, 0.0001, 0.02)
-
-fr_delta = ROOT.RooRealVar('fr_delta', 'fr_delta', 0.5 , 0., 1.)
-# fr_X_1 = ROOT.RooRealVar('fr_X_1', 'fr_X_1', 0.5 , 0., 1.)
-# fr_X_2 = ROOT.RooRealVar('fr_X_2', 'fr_X_2', 0.5 , 0., 1.)
-N_sig_delta = ROOT.RooRealVar('N_sig_delta', '', 20000., 0., 400000)
-N_sig_delta_1 = ROOT.RooFormulaVar('N_sig_delta_1', 'N_sig_delta * fr_delta', ROOT.RooArgList(N_sig_delta, fr_delta))
-N_sig_delta_2 = ROOT.RooFormulaVar('N_sig_delta_2', 'N_sig_delta * (1-fr_delta)', ROOT.RooArgList(N_sig_delta, fr_delta))
-
-sig_delta_1 = ROOT.RooGaussian("sig_delta_1", "", var_to_fit, mean_delta, sigma_delta_1)
-sig_delta_2 = ROOT.RooGaussian("sig_delta_2", "", var_to_fit, mean_delta, sigma_delta_2)
 signal_delta = ROOT.RooAddPdf("signal_delta", "signal_delta", ROOT.RooArgList(sig_delta_1, sig_delta_2), ROOT.RooArgList(fr_delta))  ## ---- BASELINE
-
 
 N_sig_phi = ROOT.RooRealVar('N_sig_phi', '', 200000., 0., 400000)
 bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', var_to_fit, ROOT.RooArgList(a1, a2))   ## ---- BASELINE
