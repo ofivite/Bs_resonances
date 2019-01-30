@@ -1,7 +1,7 @@
 from RooSpace import *
 from cuts import *
 
-files_MC = {'X': 'BsToXPhi_Smatch_v1_min_e233994.root', 'psi':'BsToPsiPhi_Smatch_v1_pair_dR_phi_genmass.root'}
+files_MC = {'X': 'BsToXPhi_Smatch_v1_pair_dR_phi_genmass.root', 'psi':'BsToPsiPhi_Smatch_v1_pair_dR_phi_genmass.root'}
 # files_MC = {'X': 'BsToXPhi_Smatch_v1_min_e233994.root', 'psi':'BsToPsiPhi_Smatch_v1_min_e4a2edf.root'}
 # files_MC = {'X': 'BsToXPhi_step3_6c21fba.root', 'psi':'BsToPsiPhi_step3_4a91161.root'}
 # files_MC = {'X': 'BsToXPhi_matched_all_1892449.root', 'psi':'BsToPsiPhi_matched_all_1519f1b.root'}
