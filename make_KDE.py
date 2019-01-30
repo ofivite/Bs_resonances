@@ -19,11 +19,11 @@ data_B0_refl = ( ROOT.RooDataSet('data_B0_refl', 'data_B0_refl', file_B0_refl.Ge
 
 print (data_B0_refl.sumEntries())
 
-var_discr.setMin(5.32); var_discr.setMax(5.42); var_discr.setBins(40)
-# PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC); PHI_mass_Cjp.setBins(nbins_phi_MC)
+# var_discr.setMin(5.32); var_discr.setMax(5.42); var_discr.setBins(40)
+PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC); PHI_mass_Cjp.setBins(nbins_phi_MC)
 
 ###
-var_KDE = var_discr
+var_KDE = PHI_mass_Cjp
 ###
 
 B0_refl_SR = ROOT.RooKeysPdf("B0_refl_SR", "B^{0} to #psi(2S)K^{*}(892)^{0} reflection", var_KDE, data_B0_refl.reduce('TMath::Abs(X_mass_Cjp -' + str(mean) + ')<' + str(wind)), ROOT.RooKeysPdf.MirrorBoth, 1.)
@@ -40,4 +40,4 @@ plot_on_frame(var_KDE, data_B0_refl.reduce('TMath::Abs(X_mass_Cjp -' + str(mean)
 CMS_tdrStyle_lumi.CMS_lumi( c_refl, 0, 0 );
 c_refl.Update(); c_refl.RedrawAxis(); c_refl.GetFrame().Draw();
 
-# c_refl.SaveAs('~/Study/Bs_resonances/B0_psi_Kstar_refl_KDE_rho1.pdf')
+c_refl.SaveAs('~/Study/Bs_resonances/B0_psi_Kstar_refl_KDE_rho1_KKmass.pdf')
