@@ -13,6 +13,15 @@ w_Bs, f_Bs = get_workspace('workspace_' + mode + '_Bs.root', 'workspace')
 w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
 w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
 w_phi, f_phi = get_workspace('workspace_' + mode + '_phi.root', 'workspace')
+w_delta_phi, f_delta_phi = get_workspace('workspace_' + mode + '_delta_gen_phi_dRmatched.root', 'workspace')
+
+mean_phi.setVal(1.0195); #mean_phi.setConstant(1);
+# sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
+# sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
+# sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
+# fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
+
+gamma_BW_phi.setVal(0.0042); gamma_BW_phi.setConstant(0)
 
 
 sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var('sigma_Bs_2').getVal());
@@ -46,6 +55,9 @@ sigma_X_1.setVal(w_X.var('sigma_X_1').getVal()); sigma_X_2.setVal(w_X.var('sigma
 fr_X.setVal(w_X.var('fr_X').getVal()); # fr_X_1.setVal(w_X.var('fr_X_1').getVal()); fr_X_2.setVal(w_X.var('fr_X_2').getVal());
 mean_X.setVal(w_X.var('mean_X').getVal());
 
+sigma_delta_1.setVal(w_delta_phi.var('sigma_delta_1').getVal());  sigma_delta_2.setVal(w_delta_phi.var('sigma_delta_2').getVal());
+fr_delta.setVal(w_delta_phi.var('fr_delta').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
+# mean_delta.setVal(w_delta_phi.var('mean_delta').getVal());
 
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
 sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
@@ -63,6 +75,9 @@ fr_psi.setConstant(1);  fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
 sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1);
 sigma_X.setConstant(1); gamma_BW_X.setConstant(1)
 fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
+
+sigma_delta_1.setConstant(1); sigma_delta_2.setConstant(1); fr_delta.setConstant(1);
+mean_delta.setVal(0.); mean_delta.setConstant(1)
 
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
@@ -84,6 +99,16 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 # mean_control = {'X': mean_X, 'psi': mean_psi}
 
 ###-----###
+
+sig_delta_1 = ROOT.RooGaussian("sig_delta_1", "", PHI_mass_Cjp, mean_delta, sigma_delta_1)
+sig_delta_2 = ROOT.RooGaussian("sig_delta_2", "", PHI_mass_Cjp, mean_delta, sigma_delta_2)
+signal_delta = ROOT.RooAddPdf("signal_delta", "signal_delta", ROOT.RooArgList(sig_delta_1, sig_delta_2), ROOT.RooArgList(fr_delta))
+
+signal_phi = ROOT.RooFFTConvPdf('resolxrelBW', '', PHI_mass_Cjp, relBW_phi, signal_delta)
+model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
+
+model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
+signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
 
 
     ##   -----------------------------    ##
