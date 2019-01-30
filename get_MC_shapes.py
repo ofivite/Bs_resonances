@@ -91,6 +91,9 @@ if get_MC_N_evts:
 
     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
+    a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+    model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
+
     # file_out_MC.write(str(N_sig_phi.getVal()) + ' ' + str(N_sig_phi.getError()) + '\n')
 
 if not get_MC_N_evts:
