@@ -15,14 +15,6 @@ w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
 w_phi, f_phi = get_workspace('workspace_' + mode + '_phi.root', 'workspace')
 w_delta_phi, f_delta_phi = get_workspace('workspace_' + mode + '_delta_gen_phi_dRmatched.root', 'workspace')
 
-mean_phi.setVal(1.0195); #mean_phi.setConstant(1);
-# sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
-# sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-# sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
-# fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
-
-gamma_BW_phi.setVal(0.0042); gamma_BW_phi.setConstant(0)
-
 
 sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var('sigma_Bs_2').getVal());
 # sigma_Bs_3.setVal(w_Bs.var('sigma_Bs_3').getVal());
@@ -408,12 +400,21 @@ data_simult = ROOT.RooDataSet("data_simult", "data_simult", ROOT.RooArgSet(PHI_m
                   RF.Index(cat),
                   RF.Import("SR", data_sig), RF.Import("Sidebands", data_sideband), RF.WeightVar(N_sig_Bs_sw))
 
-mean_phi.setVal(1.019); mean_phi.setConstant(1)
+# mean_phi.setVal(1.0196); mean_phi.setConstant(1)
+gamma_BW_phi.setVal(0.004); gamma_BW_phi.setConstant(0)
+
+# if mode == 'X':
+#     N_sig_SR.setVal(110);  N_sig_SR.setConstant(1)
+#     delta_N_sig.setVal(110);  delta_N_sig.setConstant(1)
+
 model_simult.fitTo(data_simult, RF.Extended(True))
 model_simult.fitTo(data_simult, RF.Extended(True))
 mean_phi.setConstant(0)
 a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+N_sig_SR.setConstant(0); delta_N_sig.setConstant(0)
+
 model_simult.fitTo(data_simult, RF.Extended(True))
+
 
 # plot
 frame_SR = PHI_mass_Cjp.frame(RF.Title("SR"))
