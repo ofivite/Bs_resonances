@@ -34,6 +34,7 @@ pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
 
 BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
 BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
+BU_reflmass_PP_Cjp = ROOT.RooRealVar('BU_reflmass_PP_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 4.1, 5.6)
 
 PHI_mass_Cjp.setBins(10000, "cache")
 # PHI_mass_Cjp.setBins(nbins_phi_data)
