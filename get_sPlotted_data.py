@@ -3,7 +3,7 @@ from cuts import *
 from math import sqrt
 
 
-file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
+file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root') # BsToPsiPhi_Smatch_v1_pair_dR_phi_genmass
 
 w_Bs, f_Bs = get_workspace('workspace_' + mode + '_Bs.root', 'workspace')
 w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
@@ -53,7 +53,7 @@ fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
 
 sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
 sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
+# gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
 fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
 
 sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1);
@@ -121,55 +121,8 @@ wind_sideband_dist = 0.005 if sPlot_cut == 'phi' else 2*sigma_eff
 # data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
 # cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode]))
 data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
-cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[mode]))
-
-
+cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[mode] + ' && ' + cut_phi_window))
 # data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
-
-#---------------#
-##  Inclusive  ##
-#---------------#
-
-# c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
-
-mean[sPlot_cut].setConstant(1);
-model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
-model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
-mean[sPlot_cut].setConstant(0);
-model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
-
-
-# plot_on_frame(var[sPlot_cut], data, model[sPlot_cut], '', left[sPlot_cut], right[sPlot_cut], nbins[sPlot_cut], None, False)
-# CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
-
-
-#----------------#
-##  Draw lines  ##
-#----------------#
-
-y_sdb_l = {'control': 950 if mode == 'X' else 1750}; y_sig = {'control': 1280 if mode == 'X' else 2400 }; y_sdb_r = {'control': 1420 if mode == 'X' else 2750 };
-line_width = 4
-
-line_ll_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, y_sdb_l['control'])
-line_lr_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - window - wind_sideband_dist, y_sdb_l['control'])
-line_rl_sdb = ROOT.TLine(mean[sPlot_cut].getVal() + 2.*window + wind_sideband_dist, 0, mean[sPlot_cut].getVal() + 2.*window + wind_sideband_dist, y_sdb_r['control'])
-line_rr_sdb = ROOT.TLine(mean[sPlot_cut].getVal() + window + wind_sideband_dist, 0, mean[sPlot_cut].getVal() + window + wind_sideband_dist, y_sdb_r['control'])
-line_l_sig = ROOT.TLine(mean[sPlot_cut].getVal() - window, 0, mean[sPlot_cut].getVal() - window, y_sig['control'])
-line_r_sig = ROOT.TLine(mean[sPlot_cut].getVal() + window, 0, mean[sPlot_cut].getVal() + window, y_sig['control'])
-
-#
-line_ll_sdb.SetLineWidth(line_width); line_lr_sdb.SetLineWidth(line_width); line_rl_sdb.SetLineWidth(line_width); line_rr_sdb.SetLineWidth(line_width);
-line_l_sig.SetLineWidth(line_width); line_r_sig.SetLineWidth(line_width);
-#
-line_l_sig.SetLineColor(47); line_r_sig.SetLineColor(47)
-line_ll_sdb.SetLineColor(ROOT.kBlue-8); line_lr_sdb.SetLineColor(ROOT.kBlue-8); line_rl_sdb.SetLineColor(ROOT.kBlue-8); line_rr_sdb.SetLineColor(ROOT.kBlue-8);
-#
-# line_ll_sdb.Draw(); line_lr_sdb.Draw(); line_rl_sdb.Draw(); line_rr_sdb.Draw(); line_l_sig.Draw(); line_r_sig.Draw()
-#
-# c_inclus.Update(); c_inclus.RedrawAxis(); # c_inclus.GetFrame().Draw();
-# c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(mode) + refl_line + '.pdf')
-###
-
 
 # ---------------------#
 # #  SR/SdR division  ##
@@ -189,7 +142,7 @@ else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
             ##  sPlot I  ##
             #-------------#
 
-# c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
+c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
 
 model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
@@ -204,38 +157,10 @@ a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setC
 # model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 # model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 
+plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], ' ', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False)
 
-# w = ROOT.RooWorkspace("w", True)
-# Import = getattr(ROOT.RooWorkspace, 'import')
-# Import(w, model[sPlot_from])
-# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-# mc.SetPdf(w.pdf(model[sPlot_from].GetName()))
-# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
-# # w.var("N_sig_X").setError(20.)
-# mc.SetObservables(ROOT.RooArgSet(w.var(var[sPlot_from].GetName())))
-# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var(N_bkgr[sPlot_from].GetName()), w.var(mean[sPlot_from].GetName())))
-# mc.SetSnapshot(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
-# Import(w, mc)
-#
-# sbModel = w.obj("ModelConfig")
-# sbModel.SetName("S+B_model")
-# poi = sbModel.GetParametersOfInterest().first()
-# bModel = sbModel.Clone()
-# bModel.SetName("B_only_model")
-# oldval = poi.getVal()
-# poi.setVal(0)
-# bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# poi.setVal(oldval)
-# ac = ROOT.RooStats.AsymptoticCalculator(data_sig, sbModel, bModel)
-# ac.SetOneSidedDiscovery(True)
-# asResult = ac.GetHypoTest()
-# asResult.Print()
-
-# file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
-# plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False)
-
-# CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
-# c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
+CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis();
+c_sPlot_1.GetFrame().Draw();
 
 
             #--------------#
@@ -244,13 +169,17 @@ a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setC
 
 sPlot_list = ROOT.RooArgList(N[sPlot_from], N_bkgr[sPlot_from], N_B0_refl) if sPlot_from == 'Bs' else ROOT.RooArgList(N[sPlot_from], N_bkgr[sPlot_from])
 sData_Bs_psi_sig = ROOT.RooStats.SPlot('sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model[sPlot_from], sPlot_list)
-# data_sig_weighted = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N[sPlot_from].GetName() + '_sw') ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+data_sig_weighted_s = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N[sPlot_from].GetName() + '_sw') ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+data_sig_weighted_b = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N_bkgr[sPlot_from].GetName() + '_sw') ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
 
-data_sig_weighted_unbinned = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N[sPlot_from].GetName() + '_sw') ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-data_sig_weighted = ROOT.RooDataHist(data_sig.GetName(), data_sig.GetTitle(), ROOT.RooArgSet(PHI_mass_Cjp), data_sig_weighted_unbinned)
+data_sig_weighted_s.SaveAs('psi_data_sPlot_sig.root')
+data_sig_weighted_b.SaveAs('psi_data_sPlot_bkgr.root')
+
+# data_sig_weighted_unbinned = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N[sPlot_from].GetName() + '_sw') ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+# data_sig_weighted = ROOT.RooDataHist(data_sig.GetName(), data_sig.GetTitle(), ROOT.RooArgSet(PHI_mass_Cjp), data_sig_weighted_unbinned)
 ##########
 
-# c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600)
+c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600)
 
 # model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
 # model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
@@ -262,40 +191,11 @@ data_sig_weighted = ROOT.RooDataHist(data_sig.GetName(), data_sig.GetTitle(), RO
 # a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
 # a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
 # a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
-
+#
 
 # file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
 # plot_on_frame(var[sPlot_to], data_sig_weighted, model[sPlot_to], ' ', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], None, False)
 
-# CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
-# c_sPlot_2.GetFrame().Draw();
+CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
+c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
-
-
-# ###---- Significance ----####
-#
-# w = ROOT.RooWorkspace("w", True)
-# Import = getattr(ROOT.RooWorkspace, 'import')
-# Import(w, model_control)
-# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-# mc.SetPdf(w.pdf(model_control.GetName()))
-# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
-# # w.var("N_sig_X").setError(20.)
-# mc.SetObservables(ROOT.RooArgSet(w.var("X_mass_Cjp")))
-# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var("N_bkgr_control"), w.var(mean_control[mode].GetName())))
-# mc.SetSnapshot(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
-# Import(w, mc)
-#
-# sbModel = w.obj("ModelConfig")
-# sbModel.SetName("S+B_model")
-# poi = sbModel.GetParametersOfInterest().first()
-# bModel = sbModel.Clone()
-# bModel.SetName("B_only_model")
-# oldval = poi.getVal()
-# poi.setVal(0)
-# bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# poi.setVal(oldval)
-# ac = ROOT.RooStats.AsymptoticCalculator(data_sig_weighted, sbModel, bModel)
-# ac.SetOneSidedDiscovery(True)
-# asResult = ac.GetHypoTest()
-# asResult.Print()

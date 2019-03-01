@@ -434,7 +434,7 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     # else:
     #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
-    model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
+    # model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
     # frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
     floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)

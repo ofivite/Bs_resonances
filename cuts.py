@@ -1,6 +1,6 @@
-mode = 'X'
+mode = 'psi'
 refl_ON = False
-get_MC_N_evts = True
+get_MC_N_evts = False
 
 sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
 sPlot_cut = 'control'; sPlot_from = 'Bs'; sPlot_to = 'phi'
@@ -49,6 +49,7 @@ cuts_control_MC = 'X_mass_Cjp >' + str(left_control_MC) + ' && X_mass_Cjp < ' + 
 cuts_control_data = 'X_mass_Cjp >' + str(left_control_data) + ' && X_mass_Cjp < ' + str(right_control_data)
 
 cuts_pipi = {'X': 'PIPI_mass_Cjp > 0.65 && PIPI_mass_Cjp < 0.78', 'psi': 'PIPI_mass_Cjp > 0.4 && PIPI_mass_Cjp < 0.6'}
+cut_phi_window = 'PHI_mass_Cjp > 1.01 && PHI_mass_Cjp < 1.03' #'&& X_mass_Cjp > 3.67 && X_mass_Cjp < 3.7'
 
 cuts_match_dR = 'dR_mu1 < 0.05 && dR_mu2 < 0.05 && dR_pi1 < 0.05 && dR_pi2 < 0.05 && dR_K1 < 0.05 && dR_K2 < 0.05'
 # cuts_match_ID = {'X': 'MoID_mu1 == 443 && MoID_mu2 == 443 && MoID_pi1 == 113 && MoID_pi2 == 113 && MoID_K1 == 333 && MoID_K2 == 333',
