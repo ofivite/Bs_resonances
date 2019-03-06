@@ -92,7 +92,12 @@ signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, s
 # signal_Bs = ROOT.RooVoigtian("signal_Bs", "signal_Bs", var_discr, mean_Bs, gamma_BW_Bs, sigma_Bs)
 
 # bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
-bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2))
+bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2))  ## ---- BASELINE
+# bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3))
+# bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3, a4))
+# bkgr_Bs = ROOT.RooChebychev('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1_ext, a2_ext))
+# bkgr_Bs = ROOT.RooChebychev('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1_ext, a2_ext, a3_ext, a4_ext))
+
 N_bkgr_Bs = ROOT.RooRealVar('N_bkgr_Bs', '', 30000., 0., 100000)
 
 #############################################################################################
@@ -239,7 +244,6 @@ N_sig_phi = ROOT.RooRealVar('N_sig_phi', '', 20000., 0., 100000)
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi))
 bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi))   ## ---- BASELINE
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
-# bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_ext, a4_ext))
 
 # bkgr_phi = ROOT.RooChebychev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext))
 # bkgr_phi = ROOT.RooChebychev('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_ext, a2_ext))
@@ -416,8 +420,7 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     # frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
     floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
-    print '\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30*'>' + '\n\n'
-
+    print ('\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30*'>' + '\n\n')
     model.plotOn(frame, RF.Components("model_bb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-2), RF.LineWidth(4) );
     model.plotOn(frame, RF.Components("model_bs_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kAzure+3), RF.LineWidth(4));
     model.plotOn(frame, RF.Components("model_sb_2D"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
@@ -472,15 +475,15 @@ def save_in_workspace(rfile, **argsets):
     workspace = ROOT.RooWorkspace('workspace', 'Workspace saved at %s' % get_timestamp())
     keys = argsets.keys()
     for key in keys:
-        print 'Importing RooFit objects in %s list.' % key
+        print ('Importing RooFit objects in %s list.' % key)
         for arg in argsets[key]:
             try:
                 _import(workspace, arg)
             except TypeError:
-                print type(arg), arg
+                print (type(arg), arg)
                 traceback.print_exc()
     rfile.WriteTObject(workspace)
-    print 'Saving arguments to file: %s' % rfile.GetName()
+    print ('Saving arguments to file: %s' % rfile.GetName())
 
 
 def get_workspace(fname, wname):
