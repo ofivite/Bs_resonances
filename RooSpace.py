@@ -32,8 +32,37 @@ pi_min_pt = ROOT.RooRealVar('pi_min_pt', 'p_{T}^{min}(#pi) [GeV]', 0., 400.)
 pi_max_eta = ROOT.RooRealVar('pi_max_eta', '#eta^{max}(#pi)', -2.5, 2.5)
 pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
 
+####
+mu_1_pt = ROOT.RooRealVar('mu_1_pt', 'p_{T}(#mu_{1}) [GeV]', 0., 400.)
+mu_2_pt = ROOT.RooRealVar('mu_2_pt', 'p_{T}(#mu_{2}) [GeV]', 0., 400.)
+mu_1_eta = ROOT.RooRealVar('mu_1_eta', '#eta(#mu_{2})', -2.5, 2.5)
+mu_2_eta = ROOT.RooRealVar('mu_2_eta', '#eta(#mu_{2})', -2.5, 2.5)
+
+K1_pt = ROOT.RooRealVar('K1_pt', 'p_{T}(K_{1}) [GeV]', 0., 150.)
+K2_pt = ROOT.RooRealVar('K2_pt', 'p_{T}(K_{2}) [GeV]', 0., 150.)
+K1_eta = ROOT.RooRealVar('K1_eta', '#eta(K_{1})', -2.5, 2.5)
+K2_eta = ROOT.RooRealVar('K2_eta', '#eta(K_{2})', -2.5, 2.5)
+
+PI1_pt = ROOT.RooRealVar('PI1_pt', 'p_{T}(#pi_{1}) [GeV]', 0., 400.)
+PI2_pt = ROOT.RooRealVar('PI2_pt', 'p_{T}(#pi_{2}) [GeV]', 0., 400.)
+PI1_eta = ROOT.RooRealVar('PI1_eta', '#eta(#pi_{1})', -2.5, 2.5)
+PI2_eta = ROOT.RooRealVar('PI2_eta', '#eta(#pi_{2})', -2.5, 2.5)
+
+###
 BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
 BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
+BU_pvdistsignif2_Cjp = ROOT.RooRealVar('BU_pvdistsignif2_Cjp', 'DS_{2D}(B_{s}^{0})', 0., 2000.)
+BU_pvcos2_Cjp = ROOT.RooRealVar('BU_pvcos2_Cjp', 'cos_{2D}(B_{s}^{0}, PV)', 0., 1.)
+BU_vtxprob_Cjp = ROOT.RooRealVar('BU_vtxprob_Cjp', 'vtx prob(B_{s}^{0})', 0., 1.)
+
+###
+JP_pt = ROOT.RooRealVar('JP_pt', 'p_{T}(#mu#mu) [GeV]', 0, 800)
+JP_eta = ROOT.RooRealVar('JP_eta', '#eta(#mu#mu)', -2.5, 2.5)
+JPSI_pvdistsignif2_Cmumu = ROOT.RooRealVar('JPSI_pvdistsignif2_Cmumu', 'DS_{2D}(#mu#mu)', 0., 2000.)
+JPSI_pvcos2_Cmumu = ROOT.RooRealVar('JPSI_pvcos2_Cmumu', 'cos_{2D}(#mu#mu, PV)', 0., 1.)
+JPSI_vtxprob_Cmumu = ROOT.RooRealVar('JPSI_vtxprob_Cmumu', 'vtx prob(#mu#mu)', 0., 1.)
+JPSI_mass_Cmumu = ROOT.RooRealVar('JPSI_mass_Cmumu', 'm(#mu#mu)', 2.8, 3.4)
+
 BU_reflmass_PP_Cjp = ROOT.RooRealVar('BU_reflmass_PP_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 4.1, 5.6)
 
 PHI_mass_Cjp.setBins(10000, "cache")
