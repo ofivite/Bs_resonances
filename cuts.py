@@ -1,6 +1,6 @@
-mode = 'X'
+mode = 'psi'
 refl_ON = False
-get_MC_N_evts = True
+get_MC_N_evts = False
 
 sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
 sPlot_cut = 'control'; sPlot_from = 'Bs'; sPlot_to = 'phi'
@@ -50,7 +50,7 @@ cuts_control_data = 'X_mass_Cjp >' + str(left_control_data) + ' && X_mass_Cjp < 
 
 cuts_pipi = {'X': 'PIPI_mass_Cjp > 0.65 && PIPI_mass_Cjp < 0.78', 'psi': 'PIPI_mass_Cjp > 0.4 && PIPI_mass_Cjp < 0.6'}
 
-cuts_match_dR = 'dR_mu1 < 0.05 && dR_mu2 < 0.05 && dR_pi1 < 0.05 && dR_pi2 < 0.05 && dR_K1 < 0.05 && dR_K2 < 0.05'
+cuts_match_dR = 'dR_mup < 0.05 && dR_mum < 0.05 && dR_pip < 0.05 && dR_pim < 0.05 && dR_Kp < 0.05 && dR_Km < 0.05'
 # cuts_match_ID = {'X': 'MoID_mu1 == 443 && MoID_mu2 == 443 && MoID_pi1 == 113 && MoID_pi2 == 113 && MoID_K1 == 333 && MoID_K2 == 333',
 #                  'psi': 'MoID_mu1 == 443 && MoID_mu2 == 443 && MoID_pi1 == 100443 && MoID_pi2 == 100443 && MoID_K1 == 333 && MoID_K2 == 333'}
 # cuts_match_dR = 'TMath::Min(dR_mu1, dR_mu1_vv) < 0.05 && TMath::Min(dR_mu2, dR_mu2_vv) < 0.05 && TMath::Min(dR_pi1, dR_pi1_vv) < 0.05 && TMath::Min(dR_pi2, dR_pi2_vv) < 0.05 && TMath::Min(dR_K1, dR_K1_vv) < 0.05 && TMath::Min(dR_K2, dR_K2_vv) < 0.05'

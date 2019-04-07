@@ -11,12 +11,14 @@ delta_phi_mass.setMin(-0.01); delta_phi_mass.setMax(0.01); delta_phi_mass.setBin
 
 var_to_fit = delta_phi_mass
 
-file_data = ROOT.TFile('BsToXPhi_Smatch_v1_pair_dR_phi_genmass.root') if mode == 'X' else ROOT.TFile('BsToPsiPhi_Smatch_v1_pair_dR_phi_genmass.root')
+file_data = ROOT.TFile('X_smatch_v2_dede235.root') if mode == 'X' else ROOT.TFile('psi_smatch_v2_fc33ffd.root')
 data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, jpsi_mass, delta_phi_mass, gen_phi_mass),
-                ROOT.RooArgSet(ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2), ROOT.RooArgSet(dR_mu1_vv, dR_mu2_vv, dR_pi1_vv, dR_pi2_vv, dR_K1_vv, dR_K2_vv) )), #'1>0'))
+                ROOT.RooArgSet(ROOT.RooArgSet(dR_mup, dR_mum, dR_pip, dR_pim, dR_Kp, dR_Km), ROOT.RooArgSet(dR_mu1_vv, dR_mu2_vv, dR_pi1_vv, dR_pi2_vv, dR_K1_vv, dR_K2_vv) )), #'1>0'))
                                     cuts_Bs_MC + '&&' + cuts_phi_MC + '&&' + cuts_control_MC + ' && ' + cuts_pipi[mode]))
-data = data.reduce(cuts_match_ID[mode] + '&&' + 'TMath::Min(dR_mu1, dR_mu1_vv) < 0.05 && TMath::Min(dR_mu2, dR_mu2_vv) < 0.05 && TMath::Min(dR_pi1, dR_pi1_vv) < 0.05' +
-                                                '&& TMath::Min(dR_pi2, dR_pi2_vv) < 0.05 && TMath::Min(dR_K1, dR_K1_vv) < 0.05 && TMath::Min(dR_K2, dR_K2_vv) < 0.05'
+data = data.reduce(cuts_match_ID[mode] + ' && ' + cuts_match_dR
+
+# '&&' + 'TMath::Min(dR_mu1, dR_mu1_vv) < 0.05 && TMath::Min(dR_mu2, dR_mu2_vv) < 0.05 && TMath::Min(dR_pi1, dR_pi1_vv) < 0.05' +
+#                                                 '&& TMath::Min(dR_pi2, dR_pi2_vv) < 0.05 && TMath::Min(dR_K1, dR_K1_vv) < 0.05 && TMath::Min(dR_K2, dR_K2_vv) < 0.05'
 )
 
 ##        ---------------       ##
@@ -91,9 +93,9 @@ plot_on_frame(var_to_fit, data, model_to_fit, 'MC: m(K^{+}K^{#font[122]{\55}})',
 
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_3, 0, 0 );
 c_MC_3.Update(); c_MC_3.RedrawAxis(); c_MC_3.GetFrame().Draw();
-c_MC_3.SaveAs('~/Study/Bs_resonances/delta_gen_mass_phi_dRmatched_' + mode + '.pdf')
+c_MC_3.SaveAs('~/Study/Bs_resonances/delta_gen_mass_phi_charged_dRmatched_' + mode + '.pdf')
 
 
-f_out = ROOT.TFile('workspace_' + mode + '_delta_gen_phi_dRmatched.root', 'recreate')
+f_out = ROOT.TFile('workspace_' + mode + '_delta_gen_phi_charged_dRmatched.root', 'recreate')
 save_in_workspace(f_out, pdf = [model_to_fit])  #   signal_X
 f_out.Close()
