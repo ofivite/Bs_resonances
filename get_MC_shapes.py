@@ -1,7 +1,7 @@
 from RooSpace import *
 from cuts import *
 
-files_MC = {'X': 'BsToXPhi_Smatch_v1_pair_dR_phi_genmass.root', 'psi':'BsToPsiPhi_Smatch_v1_pair_dR_phi_genmass.root'}
+files_MC = {'X': 'X_smatch_v2_dede235.root', 'psi': 'psi_smatch_v2_fc33ffd.root'}
 # files_MC = {'X': 'BsToXPhi_Smatch_v1_min_e233994.root', 'psi':'BsToPsiPhi_Smatch_v1_min_e4a2edf.root'}
 # files_MC = {'X': 'BsToXPhi_step3_6c21fba.root', 'psi':'BsToPsiPhi_step3_4a91161.root'}
 # files_MC = {'X': 'BsToXPhi_matched_all_1892449.root', 'psi':'BsToPsiPhi_matched_all_1519f1b.root'}
@@ -19,7 +19,7 @@ var_control.setMin(left_control_MC); var_control.setMax(right_control_MC); #var_
 
 data_MC = (ROOT.RooDataSet('data_MC', '', file_MC.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp),
 ROOT.RooArgSet(MoID_mu1, MoID_mu2, MoID_pi1, MoID_pi2, MoID_K1, MoID_K2)), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta),
-ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(dR_mu1, dR_mu2, dR_pi1, dR_pi2, dR_K1, dR_K2, BU_pt_Cjp, BU_eta_Cjp))),
+ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(dR_mup, dR_mum, dR_pip, dR_pim, dR_Kp, dR_Km, BU_pt_Cjp, BU_eta_Cjp))),
                    cuts_Bs_MC + '&&' + cuts_phi_MC + '&&' + cuts_control_MC + ' && ' + cuts_pipi[mode]))
 
 data_MC_matched = data_MC.reduce(cuts_match_ID[mode] + '&&' + cuts_match_dR)
@@ -59,35 +59,36 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
 ###-----###
 
-# mean_phi.setVal(1.0195); mean_phi.setConstant(1);
-# model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-# model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-# a1_phi.setConstant(1); a2_phi.setConstant(1);  mean_phi.setConstant(0);
-# model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
-#
-# a1_phi.setConstant(0); a2_phi.setConstant(0);
+w_delta_phi, f_delta_phi = get_workspace('workspace_' + mode + '_delta_gen_phi_dRmatched_qM.root', 'workspace')
+sigma_delta_1.setVal(w_delta_phi.var('sigma_delta_1').getVal());  sigma_delta_2.setVal(w_delta_phi.var('sigma_delta_2').getVal());
+fr_delta.setVal(w_delta_phi.var('fr_delta').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
+# mean_delta.setVal(w_delta_phi.var('mean_delta').getVal());
+sigma_delta_1.setConstant(1); sigma_delta_2.setConstant(1); fr_delta.setConstant(1);
+mean_delta.setVal(0.); mean_delta.setConstant(1)
+
+mean_phi.setVal(1.0195); #mean_phi.setConstant(1);
+# sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
+# sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
+# sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
+# fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
+
+gamma_BW_phi.setVal(0.0042); #gamma_BW_phi.setConstant(0)
+sig_delta_1 = ROOT.RooGaussian("sig_delta_1", "", PHI_mass_Cjp, mean_delta, sigma_delta_1)
+sig_delta_2 = ROOT.RooGaussian("sig_delta_2", "", PHI_mass_Cjp, mean_delta, sigma_delta_2)
+signal_delta = ROOT.RooAddPdf("signal_delta", "signal_delta", ROOT.RooArgList(sig_delta_1, sig_delta_2), ROOT.RooArgList(fr_delta))  ## ---- BASELINE
+
+signal_phi = ROOT.RooFFTConvPdf('resolxrelBW', '', PHI_mass_Cjp, relBW_phi, signal_delta)
+model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
+
+mean_phi.setVal(1.0195); mean_phi.setConstant(1);
+model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+a1_phi.setConstant(1); a2_phi.setConstant(1);  mean_phi.setConstant(0);
+model_1D_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kTRUE))
+
+a1_phi.setConstant(0); a2_phi.setConstant(0);
 
 if get_MC_N_evts:
-    w_delta_phi, f_delta_phi = get_workspace('workspace_' + mode + '_delta_gen_phi_dRmatched.root', 'workspace')
-    sigma_delta_1.setVal(w_delta_phi.var('sigma_delta_1').getVal());  sigma_delta_2.setVal(w_delta_phi.var('sigma_delta_2').getVal());
-    fr_delta.setVal(w_delta_phi.var('fr_delta').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
-    # mean_delta.setVal(w_delta_phi.var('mean_delta').getVal());
-    sigma_delta_1.setConstant(1); sigma_delta_2.setConstant(1); fr_delta.setConstant(1);
-    mean_delta.setVal(0.); mean_delta.setConstant(1)
-
-    mean_phi.setVal(1.0195); #mean_phi.setConstant(1);
-    # sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
-    # sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-    # sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
-    # fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
-
-    gamma_BW_phi.setVal(0.0042); gamma_BW_phi.setConstant(0)
-    sig_delta_1 = ROOT.RooGaussian("sig_delta_1", "", PHI_mass_Cjp, mean_delta, sigma_delta_1)
-    sig_delta_2 = ROOT.RooGaussian("sig_delta_2", "", PHI_mass_Cjp, mean_delta, sigma_delta_2)
-    signal_delta = ROOT.RooAddPdf("signal_delta", "signal_delta", ROOT.RooArgList(sig_delta_1, sig_delta_2), ROOT.RooArgList(fr_delta))  ## ---- BASELINE
-
-    signal_phi = ROOT.RooFFTConvPdf('resolxrelBW', '', PHI_mass_Cjp, relBW_phi, signal_delta)
-    model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
 
     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
@@ -95,9 +96,8 @@ if get_MC_N_evts:
     model_1D_phi.fitTo(data_MC, RF.Extended(ROOT.kTRUE))
 
     # file_out_MC.write(str(N_sig_phi.getVal()) + ' ' + str(N_sig_phi.getError()) + '\n')
-
-if not get_MC_N_evts:
-    f_out = ROOT.TFile('workspace_' + mode + '_phi.root', 'recreate')
+else:
+    f_out = ROOT.TFile('workspace_' + mode + '_phi_qM.root', 'recreate')
     save_in_workspace(f_out, pdf = [model_1D_phi])   # signal_phi
     f_out.Close()
 
@@ -144,7 +144,7 @@ c_MC_2 = ROOT.TCanvas("c_MC_2", "c_MC_2", 800, 600)
 plot_on_frame(PHI_mass_Cjp, data_MC, model_1D_phi, 'MC: m(K^{+}K^{#font[122]{\55}})', left_phi_MC, right_phi_MC, nbins_phi_MC, plot_phi_param, True)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_2, 0, 0 );
 c_MC_2.Update(); c_MC_2.RedrawAxis(); c_MC_2.GetFrame().Draw();
-if not get_MC_N_evts: c_MC_2.SaveAs('~/Study/Bs_resonances/MC_'  + mode + '_fit_results/c_MC_phi___' + str(mode) + '.pdf')
+if not get_MC_N_evts: c_MC_2.SaveAs('~/Study/Bs_resonances/MC_'  + mode + '_fit_results/c_MC_phi___' + str(mode) + '_qM.pdf')
 
 #
 # c_MC_3 = ROOT.TCanvas("c_MC_3", "c_MC_3", 800, 600)
