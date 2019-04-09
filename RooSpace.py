@@ -9,7 +9,7 @@ import CMS_tdrStyle_lumi
 
 var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
 var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
-PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0.2, 1.2)
+PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0., 10.)
 PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
 jpsi_mass = ROOT.RooRealVar('JPSI_mass_Cmumu', 'm(#mu^{+}#mu^{-}) [GeV]', 1., 4.)
 gen_phi_mass = ROOT.RooRealVar('gen_phi_mass', 'm_{gen}(K^{+}K^{-}) [GeV]', 0., 3.)
@@ -433,7 +433,7 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     # else:
     #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
-    model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
+    # model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
     # frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
     floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
@@ -454,10 +454,14 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     model.plotOn(frame, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
     # model.plotOn(frame, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 15 * sigma_Bs.getValV(), mean_Bs.getValV() + 15 * sigma_Bs.getValV()));
     model.plotOn(frame, RF.Components("signal_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+
+    model.plotOn(frame, RF.Components("sig_delta_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components("sig_delta_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+
     if refl_ON: model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44));
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
 
-    frame.GetYaxis().SetTitle('Candidates / ' + str(int(round((right - left) * 1000. / nbins, 0))) + ' MeV')
+    frame.GetYaxis().SetTitle('Candidates / ' + str(round((right - left) * 1000. / nbins, 1)) + ' MeV')
     frame.GetXaxis().SetTitleSize(0.04)
     frame.GetYaxis().SetTitleSize(0.04)
     frame.GetXaxis().SetLabelSize(0.033)

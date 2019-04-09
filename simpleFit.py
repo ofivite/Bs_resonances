@@ -2,24 +2,24 @@ from RooSpace import *
 from cuts import *
 
 
-var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data); var_discr.setBins(nbins_discr_data)
-PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data); PHI_mass_Cjp.setBins(nbins_phi_data)
-var_control.setMin(left_control_data); var_control.setMax(right_control_data);  var_control.setBins(nbins_control_data)
-jpsi_mass.setMin(left_jpsi); jpsi_mass.setMax(right_jpsi); jpsi_mass.setBins(nbins_jpsi)
-gen_phi_mass.setMin(left_phi_MC); gen_phi_mass.setMax(right_phi_MC); gen_phi_mass.setBins(nbins_phi_MC)
-delta_phi_mass.setMin(-0.01); delta_phi_mass.setMax(0.01); delta_phi_mass.setBins(40)
+var_discr.setMin(left_discr_MC); var_discr.setMax(right_discr_MC); var_discr.setBins(nbins_discr_MC)
+PHI_mass_Cjp.setMin(left_phi_MC); PHI_mass_Cjp.setMax(right_phi_MC); PHI_mass_Cjp.setBins(nbins_phi_MC)
+var_control.setMin(left_control_MC); var_control.setMax(right_control_MC);  var_control.setBins(nbins_control_MC)
+# jpsi_mass.setMin(left_jpsi); jpsi_mass.setMax(right_jpsi); jpsi_mass.setBins(nbins_jpsi)
+# gen_phi_mass.setMin(left_phi_MC); gen_phi_mass.setMax(right_phi_MC); gen_phi_mass.setBins(nbins_phi_MC)
+delta_phi_mass.setMin(-0.008); delta_phi_mass.setMax(0.008); delta_phi_mass.setBins(32)
 
 var_to_fit = delta_phi_mass
 
 file_data = ROOT.TFile('X_smatch_v2_dede235.root') if mode == 'X' else ROOT.TFile('psi_smatch_v2_fc33ffd.root')
-data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, jpsi_mass, delta_phi_mass, gen_phi_mass),
-                ROOT.RooArgSet(ROOT.RooArgSet(dR_mup, dR_mum, dR_pip, dR_pim, dR_Kp, dR_Km), ROOT.RooArgSet(dR_mu1_vv, dR_mu2_vv, dR_pi1_vv, dR_pi2_vv, dR_K1_vv, dR_K2_vv) )), #'1>0'))
-                                    cuts_Bs_MC + '&&' + cuts_phi_MC + '&&' + cuts_control_MC + ' && ' + cuts_pipi[mode]))
-data = data.reduce(cuts_match_ID[mode] + ' && ' + cuts_match_dR
+data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PHI_mass_Cjp, PIPI_mass_Cjp, delta_phi_mass),
+                ROOT.RooArgSet(dR_mup, dR_mum, dR_pip, dR_pim, dR_Kp, dR_Km )
+                                    ))
+data = data.reduce(cuts_Bs_MC + '&&' + cuts_phi_MC + '&&' + cuts_control_MC + '&&' + cuts_pipi[mode] + '&&' + cuts_match_dR)
 
 # '&&' + 'TMath::Min(dR_mu1, dR_mu1_vv) < 0.05 && TMath::Min(dR_mu2, dR_mu2_vv) < 0.05 && TMath::Min(dR_pi1, dR_pi1_vv) < 0.05' +
 #                                                 '&& TMath::Min(dR_pi2, dR_pi2_vv) < 0.05 && TMath::Min(dR_K1, dR_K1_vv) < 0.05 && TMath::Min(dR_K2, dR_K2_vv) < 0.05'
-)
+
 
 ##        ---------------       ##
 ##             MODEL            ##
@@ -40,8 +40,8 @@ bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', var_to_fit, ROOT.RooArgList(a1, a2)
 N_bkgr_phi = ROOT.RooRealVar('N_bkgr_phi', '', 1000., 0., 100000)
 
 # model_to_fit = ROOT.RooAddPdf('model_to_fit', 'model_to_fit', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
-model_to_fit = ROOT.RooAddPdf('model_to_fit', 'model_to_fit', ROOT.RooArgList(signal_delta, bkgr_phi), ROOT.RooArgList(N_sig_delta, N_bkgr_phi))
-
+# model_to_fit = ROOT.RooAddPdf('model_to_fit', 'model_to_fit', ROOT.RooArgList(signal_delta, bkgr_phi), ROOT.RooArgList(N_sig_delta, N_bkgr_phi))
+model_to_fit = signal_delta
 ##        -----------------       ##
 ##           FIT OF DATA          ##
 ##        -----------------       ##
@@ -53,10 +53,10 @@ print ('\n\n' + 30*'#' + '\n\n\n         MC psi(2S): Bs mass now         \n\n\n'
 mean_phi.setConstant(1); mean_delta.setConstant(1)
 gamma_BW_phi.setVal(0.0042);# gamma_BW_phi.setConstant(1)
 # N_bkgr_phi.setVal(0.); N_bkgr_phi.setConstant(1)
-model_to_fit.fitTo(data, RF.Extended(ROOT.kTRUE))
-model_to_fit.fitTo(data, RF.Extended(ROOT.kTRUE))
+model_to_fit.fitTo(data, RF.Extended(ROOT.kFALSE))
+model_to_fit.fitTo(data, RF.Extended(ROOT.kFALSE))
 a1.setConstant(1); a2.setConstant(1); mean_phi.setConstant(0); mean_delta.setConstant(0)
-model_to_fit.fitTo(data, RF.Extended(ROOT.kTRUE))
+model_to_fit.fitTo(data, RF.Extended(ROOT.kFALSE))
 a1.setConstant(0); a2.setConstant(0)
 
 
