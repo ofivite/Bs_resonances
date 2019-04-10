@@ -1,7 +1,7 @@
 from math import sqrt
 import numpy as np
 
-MC_evtN_var = 'phi'
+MC_evtN_var = 'Bs'
 is2D = False
 subtract_X, subtract_psi = (False, False) if not is2D else (False, False)
 
