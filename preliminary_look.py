@@ -120,7 +120,7 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 # model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
 # mean_X.setConstant(0); mean_psi.setConstant(0)
 # model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
-# model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
+# rrr_sig = model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE), RF.Save())
 #
 # c_control = ROOT.TCanvas("c_control", "c_control", 800, 600)
 # plot_on_frame(var_control, data_control, model_control, ' ', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode], False)
@@ -156,6 +156,18 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 # asResult = ac.GetHypoTest()
 # print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
 
+# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
+# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+# N_control[mode].setVal(0); N_control[mode].setConstant(1);
+# model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
+# rrr_null = model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE), RF.Save())
+#
+# nll_sig  = rrr_sig.minNll()
+# nll_null = rrr_null.minNll()
+# P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
+# # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
+# S = ROOT.Math.gaussian_quantile_c(P, 1)
+# print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
 #############################################################################################
 # Bs
@@ -163,15 +175,15 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 # data_Bs = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(mean_control_MC[mode]) + ') < ' + str(window_control) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean_phi_MC) + ') < 0.01')
 # model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
 # model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
-# model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
+# rrr_sig = model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE), RF.Save())
 #
 # c_Bs = ROOT.TCanvas("c_Bs", "c_Bs", 800, 600)
 # plot_on_frame(var_discr, data_Bs, model_1D_Bs, '', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
 # CMS_tdrStyle_lumi.CMS_lumi( c_Bs, 2, 0 );
 # c_Bs.Update(); c_Bs.RedrawAxis(); #c_Bs.GetFrame().Draw();
 # c_Bs.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_Bs_prelim_' + str(mode) + '.pdf')
-#
-#
+
+
 # # ###---- Significance ----####
 #
 # w = ROOT.RooWorkspace("w", True)
@@ -201,32 +213,22 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 # print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
 
 
-
-
 # a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
 # a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
-# N[sPlot_to].setVal(0); N[sPlot_to].setConstant(1);
-# model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
-# rrr_null = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
-
-# file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
-# plot_on_frame(var[sPlot_to], data_sig_weighted, model[sPlot_to], ' ', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], None, False)
+# N_sig_Bs.setVal(0); N_sig_Bs.setConstant(1);
+# model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
+# rrr_null = model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE), RF.Save())
 #
-# CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
-# c_sPlot_2.GetFrame().Draw();
-# c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
-
-
 # nll_sig  = rrr_sig.minNll()
 # nll_null = rrr_null.minNll()
 # P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
 # # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
 # S = ROOT.Math.gaussian_quantile_c(P, 1)
 # print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
-#
+
 # c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600)
 # frame_nll = N[sPlot_to].frame(RF.Bins(80), RF.Range(80,160))
-
+#
 # nll.plotOn(frame_nll, RF.ShiftToZero())
 # nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
 # pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
@@ -245,38 +247,53 @@ mean_phi.setConstant(1);
 model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
 mean_phi.setConstant(0);
 model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
-model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
+rrr_sig = model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE), RF.Save())
 
 c_phi = ROOT.TCanvas("c_phi", "c_phi", 800, 600)
 plot_on_frame(PHI_mass_Cjp, data_phi, model_1D_phi, ' ', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param, False)
 CMS_tdrStyle_lumi.CMS_lumi( c_phi, 2, 0 );
 c_phi.Update(); c_phi.RedrawAxis(); #c_phi.GetFrame().Draw();
-c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
+# c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
+#
+# # ###-----###
+#
+# w = ROOT.RooWorkspace("w", True)
+# Import = getattr(ROOT.RooWorkspace, 'import')
+# Import(w, model_1D_phi)
+# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
+# mc.SetPdf(w.pdf(model_1D_phi.GetName()))
+# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
+# # w.var("N_sig_X").setError(20.)
+# mc.SetObservables(ROOT.RooArgSet(w.var(PHI_mass_Cjp.GetName())))
+# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
+# mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
+# Import(w, mc)
+#
+# sbModel = w.obj("ModelConfig")
+# sbModel.SetName("S+B_model")
+# poi = sbModel.GetParametersOfInterest().first()
+# bModel = sbModel.Clone()
+# bModel.SetName("B_only_model")
+# oldval = poi.getVal()
+# poi.setVal(0)
+# bModel.SetSnapshot(ROOT.RooArgSet(poi))
+# poi.setVal(oldval)
+# ac = ROOT.RooStats.AsymptoticCalculator(data_phi, sbModel, bModel)
+# ac.SetOneSidedDiscovery(True)
+# asResult = ac.GetHypoTest()
+# print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
 
-# ###-----###
 
-w = ROOT.RooWorkspace("w", True)
-Import = getattr(ROOT.RooWorkspace, 'import')
-Import(w, model_1D_phi)
-mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-mc.SetPdf(w.pdf(model_1D_phi.GetName()))
-mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
-# w.var("N_sig_X").setError(20.)
-mc.SetObservables(ROOT.RooArgSet(w.var(PHI_mass_Cjp.GetName())))
-# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
-mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
-Import(w, mc)
 
-sbModel = w.obj("ModelConfig")
-sbModel.SetName("S+B_model")
-poi = sbModel.GetParametersOfInterest().first()
-bModel = sbModel.Clone()
-bModel.SetName("B_only_model")
-oldval = poi.getVal()
-poi.setVal(0)
-bModel.SetSnapshot(ROOT.RooArgSet(poi))
-poi.setVal(oldval)
-ac = ROOT.RooStats.AsymptoticCalculator(data_phi, sbModel, bModel)
-ac.SetOneSidedDiscovery(True)
-asResult = ac.GetHypoTest()
-print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
+a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
+a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+N_sig_phi.setVal(0); N_sig_phi.setConstant(1);
+model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
+rrr_null = model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE), RF.Save())
+
+nll_sig  = rrr_sig.minNll()
+nll_null = rrr_null.minNll()
+P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
+# S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
+S = ROOT.Math.gaussian_quantile_c(P, 1)
+print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
