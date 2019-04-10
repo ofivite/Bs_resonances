@@ -78,6 +78,7 @@ signal_phi = ROOT.RooFFTConvPdf('resolxCB_sum', '', PHI_mass_Cjp, CB_sum, signal
 
 mean_phi.setVal(1.0195); mean_phi.setConstant(1);
 signal_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kFALSE))
+mean_phi.setConstant(0);
 signal_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kFALSE))
 
 
