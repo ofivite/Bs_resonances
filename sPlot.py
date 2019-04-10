@@ -92,8 +92,8 @@ mean = {'Bs': mean_Bs, 'phi': mean_phi, 'control': mean_control[mode]}
 ###-----###  Systematics variation here
 
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
-bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
-# bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
+# bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
+bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
 #
 # model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
 # model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
