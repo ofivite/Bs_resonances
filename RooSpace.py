@@ -279,7 +279,7 @@ N_bkgr_phi = ROOT.RooRealVar('N_bkgr_phi', '', 10000., 0., 100000)
 # B0->psi(2S)K*0 reflection
 
 # file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_ws_data_cuts_dR0p05_SC.root')
-file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_dR0p05_from_a1c59b9.root')
+file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_dR0p05_from_a1c59b9_rho1.root')
 w = file_B0_refl_ws.Get('w')
 
 # B0_refl = w.pdf('B0_refl')
