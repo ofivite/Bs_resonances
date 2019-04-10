@@ -115,46 +115,46 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 #############################################################################################
 # control variable
 
-data_control = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean_Bs_MC) + ') < ' + str(window_Bs) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean_phi_MC) + ') < 0.01')
-mean_X.setConstant(1); mean_psi.setConstant(1)
-model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
-mean_X.setConstant(0); mean_psi.setConstant(0)
-model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
-model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
-
-c_control = ROOT.TCanvas("c_control", "c_control", 800, 600)
-plot_on_frame(var_control, data_control, model_control, ' ', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode], False)
-CMS_tdrStyle_lumi.CMS_lumi( c_control, 2, 0 );
-c_control.Update(); c_control.RedrawAxis(); #c_control.GetFrame().Draw();
-c_control.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_control_prelim_' + str(mode) + '.pdf')
-
-# ###-----###
-
-w = ROOT.RooWorkspace("w", True)
-Import = getattr(ROOT.RooWorkspace, 'import')
-Import(w, model_control)
-mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-mc.SetPdf(w.pdf(model_control.GetName()))
-mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
-# w.var("N_sig_X").setError(20.)
-mc.SetObservables(ROOT.RooArgSet(w.var(var_control.GetName())))
-# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
-mc.SetSnapshot(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
-Import(w, mc)
-
-sbModel = w.obj("ModelConfig")
-sbModel.SetName("S+B_model")
-poi = sbModel.GetParametersOfInterest().first()
-bModel = sbModel.Clone()
-bModel.SetName("B_only_model")
-oldval = poi.getVal()
-poi.setVal(0)
-bModel.SetSnapshot(ROOT.RooArgSet(poi))
-poi.setVal(oldval)
-ac = ROOT.RooStats.AsymptoticCalculator(data_control, sbModel, bModel)
-ac.SetOneSidedDiscovery(True)
-asResult = ac.GetHypoTest()
-print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
+# data_control = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean_Bs_MC) + ') < ' + str(window_Bs) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean_phi_MC) + ') < 0.01')
+# mean_X.setConstant(1); mean_psi.setConstant(1)
+# model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
+# mean_X.setConstant(0); mean_psi.setConstant(0)
+# model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
+# model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
+#
+# c_control = ROOT.TCanvas("c_control", "c_control", 800, 600)
+# plot_on_frame(var_control, data_control, model_control, ' ', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode], False)
+# CMS_tdrStyle_lumi.CMS_lumi( c_control, 2, 0 );
+# c_control.Update(); c_control.RedrawAxis(); #c_control.GetFrame().Draw();
+# c_control.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_control_prelim_' + str(mode) + '.pdf')
+#
+# # ###-----###
+#
+# w = ROOT.RooWorkspace("w", True)
+# Import = getattr(ROOT.RooWorkspace, 'import')
+# Import(w, model_control)
+# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
+# mc.SetPdf(w.pdf(model_control.GetName()))
+# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
+# # w.var("N_sig_X").setError(20.)
+# mc.SetObservables(ROOT.RooArgSet(w.var(var_control.GetName())))
+# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
+# mc.SetSnapshot(ROOT.RooArgSet(w.var(N_control[mode].GetName())))
+# Import(w, mc)
+#
+# sbModel = w.obj("ModelConfig")
+# sbModel.SetName("S+B_model")
+# poi = sbModel.GetParametersOfInterest().first()
+# bModel = sbModel.Clone()
+# bModel.SetName("B_only_model")
+# oldval = poi.getVal()
+# poi.setVal(0)
+# bModel.SetSnapshot(ROOT.RooArgSet(poi))
+# poi.setVal(oldval)
+# ac = ROOT.RooStats.AsymptoticCalculator(data_control, sbModel, bModel)
+# ac.SetOneSidedDiscovery(True)
+# asResult = ac.GetHypoTest()
+# print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
 
 
 #############################################################################################
@@ -240,43 +240,43 @@ print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
 #############################################################################################
 # phi
 
-# data_phi = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean_Bs_MC) + ') < ' + str(window_Bs) + ' && TMath::Abs(X_mass_Cjp - ' + str(mean_control_MC[mode]) + ') < ' + str(window_control))
-# mean_phi.setConstant(1);
-# model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
-# mean_phi.setConstant(0);
-# model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
-# model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
-#
-# c_phi = ROOT.TCanvas("c_phi", "c_phi", 800, 600)
-# plot_on_frame(PHI_mass_Cjp, data_phi, model_1D_phi, ' ', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param, False)
-# CMS_tdrStyle_lumi.CMS_lumi( c_phi, 2, 0 );
-# c_phi.Update(); c_phi.RedrawAxis(); #c_phi.GetFrame().Draw();
-# c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
-#
-# # ###-----###
-#
-# w = ROOT.RooWorkspace("w", True)
-# Import = getattr(ROOT.RooWorkspace, 'import')
-# Import(w, model_1D_phi)
-# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-# mc.SetPdf(w.pdf(model_1D_phi.GetName()))
-# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
-# # w.var("N_sig_X").setError(20.)
-# mc.SetObservables(ROOT.RooArgSet(w.var(PHI_mass_Cjp.GetName())))
-# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
-# mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
-# Import(w, mc)
-#
-# sbModel = w.obj("ModelConfig")
-# sbModel.SetName("S+B_model")
-# poi = sbModel.GetParametersOfInterest().first()
-# bModel = sbModel.Clone()
-# bModel.SetName("B_only_model")
-# oldval = poi.getVal()
-# poi.setVal(0)
-# bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# poi.setVal(oldval)
-# ac = ROOT.RooStats.AsymptoticCalculator(data_phi, sbModel, bModel)
-# ac.SetOneSidedDiscovery(True)
-# asResult = ac.GetHypoTest()
-# print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
+data_phi = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean_Bs_MC) + ') < ' + str(window_Bs) + ' && TMath::Abs(X_mass_Cjp - ' + str(mean_control_MC[mode]) + ') < ' + str(window_control))
+mean_phi.setConstant(1);
+model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
+mean_phi.setConstant(0);
+model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
+model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
+
+c_phi = ROOT.TCanvas("c_phi", "c_phi", 800, 600)
+plot_on_frame(PHI_mass_Cjp, data_phi, model_1D_phi, ' ', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param, False)
+CMS_tdrStyle_lumi.CMS_lumi( c_phi, 2, 0 );
+c_phi.Update(); c_phi.RedrawAxis(); #c_phi.GetFrame().Draw();
+c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
+
+# ###-----###
+
+w = ROOT.RooWorkspace("w", True)
+Import = getattr(ROOT.RooWorkspace, 'import')
+Import(w, model_1D_phi)
+mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
+mc.SetPdf(w.pdf(model_1D_phi.GetName()))
+mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
+# w.var("N_sig_X").setError(20.)
+mc.SetObservables(ROOT.RooArgSet(w.var(PHI_mass_Cjp.GetName())))
+# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
+mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
+Import(w, mc)
+
+sbModel = w.obj("ModelConfig")
+sbModel.SetName("S+B_model")
+poi = sbModel.GetParametersOfInterest().first()
+bModel = sbModel.Clone()
+bModel.SetName("B_only_model")
+oldval = poi.getVal()
+poi.setVal(0)
+bModel.SetSnapshot(ROOT.RooArgSet(poi))
+poi.setVal(oldval)
+ac = ROOT.RooStats.AsymptoticCalculator(data_phi, sbModel, bModel)
+ac.SetOneSidedDiscovery(True)
+asResult = ac.GetHypoTest()
+print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
