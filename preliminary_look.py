@@ -285,15 +285,15 @@ c_phi.Update(); c_phi.RedrawAxis(); #c_phi.GetFrame().Draw();
 
 
 
-a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
-N_sig_phi.setVal(0); N_sig_phi.setConstant(1);
-model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
-rrr_null = model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE), RF.Save())
-
-nll_sig  = rrr_sig.minNll()
-nll_null = rrr_null.minNll()
-P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
-# S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
-S = ROOT.Math.gaussian_quantile_c(P, 1)
-print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
+# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
+# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+# N_sig_phi.setVal(0); N_sig_phi.setConstant(1);
+# model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
+# rrr_null = model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE), RF.Save())
+#
+# nll_sig  = rrr_sig.minNll()
+# nll_null = rrr_null.minNll()
+# P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
+# # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
+# S = ROOT.Math.gaussian_quantile_c(P, 1)
+# print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
