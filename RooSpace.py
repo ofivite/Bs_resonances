@@ -82,8 +82,8 @@ a4_ext = ROOT.RooRealVar('a4_ext', 'a4_ext', 0.01, -10., 10.)
 
 N_sig_Bs = ROOT.RooRealVar('N_sig_Bs', '', 30000., 0., 100000)
 fr_Bs = ROOT.RooRealVar('fr_Bs', 'fr_Bs', 0.5, 0., 1.)
-fr_Bs_1 = ROOT.RooRealVar('fr_Bs_1', 'fr_Bs_1', 0.5, 0., 1.)
-fr_Bs_2 = ROOT.RooRealVar('fr_Bs_2', 'fr_Bs_2', 0.5, 0., 1.)
+fr_Bs_1 = ROOT.RooRealVar('fr_Bs_1', 'fr_Bs_1', 0.3, 0., 1.)
+fr_Bs_2 = ROOT.RooRealVar('fr_Bs_2', 'fr_Bs_2', 0.2, 0., 1.)
 N_sig_1 = ROOT.RooFormulaVar('N_sig_1', 'N_sig_Bs * fr_Bs', ROOT.RooArgList(N_sig_Bs, fr_Bs))
 N_sig_2 = ROOT.RooFormulaVar('N_sig_2', 'N_sig_Bs * (1-fr_Bs)', ROOT.RooArgList(N_sig_Bs, fr_Bs))
 
@@ -91,8 +91,8 @@ sig_Bs_1 = ROOT.RooGaussian("sig_Bs_1", "", var_discr, mean_Bs, sigma_Bs_1)
 sig_Bs_2 = ROOT.RooGaussian("sig_Bs_2", "", var_discr, mean_Bs, sigma_Bs_2)
 sig_Bs_3 = ROOT.RooGaussian("sig_Bs_3", "", var_discr, mean_Bs, sigma_Bs_3)
 
-signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2), ROOT.RooArgList(fr_Bs))  ## ---- BASELINE
-# signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2, sig_Bs_3), ROOT.RooArgList(fr_Bs_1, fr_Bs_2))
+# signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2), ROOT.RooArgList(fr_Bs))  ## ---- BASELINE
+signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2, sig_Bs_3), ROOT.RooArgList(fr_Bs_1, fr_Bs_2))
 # signal_Bs = ROOT.RooVoigtian("signal_Bs", "signal_Bs", var_discr, mean_Bs, gamma_BW_Bs, sigma_Bs)
 
 # bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
@@ -446,8 +446,10 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
 # , RF.Range(mean_phi.getValV() - 15 * gamma_BW_phi.getValV(), mean_phi.getValV() + 15 * gamma_BW_phi.getValV())
     model.plotOn(frame, RF.Components("sig_Bs_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     model.plotOn(frame, RF.Components("sig_Bs_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    # model.plotOn(frame, RF.Components("sig_Bs_3"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     model.plotOn(frame, RF.Components('sig_' + str(mode) + '_1'), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     model.plotOn(frame, RF.Components('sig_' + str(mode) + '_2'), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    # model.plotOn(frame, RF.Components('sig_' + str(mode) + '_3'), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     # model.plotOn(frame_control, RF.Components("signal_X"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
     model.plotOn(frame, RF.Components("bkgr_control"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
     model.plotOn(frame, RF.Components("bkgr_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
