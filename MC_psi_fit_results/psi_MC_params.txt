@@ -1,0 +1,60 @@
+ ## eff sigma template
+
+fr = 0.38; sigma_1 = 13.8; sigma_2 = 6.9
+sqrt((1-fr)*(sigma_2)**2 + fr*(sigma_1)**2)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-262115 FROM HESSE     STATUS=OK             23 CALLS          78 TOTAL
+                     EDM=3.64502e-05    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  fr_Bs        4.14680e-01   1.49008e-02   1.12674e-04  -1.71480e-01
+   2  mean_Bs      5.36994e+00   3.32707e-05   4.69051e-04   7.52039e-06
+   3  sigma_Bs_1   1.42142e-02   1.99574e-04   4.85757e-05  -4.78723e-01
+   4  sigma_Bs_2   6.58327e-03   8.79364e-05   3.27195e-05  -8.82157e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  2.221e-04 -2.047e-08 -2.746e-06 -1.189e-06 
+ -2.047e-08  1.107e-09  4.124e-10  6.443e-11 
+ -2.746e-06  4.124e-10  3.983e-08  1.406e-08 
+ -1.189e-06  6.443e-11  1.406e-08  7.733e-09 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.96469   1.000 -0.041 -0.923 -0.907
+        2  0.07836  -0.041  1.000  0.062  0.022
+        3  0.92732  -0.923  0.062  1.000  0.801
+        4  0.91224  -0.907  0.022  0.801  1.000
+
+
+sigma_eff = 10.410225742028844
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-320515 FROM HESSE     STATUS=OK             23 CALLS         135 TOTAL
+                     EDM=4.52431e-05    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  fr_psi       3.22859e-01   9.54993e-03   5.61777e-04  -3.62147e-01
+   2  mean_psi     3.68624e+00   1.55370e-05   1.22330e-04   1.24341e-01
+   3  sigma_psi_1   7.64996e-03   9.29896e-05   4.04872e-05  -8.16237e-01
+   4  sigma_psi_2   3.27567e-03   2.92751e-05   1.14880e-04  -1.13638e+00
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  9.121e-05 -8.760e-10 -7.839e-07 -2.384e-07 
+ -8.760e-10  2.414e-10  2.884e-11 -5.382e-12 
+ -7.839e-07  2.884e-11  8.647e-09  1.965e-09 
+ -2.384e-07 -5.382e-12  1.965e-09  8.570e-10 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.93606   1.000 -0.006 -0.883 -0.853
+        2  0.04286  -0.006  1.000  0.020 -0.012
+        3  0.88475  -0.883  0.020  1.000  0.722
+        4  0.85546  -0.853 -0.012  0.722  1.000
+
+sigma_eff = 5.111985915473555
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
