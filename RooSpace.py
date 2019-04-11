@@ -91,9 +91,9 @@ sig_Bs_1 = ROOT.RooGaussian("sig_Bs_1", "", var_discr, mean_Bs, sigma_Bs_1)
 sig_Bs_2 = ROOT.RooGaussian("sig_Bs_2", "", var_discr, mean_Bs, sigma_Bs_2)
 sig_Bs_3 = ROOT.RooGaussian("sig_Bs_3", "", var_discr, mean_Bs, sigma_Bs_3)
 
-# signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2), ROOT.RooArgList(fr_Bs))  ## ---- BASELINE
+signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2), ROOT.RooArgList(fr_Bs))  ## ---- BASELINE
 # signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, sig_Bs_2, sig_Bs_3), ROOT.RooArgList(fr_Bs_1, fr_Bs_2))
-signal_Bs = ROOT.RooVoigtian("signal_Bs", "signal_Bs", var_discr, mean_Bs, gamma_BW_Bs, sigma_Bs)
+# signal_Bs = ROOT.RooVoigtian("signal_Bs", "signal_Bs", var_discr, mean_Bs, gamma_BW_Bs, sigma_Bs)
 
 # bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
 bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2))
@@ -279,7 +279,7 @@ N_bkgr_phi = ROOT.RooRealVar('N_bkgr_phi', '', 10000., 0., 100000)
 # B0->psi(2S)K*0 reflection
 
 # file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_ws_data_cuts_dR0p05_SC.root')
-file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_dR0p05_from_a1c59b9_rho1.root')
+file_B0_refl_ws = ROOT.TFile('~/Study/Bs_resonances/file_B0_refl_dR0p05_from_a1c59b9.root')
 w = file_B0_refl_ws.Get('w')
 
 # B0_refl = w.pdf('B0_refl')

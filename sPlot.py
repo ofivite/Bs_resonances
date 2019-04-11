@@ -140,49 +140,49 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 
 # data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp), cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data  + ' && ' + cuts_pipi[mode])
 
-# #---------------#
-# ##  Inclusive  ##
-# #---------------#
+#---------------#
+##  Inclusive  ##
+#---------------#
+
+c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
+
+mean[sPlot_cut].setConstant(1);
+model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
+model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
+mean[sPlot_cut].setConstant(0);
+model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
+
+
+plot_on_frame(var[sPlot_cut], data, model[sPlot_cut], '', left[sPlot_cut], right[sPlot_cut], nbins[sPlot_cut], None, False)
+CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
+
+
+#----------------#
+##  Draw lines  ##
+#----------------#
+
+y_sdb_l = {'control': 950 if mode == 'X' else 1750}; y_sig = {'control': 1280 if mode == 'X' else 2400 }; y_sdb_r = {'control': 1420 if mode == 'X' else 2750 };
+line_width = 4
+
+line_ll_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, y_sdb_l['control'])
+line_lr_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - window - wind_sideband_dist, y_sdb_l['control'])
+line_rl_sdb = ROOT.TLine(mean[sPlot_cut].getVal() + 2.*window + wind_sideband_dist, 0, mean[sPlot_cut].getVal() + 2.*window + wind_sideband_dist, y_sdb_r['control'])
+line_rr_sdb = ROOT.TLine(mean[sPlot_cut].getVal() + window + wind_sideband_dist, 0, mean[sPlot_cut].getVal() + window + wind_sideband_dist, y_sdb_r['control'])
+line_l_sig = ROOT.TLine(mean[sPlot_cut].getVal() - window, 0, mean[sPlot_cut].getVal() - window, y_sig['control'])
+line_r_sig = ROOT.TLine(mean[sPlot_cut].getVal() + window, 0, mean[sPlot_cut].getVal() + window, y_sig['control'])
+
 #
-# c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
+line_ll_sdb.SetLineWidth(line_width); line_lr_sdb.SetLineWidth(line_width); line_rl_sdb.SetLineWidth(line_width); line_rr_sdb.SetLineWidth(line_width);
+line_l_sig.SetLineWidth(line_width); line_r_sig.SetLineWidth(line_width);
 #
-# mean[sPlot_cut].setConstant(1);
-# model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
-# model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
-# mean[sPlot_cut].setConstant(0);
-# model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
+line_l_sig.SetLineColor(47); line_r_sig.SetLineColor(47)
+line_ll_sdb.SetLineColor(ROOT.kBlue-8); line_lr_sdb.SetLineColor(ROOT.kBlue-8); line_rl_sdb.SetLineColor(ROOT.kBlue-8); line_rr_sdb.SetLineColor(ROOT.kBlue-8);
 #
-#
-# plot_on_frame(var[sPlot_cut], data, model[sPlot_cut], '', left[sPlot_cut], right[sPlot_cut], nbins[sPlot_cut], None, False)
-# CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
-#
-#
-# #----------------#
-# ##  Draw lines  ##
-# #----------------#
-#
-# y_sdb_l = {'control': 950 if mode == 'X' else 1750}; y_sig = {'control': 1280 if mode == 'X' else 2400 }; y_sdb_r = {'control': 1420 if mode == 'X' else 2750 };
-# line_width = 4
-#
-# line_ll_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, y_sdb_l['control'])
-# line_lr_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - window - wind_sideband_dist, y_sdb_l['control'])
-# line_rl_sdb = ROOT.TLine(mean[sPlot_cut].getVal() + 2.*window + wind_sideband_dist, 0, mean[sPlot_cut].getVal() + 2.*window + wind_sideband_dist, y_sdb_r['control'])
-# line_rr_sdb = ROOT.TLine(mean[sPlot_cut].getVal() + window + wind_sideband_dist, 0, mean[sPlot_cut].getVal() + window + wind_sideband_dist, y_sdb_r['control'])
-# line_l_sig = ROOT.TLine(mean[sPlot_cut].getVal() - window, 0, mean[sPlot_cut].getVal() - window, y_sig['control'])
-# line_r_sig = ROOT.TLine(mean[sPlot_cut].getVal() + window, 0, mean[sPlot_cut].getVal() + window, y_sig['control'])
-#
-# #
-# line_ll_sdb.SetLineWidth(line_width); line_lr_sdb.SetLineWidth(line_width); line_rl_sdb.SetLineWidth(line_width); line_rr_sdb.SetLineWidth(line_width);
-# line_l_sig.SetLineWidth(line_width); line_r_sig.SetLineWidth(line_width);
-# #
-# line_l_sig.SetLineColor(47); line_r_sig.SetLineColor(47)
-# line_ll_sdb.SetLineColor(ROOT.kBlue-8); line_lr_sdb.SetLineColor(ROOT.kBlue-8); line_rl_sdb.SetLineColor(ROOT.kBlue-8); line_rr_sdb.SetLineColor(ROOT.kBlue-8);
-# #
-# line_ll_sdb.Draw(); line_lr_sdb.Draw(); line_rl_sdb.Draw(); line_rr_sdb.Draw(); line_l_sig.Draw(); line_r_sig.Draw()
-#
-# c_inclus.Update(); c_inclus.RedrawAxis(); # c_inclus.GetFrame().Draw();
-# # c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(mode) + refl_line + '.pdf')
-# ###
+line_ll_sdb.Draw(); line_lr_sdb.Draw(); line_rl_sdb.Draw(); line_rr_sdb.Draw(); line_l_sig.Draw(); line_r_sig.Draw()
+
+c_inclus.Update(); c_inclus.RedrawAxis(); # c_inclus.GetFrame().Draw();
+# c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(mode) + refl_line + '.pdf')
+###
 
 
 # ---------------------#
@@ -196,7 +196,7 @@ data_sideband = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' - ' + s
 # data_sig = data
 # data_sideband = data
 
-if refl_ON and mode == 'psi':  N_B0_refl.setVal(100.); N_B0_refl.setConstant(0)
+if refl_ON and mode == 'psi':  N_B0_refl.setVal(300.); N_B0_refl.setConstant(0)
 else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
             #-------------#
