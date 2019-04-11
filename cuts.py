@@ -1,4 +1,4 @@
-mode = 'X'
+mode = 'psi'
 refl_ON = True
 get_MC_N_evts = False
 
