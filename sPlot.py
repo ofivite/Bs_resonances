@@ -83,33 +83,34 @@ CB_sum = ROOT.RooAddPdf("CB+CB", "CB_sum", ROOT.RooArgList(CB_phi_1, CB_phi_2), 
 signal_phi = ROOT.RooFFTConvPdf('resolxCB_sum', '', PHI_mass_Cjp, CB_sum, signal_delta)
 model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
 
-model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
-signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
-N = {'Bs': N_sig_Bs, 'phi': N_sig_phi, 'control': N_control[mode]}
-N_bkgr =  {'Bs': N_bkgr_Bs, 'phi': N_bkgr_phi, 'control': N_bkgr_control}
-mean = {'Bs': mean_Bs, 'phi': mean_phi, 'control': mean_control[mode]}
+# model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
+# signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
+# N = {'Bs': N_sig_Bs, 'phi': N_sig_phi, 'control': N_control[mode]}
+# N_bkgr =  {'Bs': N_bkgr_Bs, 'phi': N_bkgr_phi, 'control': N_bkgr_control}
+# mean = {'Bs': mean_Bs, 'phi': mean_phi, 'control': mean_control[mode]}
 
 ###-----###  Systematics variation here
 
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
 # bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
-# bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
+bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3))
+
 #
 # model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
 # model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_control), ROOT.RooArgList(N_sig_psi, N_bkgr_control))
 # model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
-# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
 
 # control_models = {'X': model_X, 'psi': model_psi}
 # model_control = control_models[mode]
 # N_control = {'X': N_sig_X, 'psi': N_sig_psi}
 # mean_control = {'X': mean_X, 'psi': mean_psi}
 
-# model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
-# signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
-# N = {'Bs': N_sig_Bs, 'phi': N_sig_phi, 'control': N_control[mode]}
-# N_bkgr =  {'Bs': N_bkgr_Bs, 'phi': N_bkgr_phi, 'control': N_bkgr_control}
-# mean = {'Bs': mean_Bs, 'phi': mean_phi, 'control': mean_control[mode]}
+model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
+signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
+N = {'Bs': N_sig_Bs, 'phi': N_sig_phi, 'control': N_control[mode]}
+N_bkgr =  {'Bs': N_bkgr_Bs, 'phi': N_bkgr_phi, 'control': N_bkgr_control}
+mean = {'Bs': mean_Bs, 'phi': mean_phi, 'control': mean_control[mode]}
 
 ###-----###
 
