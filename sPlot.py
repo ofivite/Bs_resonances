@@ -94,7 +94,7 @@ model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(si
 # bkgr_phi = ROOT.RooBernstein('bkgr_phi', '', PHI_mass_Cjp, ROOT.RooArgList(a1_phi, a2_phi, a3_phi))
 # bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
 # bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3, a4))
-bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
+bkgr_Bs = ROOT.RooChebychev('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1_ext, a2_ext, a3_ext))
 
 #
 # model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_control), ROOT.RooArgList(N_sig_X, N_bkgr_control))
