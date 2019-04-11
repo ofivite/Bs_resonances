@@ -29,10 +29,10 @@ fr_Bs.setVal(w_Bs.var('fr_Bs').getVal());
 # fr_Bs_1.setVal(w_Bs.var('fr_Bs_1').getVal()); fr_Bs_2.setVal(w_Bs.var('fr_Bs_2').getVal());
 mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
 
-sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
-sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
-fr_phi.setVal(w_phi.var('fr_phi').getVal());
-# gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
+# sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
+# sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
+# fr_phi.setVal(w_phi.var('fr_phi').getVal());
+gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
 # sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
 # sigma_phi.setVal(w_phi.var('sigma_phi').getVal());
 # mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
@@ -79,19 +79,12 @@ sig_delta_2 = ROOT.RooGaussian("sig_delta_2", "", PHI_mass_Cjp, mean_delta, sigm
 signal_delta = ROOT.RooAddPdf("signal_delta", "signal_delta", ROOT.RooArgList(sig_delta_1, sig_delta_2), ROOT.RooArgList(fr_delta))  ## ---- BASELINE
 
 CB_sum = ROOT.RooAddPdf("CB+CB", "CB_sum", ROOT.RooArgList(CB_phi_1, CB_phi_2), ROOT.RooArgList(fr_phi)) ## ---- BASELINE
-# signal_phi = ROOT.RooFFTConvPdf('resolxrelBW', '', PHI_mass_Cjp, relBW_phi, signal_delta)
-signal_phi = ROOT.RooFFTConvPdf('resolxCB_sum', '', PHI_mass_Cjp, CB_sum, signal_delta)
-model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
-
-# model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
-# signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
-# N = {'Bs': N_sig_Bs, 'phi': N_sig_phi, 'control': N_control[mode]}
-# N_bkgr =  {'Bs': N_bkgr_Bs, 'phi': N_bkgr_phi, 'control': N_bkgr_control}
-# mean = {'Bs': mean_Bs, 'phi': mean_phi, 'control': mean_control[mode]}
+signal_phi = ROOT.RooFFTConvPdf('resolxrelBW', '', PHI_mass_Cjp, relBW_phi, signal_delta)
+# signal_phi = ROOT.RooFFTConvPdf('resolxCB_sum', '', PHI_mass_Cjp, CB_sum, signal_delta)
 
 ###-----###  Systematics variation here
 
-bkgr_phi = ROOT.RooExponential('bkgr_phi', '', PHI_mass_Cjp, exp_par)
+# bkgr_phi = ROOT.RooExponential('bkgr_phi', '', PHI_mass_Cjp, exp_par)
 # bkgr_control = ROOT.RooBernstein('bkgr_control', '', var_control, ROOT.RooArgList(a1, a2, a3, a4))
 # bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2, a3, a4))
 # bkgr_Bs = ROOT.RooChebychev('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1_ext, a2_ext, a3_ext))
@@ -102,10 +95,10 @@ bkgr_phi = ROOT.RooExponential('bkgr_phi', '', PHI_mass_Cjp, exp_par)
 model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
 # model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
 
-# control_models = {'X': model_X, 'psi': model_psi}
-# model_control = control_models[mode]
-# N_control = {'X': N_sig_X, 'psi': N_sig_psi}
-# mean_control = {'X': mean_X, 'psi': mean_psi}
+control_models = {'X': model_X, 'psi': model_psi}
+model_control = control_models[mode]
+N_control = {'X': N_sig_X, 'psi': N_sig_psi}
+mean_control = {'X': mean_X, 'psi': mean_psi}
 
 model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'control': model_control}
 signal = {'Bs': signal_Bs, 'phi': signal_phi, 'control': signal_control}
