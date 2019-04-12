@@ -9,7 +9,7 @@ import CMS_tdrStyle_lumi
 
 var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
 var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
-PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0.2, 1.2)
+PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0., 10.)
 PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
 jpsi_mass = ROOT.RooRealVar('JPSI_mass_Cmumu', 'm(#mu^{+}#mu^{-}) [GeV]', 1., 4.)
 gen_phi_mass = ROOT.RooRealVar('gen_phi_mass', 'm_{gen}(K^{+}K^{-}) [GeV]', 0., 3.)
@@ -32,49 +32,19 @@ pi_min_pt = ROOT.RooRealVar('pi_min_pt', 'p_{T}^{min}(#pi) [GeV]', 0., 400.)
 pi_max_eta = ROOT.RooRealVar('pi_max_eta', '#eta^{max}(#pi)', -2.5, 2.5)
 pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
 
-####
-mu_1_pt = ROOT.RooRealVar('mu_1_pt', 'p_{T}(#mu_{1}) [GeV]', 0., 400.)
-mu_2_pt = ROOT.RooRealVar('mu_2_pt', 'p_{T}(#mu_{2}) [GeV]', 0., 400.)
-mu_1_eta = ROOT.RooRealVar('mu_1_eta', '#eta(#mu_{2})', -2.5, 2.5)
-mu_2_eta = ROOT.RooRealVar('mu_2_eta', '#eta(#mu_{2})', -2.5, 2.5)
-
-K1_pt = ROOT.RooRealVar('K1_pt', 'p_{T}(K_{1}) [GeV]', 0., 150.)
-K2_pt = ROOT.RooRealVar('K2_pt', 'p_{T}(K_{2}) [GeV]', 0., 150.)
-K1_eta = ROOT.RooRealVar('K1_eta', '#eta(K_{1})', -2.5, 2.5)
-K2_eta = ROOT.RooRealVar('K2_eta', '#eta(K_{2})', -2.5, 2.5)
-
-PI1_pt = ROOT.RooRealVar('PI1_pt', 'p_{T}(#pi_{1}) [GeV]', 0., 400.)
-PI2_pt = ROOT.RooRealVar('PI2_pt', 'p_{T}(#pi_{2}) [GeV]', 0., 400.)
-PI1_eta = ROOT.RooRealVar('PI1_eta', '#eta(#pi_{1})', -2.5, 2.5)
-PI2_eta = ROOT.RooRealVar('PI2_eta', '#eta(#pi_{2})', -2.5, 2.5)
-
-###
 BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
 BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
-BU_pvdistsignif2_Cjp = ROOT.RooRealVar('BU_pvdistsignif2_Cjp', 'DS_{2D}(B_{s}^{0})', 0., 2000.)
-BU_pvcos2_Cjp = ROOT.RooRealVar('BU_pvcos2_Cjp', 'cos_{2D}(B_{s}^{0}, PV)', 0., 1.)
-BU_vtxprob_Cjp = ROOT.RooRealVar('BU_vtxprob_Cjp', 'vtx prob(B_{s}^{0})', 0., 1.)
-
-###
-JP_pt = ROOT.RooRealVar('JP_pt', 'p_{T}(#mu#mu) [GeV]', 0, 800)
-JP_eta = ROOT.RooRealVar('JP_eta', '#eta(#mu#mu)', -2.5, 2.5)
-JPSI_pvdistsignif2_Cmumu = ROOT.RooRealVar('JPSI_pvdistsignif2_Cmumu', 'DS_{2D}(#mu#mu)', 0., 2000.)
-JPSI_pvcos2_Cmumu = ROOT.RooRealVar('JPSI_pvcos2_Cmumu', 'cos_{2D}(#mu#mu, PV)', 0., 1.)
-JPSI_vtxprob_Cmumu = ROOT.RooRealVar('JPSI_vtxprob_Cmumu', 'vtx prob(#mu#mu)', 0., 1.)
-JPSI_mass_Cmumu = ROOT.RooRealVar('JPSI_mass_Cmumu', 'm(#mu#mu)', 2.8, 3.4)
-
-BU_reflmass_PP_Cjp = ROOT.RooRealVar('BU_reflmass_PP_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 4.1, 5.6)
 
 PHI_mass_Cjp.setBins(10000, "cache")
 # PHI_mass_Cjp.setBins(nbins_phi_data)
 # PHI_mass_Cjp.setRange(left_phi_data, right_phi_data)
 
-dR_mu1 = ROOT.RooRealVar('dR_mu1', '', 0., 5.)
-dR_mu2 = ROOT.RooRealVar('dR_mu2', '', 0., 5.)
-dR_pi1 = ROOT.RooRealVar('dR_pi1', '', 0., 5.)
-dR_pi2 = ROOT.RooRealVar('dR_pi2', '', 0., 5.)
-dR_K1 = ROOT.RooRealVar('dR_K1', '', 0., 5.)
-dR_K2 = ROOT.RooRealVar('dR_K2', '', 0., 5.)
+dR_mup = ROOT.RooRealVar('dR_mup', '', 0., 5.)
+dR_mum = ROOT.RooRealVar('dR_mum', '', 0., 5.)
+dR_pip = ROOT.RooRealVar('dR_pip', '', 0., 5.)
+dR_pim = ROOT.RooRealVar('dR_pim', '', 0., 5.)
+dR_Kp = ROOT.RooRealVar('dR_Kp', '', 0., 5.)
+dR_Km = ROOT.RooRealVar('dR_Km', '', 0., 5.)
 
 dR_mu1_vv = ROOT.RooRealVar('dR_mu1_vv', '', 0., 5.)
 dR_mu2_vv = ROOT.RooRealVar('dR_mu2_vv', '', 0., 5.)
@@ -483,11 +453,15 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     model.plotOn(frame, RF.Components("bkgr_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
     model.plotOn(frame, RF.Components("bkgr_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4) );
     # model.plotOn(frame, RF.Components("signal_Bs"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4), RF.Range(mean_Bs.getValV() - 15 * sigma_Bs.getValV(), mean_Bs.getValV() + 15 * sigma_Bs.getValV()));
-    model.plotOn(frame, RF.Components("signal_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    if model == model_1D_phi: model.plotOn(frame, RF.Components("signal_phi"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+
+    model.plotOn(frame, RF.Components("sig_delta_1"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+    model.plotOn(frame, RF.Components("sig_delta_2"), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4));
+
     if refl_ON: model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44));
     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
 
-    frame.GetYaxis().SetTitle('Candidates / ' + str(int(round((right - left) * 1000. / nbins, 0))) + ' MeV')
+    frame.GetYaxis().SetTitle('Candidates / ' + str(round((right - left) * 1000. / nbins, 1)) + ' MeV')
     frame.GetXaxis().SetTitleSize(0.04)
     frame.GetYaxis().SetTitleSize(0.04)
     frame.GetXaxis().SetLabelSize(0.033)
