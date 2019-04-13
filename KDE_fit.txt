@@ -1,0 +1,43 @@
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-274030 FROM HESSE     STATUS=OK             29 CALLS          86 TOTAL
+                     EDM=1.31758e-06    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_B0_refl    7.15869e+01   1.10952e+02   4.44042e-02  -1.02908e+00
+   2  N_bkgr_Bs    2.36228e+04   1.69993e+02   1.34849e-03  -5.55708e-01
+   3  N_sig_Bs     3.16268e+03   1.01817e+02   5.79913e-04  -1.21322e+00
+   4  mean_Bs      5.36667e+00   2.54808e-04   3.03192e-03   2.24195e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  1.316e+04 -5.828e+03 -7.693e+03 -7.874e-03 
+ -5.828e+03  2.890e+04  7.467e+02  3.695e-03 
+ -7.693e+03  7.467e+02  1.037e+04  4.440e-03 
+ -7.874e-03  3.695e-03  4.440e-03  6.493e-08 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.72546   1.000 -0.299 -0.659 -0.269
+        2  0.36213  -0.299  1.000  0.043  0.085
+        3  0.67818  -0.659  0.043  1.000  0.171
+        4  0.26958  -0.269  0.085  0.171  1.000
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-34167.9 FROM HESSE     STATUS=OK             22 CALLS          62 TOTAL
+                     EDM=1.10521e-13    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_bkgr_phi   1.98455e+02   3.25528e+01   2.65316e-04  -1.48167e+00
+   2  N_sig_phi    2.96432e+03   6.18496e+01   1.31711e-04  -1.22473e+00
+   3  mean_phi     1.01965e+00   6.72340e-05   4.87225e-04  -6.97290e-02
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  3    ERR DEF=0.5
+  1.060e+03 -8.611e+02 -1.186e-04 
+ -8.611e+02  3.825e+03  1.185e-04 
+ -1.186e-04  1.185e-04  4.521e-09 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3
+        1  0.42976   1.000 -0.428 -0.054
+        2  0.42773  -0.428  1.000  0.029
+        3  0.05449  -0.054  0.029  1.000
+
