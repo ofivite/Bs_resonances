@@ -20,7 +20,7 @@
         3  0.67818  -0.659  0.043  1.000  0.171
         4  0.26958  -0.269  0.085  0.171  1.000
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*********************
 
  COVARIANCE MATRIX CALCULATED SUCCESSFULLY
  FCN=-34167.9 FROM HESSE     STATUS=OK             22 CALLS          62 TOTAL
@@ -41,3 +41,47 @@
         2  0.42773  -0.428  1.000  0.029
         3  0.05449  -0.054  0.029  1.000
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rho1
+
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-274031 FROM HESSE     STATUS=OK             42 CALLS         140 TOTAL
+                     EDM=1.94245e-07    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_B0_refl    8.23920e+01   9.77591e+01   1.93810e-02  -9.88525e-01
+   2  N_bkgr_Bs    2.36201e+04   1.67210e+02   5.69343e-05  -5.55770e-01
+   3  N_sig_Bs     3.15452e+03   9.72591e+01   6.18935e-05  -1.21368e+00
+   4  a1           8.53963e-03   1.15294e-02   3.57012e-05  -1.38571e+00
+   5  a2           3.13937e-03   4.24558e-03   2.16019e-05  -1.45868e+00
+   6  mean_Bs      5.36667e+00   2.50112e-04   1.23665e-04   2.24370e-01
+
+
+*********************
+
+
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-34114.1 FROM HESSE     STATUS=OK             41 CALLS         119 TOTAL
+                     EDM=1.29102e-09    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  N_bkgr_phi   1.79200e+02   3.21216e+01   3.89289e-04  -1.48611e+00
+   2  N_sig_phi    2.97532e+03   6.18691e+01   1.85813e-04  -1.22408e+00
+   3  a1_phi       3.25391e-03   1.51329e-01   1.32018e-02  -1.45665e+00
+   4  a2_phi       4.31037e-01   6.74229e-01   1.45566e-01  -1.38366e-01
+   5  mean_phi     1.01969e+00   6.71404e-05   1.71096e-03  -6.23663e-02
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  5    ERR DEF=0.5
+  1.032e+03 -8.525e+02  7.584e-02  3.121e+00 -1.188e-04 
+ -8.525e+02  3.828e+03 -7.571e-02 -3.114e+00  1.188e-04 
+  7.584e-02 -7.571e-02  2.085e-03  2.532e-01  1.014e-07 
+  3.121e+00 -3.114e+00  2.532e-01  3.435e+01  8.045e-06 
+ -1.188e-04  1.188e-04  1.014e-07  8.045e-06  4.508e-09 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5
+        1  0.44031   1.000 -0.429  0.052  0.017 -0.055
+        2  0.42913  -0.429  1.000 -0.027 -0.009  0.029
+        3  0.94670   0.052 -0.027  1.000  0.946  0.033
+        4  0.94652   0.017 -0.009  0.946  1.000  0.020
+        5  0.07686  -0.055  0.029  0.033  0.020  1.000
