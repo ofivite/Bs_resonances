@@ -2,25 +2,30 @@ from RooSpace import *
 from cuts import *
 from math import sqrt
 
-needMC = 1
+needMC = 0
 
 file_data = ROOT.TFile('psi_smatch_v2_fc33ffd.root') if needMC else ROOT.TFile('new_2_with_more_B0_e3de87.root')
 
 w_Bs, f_Bs = get_workspace('workspace_' + mode + '_Bs.root', 'workspace')
+w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
+w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
 
 
 sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var('sigma_Bs_2').getVal());
-# sigma_Bs_3.setVal(w_Bs.var('sigma_Bs_3').getVal());
-# sigma_Bs.setVal(w_Bs.var('sigma_Bs').getVal());
-# gamma_BW_Bs.setVal(w_Bs.var('gamma_BW_Bs').getVal());
 fr_Bs.setVal(w_Bs.var('fr_Bs').getVal());
-# fr_Bs_1.setVal(w_Bs.var('fr_Bs_1').getVal()); fr_Bs_2.setVal(w_Bs.var('fr_Bs_2').getVal());
 mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
-
 
 sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
 sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
 fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
+
+sigma_psi_1.setVal(w_psi.var('sigma_psi_1').getVal()); sigma_psi_2.setVal(w_psi.var('sigma_psi_2').getVal());
+fr_psi.setVal(w_psi.var('fr_psi').getVal());
+# mean_psi.setVal(w_psi.var('mean_psi').getVal());
+
+sigma_X_1.setVal(w_X.var('sigma_X_1').getVal()); sigma_X_2.setVal(w_X.var('sigma_X_2').getVal());
+fr_X.setVal(w_X.var('fr_X').getVal());
+# mean_X.setVal(w_X.var('mean_X').getVal());
 
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
@@ -48,21 +53,14 @@ data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(
         ROOT.RooArgSet( ROOT.RooArgSet(K1_pt, K2_pt, K1_eta, K2_eta, PI1_pt, PI2_pt, PI1_eta, PI2_eta, BU_pt_Cjp),
                         ROOT.RooArgSet(BU_pvdistsignif2_Cjp, BU_pvcos2_Cjp, BU_vtxprob_Cjp, JP_pt, JP_eta, JPSI_pvdistsignif2_Cmumu, JPSI_pvcos2_Cmumu, JPSI_vtxprob_Cmumu, JPSI_mass_Cmumu))
         ),
-
-# data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp,
-#         mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)),
-        ROOT.RooArgSet(dR_mup, dR_mum, dR_pip, dR_pim, dR_Kp, dR_Km) ) if needMC else ROOT.RooArgSet()
+        ROOT.RooArgSet(dR_mup, dR_mum, dR_pip, dR_pim, dR_Kp, dR_Km) if needMC else ROOT.RooArgSet()
+         )
         )
+
 data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[mode] + ' && ' + cut_phi_window)
-
-
-# ---------------------#
-# #  SR/SdR division  ##
-# ---------------------#
+data_sig = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' -' + str(mean[sPlot_cut].getVal()) + ')<' + str(window))
 
 print('\n\n' + 30*'#' + '\n\n\n         Data psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n')
-
-data_sig = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' -' + str(mean[sPlot_cut].getVal()) + ')<' + str(window))
 if needMC: data_sig = data_sig.reduce(cuts_match_dR)
 
 if refl_ON and mode == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)

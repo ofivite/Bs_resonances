@@ -53,7 +53,4 @@ cut_phi_window = 'PHI_mass_Cjp > 1.01 && PHI_mass_Cjp < 1.03' #'&& X_mass_Cjp > 
 
 
 cuts_match_dR = 'dR_mup < 0.05 && dR_mum < 0.05 && dR_pip < 0.05 && dR_pim < 0.05 && dR_Kp < 0.05 && dR_Km < 0.05'
-# cuts_match_ID = {'X': 'MoID_mu1 == 443 && MoID_mu2 == 443 && MoID_pi1 == 113 && MoID_pi2 == 113 && MoID_K1 == 333 && MoID_K2 == 333',
-#                  'psi': 'MoID_mu1 == 443 && MoID_mu2 == 443 && MoID_pi1 == 100443 && MoID_pi2 == 100443 && MoID_K1 == 333 && MoID_K2 == 333'}
-# cuts_match_dR = 'TMath::Min(dR_mu1, dR_mu1_vv) < 0.05 && TMath::Min(dR_mu2, dR_mu2_vv) < 0.05 && TMath::Min(dR_pi1, dR_pi1_vv) < 0.05 && TMath::Min(dR_pi2, dR_pi2_vv) < 0.05 && TMath::Min(dR_K1, dR_K1_vv) < 0.05 && TMath::Min(dR_K2, dR_K2_vv) < 0.05'
 cuts_match_ID = {'X': '1 > 0', 'psi': '1 > 0'}
