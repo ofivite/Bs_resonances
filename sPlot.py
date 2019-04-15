@@ -53,22 +53,22 @@ fr_X.setVal(w_X.var('fr_X').getVal()); # fr_X_1.setVal(w_X.var('fr_X_1').getVal(
 mean_X.setVal(w_X.var('mean_X').getVal());
 
 
-sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
-sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
-fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
+# sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
+# sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
+# fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
 
-sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
-sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
-fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
+# sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
+# sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
+# gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
+# fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
 
-sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1);
-sigma_psi.setConstant(1); gamma_BW_psi.setConstant(1)
-fr_psi.setConstant(1);  fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
+# sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1);
+# sigma_psi.setConstant(1); gamma_BW_psi.setConstant(1)
+# fr_psi.setConstant(1);  fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
 
-sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1);
-sigma_X.setConstant(1); gamma_BW_X.setConstant(1)
-fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
+# sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1);
+# sigma_X.setConstant(1); gamma_BW_X.setConstant(1)
+# fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
 
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
@@ -283,46 +283,46 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.Red
 
 # # ###-----###
 
-w = ROOT.RooWorkspace("w", True)
-Import = getattr(ROOT.RooWorkspace, 'import')
-Import(w, model[sPlot_to])
-mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-mc.SetPdf(w.pdf(model[sPlot_to].GetName()))
-mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N[sPlot_to].GetName())))
-# w.var("N_sig_X").setError(20.)
-mc.SetObservables(ROOT.RooArgSet(w.var(var[sPlot_to].GetName())))
-# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
-mc.SetSnapshot(ROOT.RooArgSet(w.var(N[sPlot_to].GetName())))
-Import(w, mc)
-
-sbModel = w.obj("ModelConfig")
-sbModel.SetName("S+B_model")
-poi = sbModel.GetParametersOfInterest().first()
-bModel = sbModel.Clone()
-bModel.SetName("B_only_model")
-oldval = poi.getVal()
-poi.setVal(0)
-bModel.SetSnapshot(ROOT.RooArgSet(poi))
-poi.setVal(oldval)
-ac = ROOT.RooStats.AsymptoticCalculator(data_sig_weighted, sbModel, bModel)
-ac.SetOneSidedDiscovery(True)
-asResult = ac.GetHypoTest()
-print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
-
-
-
-a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
-N[sPlot_to].setVal(0); N[sPlot_to].setConstant(1);
-model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
-rrr_null = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
-
-nll_sig  = rrr_sig.minNll()
-nll_null = rrr_null.minNll()
-P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
-# S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
-S = ROOT.Math.gaussian_quantile_c(P, 1)
-print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
+# w = ROOT.RooWorkspace("w", True)
+# Import = getattr(ROOT.RooWorkspace, 'import')
+# Import(w, model[sPlot_to])
+# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
+# mc.SetPdf(w.pdf(model[sPlot_to].GetName()))
+# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N[sPlot_to].GetName())))
+# # w.var("N_sig_X").setError(20.)
+# mc.SetObservables(ROOT.RooArgSet(w.var(var[sPlot_to].GetName())))
+# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
+# mc.SetSnapshot(ROOT.RooArgSet(w.var(N[sPlot_to].GetName())))
+# Import(w, mc)
+#
+# sbModel = w.obj("ModelConfig")
+# sbModel.SetName("S+B_model")
+# poi = sbModel.GetParametersOfInterest().first()
+# bModel = sbModel.Clone()
+# bModel.SetName("B_only_model")
+# oldval = poi.getVal()
+# poi.setVal(0)
+# bModel.SetSnapshot(ROOT.RooArgSet(poi))
+# poi.setVal(oldval)
+# ac = ROOT.RooStats.AsymptoticCalculator(data_sig_weighted, sbModel, bModel)
+# ac.SetOneSidedDiscovery(True)
+# asResult = ac.GetHypoTest()
+# print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
+#
+#
+#
+# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
+# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
+# N[sPlot_to].setVal(0); N[sPlot_to].setConstant(1);
+# model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
+# rrr_null = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
+#
+# nll_sig  = rrr_sig.minNll()
+# nll_null = rrr_null.minNll()
+# P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
+# # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
+# S = ROOT.Math.gaussian_quantile_c(P, 1)
+# print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
 
 #             #---------------#
