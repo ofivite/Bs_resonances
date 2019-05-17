@@ -13,21 +13,21 @@ refl_line = '_refl' if refl_ON else ''
 
 left_jpsi = 3.094 - 0.1; right_jpsi = 3.094 + 0.1; nbins_jpsi = 100
 
-left_discr_data =  5.3669 - 0.2; right_discr_data = 5.3669 + 0.2; nbins_discr_data = 400
-left_discr_MC =  5.3669 - 0.035; right_discr_MC = 5.3669 + 0.035; nbins_discr_MC = 350
+left_discr_data =  5.3669 - 0.2; right_discr_data = 5.3669 + 0.2; nbins_discr_data = 800
+left_discr_MC =  5.3669 - 0.035; right_discr_MC = 5.3669 + 0.035; nbins_discr_MC = 700
 
 # lrn_phi_data = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 32]}
-lrn_phi_data = {'X': [1.0195 - 0.030, 1.0195 + 0.030, 30], 'psi': [1.0195 - 0.030, 1.0195 + 0.030, 300]}
+lrn_phi_data = {'X': [1.0195 - 0.030, 1.0195 + 0.030, 30], 'psi': [1.0195 - 0.030, 1.0195 + 0.030, 600]}
 left_phi_data, right_phi_data, nbins_phi_data = lrn_phi_data[mode]
 
 # lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.0155, 1.0195 + 0.0155, 31]}
-lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 320]}
+lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 640]}
 left_phi_MC, right_phi_MC, nbins_phi_MC = lrn_phi_MC[mode]
 
 # lrn = left, right, nbins
-lrn_control_MC = {'X': [3.872 - 0.02, 3.872 + 0.02, 40], 'psi': [3.686 - 0.02, 3.686 + 0.02, 400]}
+lrn_control_MC = {'X': [3.872 - 0.02, 3.872 + 0.02, 40], 'psi': [3.686 - 0.02, 3.686 + 0.02, 800]}
 # lrn_control_data = {'X': [3.872 - 0.065, 3.872 + 0.065, 65], 'psi': [3.686 - 0.05, 3.686 + 0.05, 50]}
-lrn_control_data = {'X': [3.872 - 0.06, 3.872 + 0.06, 30], 'psi': [3.686 - 0.05, 3.686 + 0.05, 500]}
+lrn_control_data = {'X': [3.872 - 0.06, 3.872 + 0.06, 30], 'psi': [3.686 - 0.05, 3.686 + 0.05, 1000]}
 
 left_control_MC, right_control_MC, nbins_control_MC = lrn_control_MC[mode]
 left_control_data, right_control_data, nbins_control_data = lrn_control_data[mode]
