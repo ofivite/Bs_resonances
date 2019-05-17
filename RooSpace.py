@@ -6,6 +6,7 @@ import ROOT
 from ROOT import RooFit as RF
 from cuts import *
 import CMS_tdrStyle_lumi
+from scipy import stats
 
 var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
 var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
@@ -426,7 +427,7 @@ n_phi_2.setPlotLabel('n_{2}[#phi]')
 sigma_phi_1.setPlotLabel('#sigma_{1}[#phi]')
 sigma_phi_2.setPlotLabel('#sigma_{2}[#phi]')
 
-def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC):
+def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC, chi_dict):
     frame = ROOT.RooPlot(" ", title, roovar, left, right, nbins);
     # if SumW2 == 1:
     #     data.plotOn(frame, RF.DataError(ROOT.RooAbsData.SumW2))
@@ -436,6 +437,12 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     # model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_par))
     # frame.getAttText().SetTextSize(0.053)
     model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange("full"), RF.Range('full')
+
+    nfloat = model.getParameters(data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
+    ndf = nbins - nfloat; chi = frame.chiSquare(nfloat) * ndf;
+    pvalue = 1 - stats.chi2.cdf(chi, ndf)
+    chi_dict.update({model.GetName() + '_' + data.GetName(): [chi, ndf, pvalue]})
+
     floatPars = model.getParameters(data).selectByAttrib('Constant', ROOT.kFALSE)
     print('\n\n' + 30*'<' + '\n\n         ndf = ' + str(floatPars.getSize()) + ';    chi2/ndf = ' + str(frame.chiSquare(floatPars.getSize())) + ' for ' + str(model.GetName()) + ' and ' + str(data.GetName()) + '         \n\n' + 30* '>' + '\n\n')
 
