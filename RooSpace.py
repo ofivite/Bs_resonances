@@ -477,6 +477,18 @@ def plot_on_frame(roovar, data, model, title, left, right, nbins, plot_par, isMC
     frame.GetYaxis().SetTitleOffset(1.3)
     frame.Draw()
 
+def plot_pull(var, data, model, save = False):
+    c_pulls = ROOT.TCanvas("c_pulls", "c_pulls", 800, 600)
+    frame = var.frame()
+    data.plotOn(frame)
+    model.plotOn(frame)
+    pull_hist = frame.pullHist()
+
+    frame2 = var.frame()
+    frame2.addPlotable(pull_hist, 'P')
+    frame2.Draw()
+    if save: c_pulls.SaveAs('~/Study/Bs_resonances/fit_pulls/'+ mode + '_' + data.GetName() + '.pdf')
+
 
 def _import(wsp, obj):
     getattr(wsp, 'import')(obj)
