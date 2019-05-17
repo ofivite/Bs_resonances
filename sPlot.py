@@ -1,6 +1,7 @@
 from RooSpace import *
 from cuts import *
 from math import sqrt
+import json
 
 chi_dict = {}
 
@@ -386,4 +387,5 @@ a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
 a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
 a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
 
-# dummy
+with open('chis_' + mode + '.txt', 'w') as file:
+    file.write(json.dumps(chi_dict))
