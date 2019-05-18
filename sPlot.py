@@ -245,7 +245,7 @@ model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 # file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
 plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
 # plot_pull(var[sPlot_from], data_sig, model[sPlot_from], save = True)
-# plot_MCStudy(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sig.sumEntries()), save = True, label = data_sig.GetName())
+plot_MCStudy(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sig.sumEntries()), save = True, label = data_sig.GetName())
 
 
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();

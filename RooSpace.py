@@ -503,14 +503,14 @@ def plot_MCStudy(var, model, var_to_study, N_toys=100, N_gen = 1, save = False, 
     frame_err = MC_manager.plotError(var_to_study)
     frame_pull = MC_manager.plotPull(var_to_study, -3, 3, 60, ROOT.kTRUE)
 
-    c_var = ROOT.TCanvas("c_var", "c_var", 800, 600)
-    frame_var.Draw()
-    c_err = ROOT.TCanvas("c_err", "c_err", 800, 600)
-    frame_err.Draw()
-    c_pull = ROOT.TCanvas("c_pull", "c_pull", 800, 600)
-    frame_pull.Draw()
-
     if save:
+        c_var = ROOT.TCanvas("c_var", "c_var", 800, 600)
+        frame_var.Draw()
+        c_err = ROOT.TCanvas("c_err", "c_err", 800, 600)
+        frame_err.Draw()
+        c_pull = ROOT.TCanvas("c_pull", "c_pull", 800, 600)
+        frame_pull.Draw()
+        
         c_var.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '.pdf')
         c_err.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '_err.pdf')
         c_pull.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '_pull.pdf')
