@@ -487,8 +487,33 @@ def plot_pull(var, data, model, save = False):
     frame2 = var.frame()
     frame2.addPlotable(pull_hist, 'P')
     frame2.Draw()
-    if save: c_pulls.SaveAs('~/Study/Bs_resonances/fit_pulls/'+ mode + '_' + data.GetName() + '.pdf')
+    if save: c_pulls.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + data.GetName() + '.pdf')
 
+def plot_MCStudy(var, model, var_to_study, N_toys=100, N_gen = 1, save = False, label = ''):
+    width_N = 80 if mode == 'X' else 250
+    err_upper = 30 if mode == 'X' else 400; err_nbins = 30
+    var_lower = var_to_study.getVal() - width_N; var_upper = var_to_study.getVal() + width_N; var_nbins = 50
+
+    MC_manager = ROOT.RooMCStudy(model, model, ROOT.RooArgSet(var), "", "mhvl")
+    MC_manager.generateAndFit(N_toys, N_gen)
+
+    frame_var = var_to_study.frame(var_lower, var_upper, var_nbins);  MC_manager.plotParamOn(frame_var)
+    # frame_err = MC_manager.plotError(var_to_study, 0, err_upper, err_nbins)
+    # frame_pull = MC_manager.plotPull(var_to_study, -3, 3, 60, ROOT.kTRUE)
+    frame_err = MC_manager.plotError(var_to_study)
+    frame_pull = MC_manager.plotPull(var_to_study, -3, 3, 60, ROOT.kTRUE)
+
+    c_var = ROOT.TCanvas("c_var", "c_var", 800, 600)
+    frame_var.Draw()
+    c_err = ROOT.TCanvas("c_err", "c_err", 800, 600)
+    frame_err.Draw()
+    c_pull = ROOT.TCanvas("c_pull", "c_pull", 800, 600)
+    frame_pull.Draw()
+
+    if save:
+        c_var.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '.pdf')
+        c_err.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '_err.pdf')
+        c_pull.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '_pull.pdf')
 
 def _import(wsp, obj):
     getattr(wsp, 'import')(obj)
