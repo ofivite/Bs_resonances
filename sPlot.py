@@ -201,7 +201,7 @@ else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
             #-------------#
 
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
-
+mean[sPlot_from].setConstant(1)
 model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
