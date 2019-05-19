@@ -229,10 +229,10 @@ fr_phi = ROOT.RooRealVar('fr_phi', 'fr_phi', 0.5 , 0., 1.)
 sig_phi_1 = ROOT.RooGaussian("sig_phi_1", "", PHI_mass_Cjp, mean_phi, sigma_phi_1)
 sig_phi_2 = ROOT.RooGaussian("sig_phi_2", "", PHI_mass_Cjp, mean_phi, sigma_phi_2)
 
-a1_phi = ROOT.RooRealVar('a1_phi', 'a1_phi', 0.01, 0., 1.)
-a2_phi = ROOT.RooRealVar('a2_phi', 'a2_phi', 0.01, 0., 1.)
-a3_phi = ROOT.RooRealVar('a3_phi', 'a3_phi', 0.01, 0., 1.)
-a4_phi = ROOT.RooRealVar('a4_phi', 'a4_phi', 0.01, 0., 1.)
+a1_phi = ROOT.RooRealVar('a1_phi', 'a1_phi', 0.01, 0., 10.)
+a2_phi = ROOT.RooRealVar('a2_phi', 'a2_phi', 0.01, 0., 10.)
+a3_phi = ROOT.RooRealVar('a3_phi', 'a3_phi', 0.01, 0., 10.)
+a4_phi = ROOT.RooRealVar('a4_phi', 'a4_phi', 0.01, 0., 10.)
 
 CB_phi_1 = ROOT.RooCBShape('CB_phi_1', '', PHI_mass_Cjp, mean_phi, sigmaCB_phi_1, alpha_phi_1, n_phi_1)
 CB_phi_2 = ROOT.RooCBShape('CB_phi_2', '', PHI_mass_Cjp, mean_phi, sigmaCB_phi_2, alpha_phi_2, n_phi_2)
@@ -510,7 +510,7 @@ def plot_MCStudy(var, model, var_to_study, N_toys=100, N_gen = 1, save = False, 
         frame_err.Draw()
         c_pull = ROOT.TCanvas("c_pull", "c_pull", 800, 600)
         frame_pull.Draw()
-        
+
         c_var.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '.pdf')
         c_err.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '_err.pdf')
         c_pull.SaveAs('~/Study/Bs_resonances/fit_validation/'+ mode + '_' + var.GetName() + '_' + label + '_pull.pdf')
