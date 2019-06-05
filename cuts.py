@@ -1,4 +1,12 @@
-mode = 'X'
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("mode", help="mode to study: psi/X", type=str)
+args = parser.parse_args()
+if args.mode not in ['psi', 'X']:
+    raise argparse.ArgumentTypeError('wrong naming, enter psi or X')
+
+mode = args.mode
 refl_ON = False
 get_MC_N_evts = False
 
