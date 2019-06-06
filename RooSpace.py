@@ -498,7 +498,7 @@ def plot_MCStudy(var, model, var_to_study, N_toys=100, N_gen = 1, save = False, 
     err_upper = 30 if mode == 'X' else 400; err_nbins = 30
     var_lower = var_to_study.getVal() - width_N; var_upper = var_to_study.getVal() + width_N; var_nbins = 50
 
-    MC_manager = ROOT.RooMCStudy(model, ROOT.RooArgSet(var), RF.Extended(ROOT.kTRUE), RF.FitOptions('mvwl'))
+    MC_manager = ROOT.RooMCStudy(model, ROOT.RooArgSet(var), RF.Extended(ROOT.kTRUE), RF.FitOptions('mvl'))
     MC_manager.generateAndFit(N_toys, N_gen)
 
     frame_var = var_to_study.frame(var_lower, var_upper, var_nbins);  MC_manager.plotParamOn(frame_var)
