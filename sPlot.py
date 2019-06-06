@@ -157,62 +157,62 @@ data_sideband.SetName('sideband')
 if refl_ON and mode == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
 else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
-            #-------------#
-            ##  sPlot I  ##
-            #-------------#
-
-c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
-
-if mode == 'X': mean[sPlot_from].setConstant(1)
+#             #-------------#
+#             ##  sPlot I  ##
+#             #-------------#
 #
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
-a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
-a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
-
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
-a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
-a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
-
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-
-# w = ROOT.RooWorkspace("w", True)
-# Import = getattr(ROOT.RooWorkspace, 'import')
-# Import(w, model[sPlot_from])
-# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-# mc.SetPdf(w.pdf(model[sPlot_from].GetName()))
-# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
-# # w.var("N_sig_X").setError(20.)
-# mc.SetObservables(ROOT.RooArgSet(w.var(var[sPlot_from].GetName())))
-# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var(N_bkgr[sPlot_from].GetName()), w.var(mean[sPlot_from].GetName())))
-# mc.SetSnapshot(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
-# Import(w, mc)
+# c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
 #
-# sbModel = w.obj("ModelConfig")
-# sbModel.SetName("S+B_model")
-# poi = sbModel.GetParametersOfInterest().first()
-# bModel = sbModel.Clone()
-# bModel.SetName("B_only_model")
-# oldval = poi.getVal()
-# poi.setVal(0)
-# bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# poi.setVal(oldval)
-# ac = ROOT.RooStats.AsymptoticCalculator(data_sig, sbModel, bModel)
-# ac.SetOneSidedDiscovery(True)
-# asResult = ac.GetHypoTest()
-# asResult.Print()
-
-# file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
-plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
-plot_pull(var[sPlot_from], data_sig, model[sPlot_from], save = True)
-plot_MCStudy(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sig.sumEntries()), save = True, label = data_sig.GetName())
-
-
-CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
-# c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
+# if mode == 'X': mean[sPlot_from].setConstant(1)
+# #
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
+# a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+# a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
+#
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
+# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
+# a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
+#
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+#
+# # w = ROOT.RooWorkspace("w", True)
+# # Import = getattr(ROOT.RooWorkspace, 'import')
+# # Import(w, model[sPlot_from])
+# # mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
+# # mc.SetPdf(w.pdf(model[sPlot_from].GetName()))
+# # mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
+# # # w.var("N_sig_X").setError(20.)
+# # mc.SetObservables(ROOT.RooArgSet(w.var(var[sPlot_from].GetName())))
+# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var(N_bkgr[sPlot_from].GetName()), w.var(mean[sPlot_from].GetName())))
+# # mc.SetSnapshot(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
+# # Import(w, mc)
+# #
+# # sbModel = w.obj("ModelConfig")
+# # sbModel.SetName("S+B_model")
+# # poi = sbModel.GetParametersOfInterest().first()
+# # bModel = sbModel.Clone()
+# # bModel.SetName("B_only_model")
+# # oldval = poi.getVal()
+# # poi.setVal(0)
+# # bModel.SetSnapshot(ROOT.RooArgSet(poi))
+# # poi.setVal(oldval)
+# # ac = ROOT.RooStats.AsymptoticCalculator(data_sig, sbModel, bModel)
+# # ac.SetOneSidedDiscovery(True)
+# # asResult = ac.GetHypoTest()
+# # asResult.Print()
+#
+# # file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
+# plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
+# # plot_pull(var[sPlot_from], data_sig, model[sPlot_from], save = True)
+# # plot_MCStudy(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sig.sumEntries()), save = True, label = data_sig.GetName())
+#
+#
+# CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
+# # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
 
 
 #             #--------------#
@@ -297,41 +297,37 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 # print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
 
-#             #---------------#
-#             ##  sPlot III  ##
-#             #---------------#
-#
-# c_sPlot_3 = ROOT.TCanvas("c_sPlot_3", "c_sPlot_3", 800, 600)
-# mean_Bs.setConstant(1); mean_phi.setConstant(1); mean_control[mode].setConstant(1);
-# N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
-#
-# model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-# model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-# a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
-# a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
-# a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
-# model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-# model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-#
-# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
-# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
-# a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
-#
-# model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
-#
-# # file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
-# plot_on_frame(var[sPlot_from], data_sideband, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
-# # plot_pull(var[sPlot_from], data_sideband, model[sPlot_from], save=True)
-#
-# CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_3, 2, 0 );
-# c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
-# # c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_3_' + str(mode) + refl_line + '.pdf')
-#
-# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
-# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
-# a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
-#
-# plot_MCStudy(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sideband.sumEntries()), save = True, label = data_sideband.GetName())
+            #---------------#
+            ##  sPlot III  ##
+            #---------------#
+
+c_sPlot_3 = ROOT.TCanvas("c_sPlot_3", "c_sPlot_3", 800, 600)
+mean_Bs.setConstant(1); mean_phi.setConstant(1); mean_control[mode].setConstant(1);
+N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
+
+model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
+a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
+model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+
+a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
+a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
+a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
+
+model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
+
+# file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
+plot_on_frame(var[sPlot_from], data_sideband, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
+plot_pull(var[sPlot_from], data_sideband, model[sPlot_from], save=True)
+plot_MCStudy(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sideband.sumEntries()), save = True, label = data_sideband.GetName())
+
+CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_3, 2, 0 );
+c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
+# c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_3_' + str(mode) + refl_line + '.pdf')
+
 #
 #             #--------------#
 #             ##  sPlot IV  ##
