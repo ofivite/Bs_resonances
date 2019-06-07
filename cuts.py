@@ -1,14 +1,6 @@
-import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument("mode", help="mode to study: psi/X", type=str)
-args = parser.parse_args()
-if args.mode not in ['psi', 'X']:
-    raise argparse.ArgumentTypeError('wrong naming, enter psi or X')
-
-mode = args.mode
+mode = 'psi'
 refl_ON = False
-get_MC_N_evts = False
+get_MC_N_evts = True
 
 sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
 sPlot_cut = 'control'; sPlot_from = 'Bs'; sPlot_to = 'phi'
@@ -21,20 +13,19 @@ refl_line = '_refl' if refl_ON else ''
 
 left_jpsi = 3.094 - 0.1; right_jpsi = 3.094 + 0.1; nbins_jpsi = 100
 
-left_discr_data =  5.27; right_discr_data = 5.47; nbins_discr_data = 40 # 5.3669 + 0.1
-left_discr_MC =  5.346;    right_discr_MC = 5.398; nbins_discr_MC = 150
+left_discr_data =  5.3669 - 0.2; right_discr_data = 5.3669 + 0.2; nbins_discr_data = 40
+left_discr_MC =  5.3669 - 0.035; right_discr_MC = 5.3669 + 0.035; nbins_discr_MC = 35
 
 # lrn_phi_data = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 32]}
 lrn_phi_data = {'X': [1.0195 - 0.030, 1.0195 + 0.030, 30], 'psi': [1.0195 - 0.030, 1.0195 + 0.030, 30]}
 left_phi_data, right_phi_data, nbins_phi_data = lrn_phi_data[mode]
 
 # lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.0155, 1.0195 + 0.0155, 31]}
-# lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 100], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 100]}
-lrn_phi_MC = {'X': [1.01, 1.03, 100], 'psi': [1.01, 1.03, 150]}
+lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 32]}
 left_phi_MC, right_phi_MC, nbins_phi_MC = lrn_phi_MC[mode]
 
 # lrn = left, right, nbins
-lrn_control_MC = {'X': [3.872 - 0.015, 3.872 + 0.015, 120], 'psi': [3.686 - 0.013, 3.686 + 0.013, 150]}
+lrn_control_MC = {'X': [3.872 - 0.02, 3.872 + 0.02, 40], 'psi': [3.686 - 0.02, 3.686 + 0.02, 40]}
 # lrn_control_data = {'X': [3.872 - 0.065, 3.872 + 0.065, 65], 'psi': [3.686 - 0.05, 3.686 + 0.05, 50]}
 lrn_control_data = {'X': [3.872 - 0.06, 3.872 + 0.06, 30], 'psi': [3.686 - 0.05, 3.686 + 0.05, 50]}
 
