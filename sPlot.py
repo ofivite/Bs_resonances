@@ -217,6 +217,8 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 
 ###--- plotting ll ---###
 
+mean_Bs.setConstant(1); N_bkgr_Bs.setConstant(1)
+
 nll = model[sPlot_from].createNLL(data_sig)
 pll = nll.createProfile(ROOT.RooArgSet(N[sPlot_from]))
 
@@ -225,7 +227,7 @@ frame_nll = N[sPlot_from].frame(RF.Bins(100), RF.Range(ll_left, ll_right)) #N_si
 frame_nll.SetTitle('')
 
 nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
-# nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
+nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
 pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
 
 frame_nll.SetMaximum(25.)
@@ -239,7 +241,8 @@ line_5sigma.Draw();
 
 CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
 c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
-c_ll.SaveAs(mode + '1_pll.pdf')
+c_ll.SaveAs(mode + '1_pll_constr_bkgr_mean.pdf')
+
 
 #             #--------------#
 #             ##  sPlot II  ##
