@@ -165,8 +165,8 @@ c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
 
 if mode == 'X': mean[sPlot_from].setConstant(1)
 #
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
+# model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
 a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
 a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
 a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
