@@ -128,6 +128,33 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 # c_control.Update(); c_control.RedrawAxis(); #c_control.GetFrame().Draw();
 # c_control.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_control_prelim_' + str(mode) + '.pdf')
 #
+# ###--- plotting ll ---###
+#
+# nll = model_control.createNLL(data_control)
+# pll = nll.createProfile(ROOT.RooArgSet(N_control[mode]))
+#
+# c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600); ll_left = 0; ll_right = 200
+# frame_nll = N_control[mode].frame(RF.Bins(100), RF.Range(ll_left, ll_right)) #N_sig_Bs.getVal() + 40
+# frame_nll.SetTitle('')
+#
+# nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
+# # nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
+# pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
+#
+# frame_nll.SetMaximum(30.)
+# frame_nll.SetMinimum(0.)
+# frame_nll.Draw()
+#
+# line_width = 4
+# line_5sigma = ROOT.TLine(ll_left, 12.5, ll_right, 12.5)
+# line_5sigma.SetLineWidth(line_width); line_5sigma.SetLineColor(47)
+# line_5sigma.Draw();
+#
+# CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
+# c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
+# c_ll.SaveAs('prelim_control_pll.pdf')
+#
+#
 # # ###-----###
 #
 # w = ROOT.RooWorkspace("w", True)
@@ -181,7 +208,33 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 # plot_on_frame(var_discr, data_Bs, model_1D_Bs, '', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
 # CMS_tdrStyle_lumi.CMS_lumi( c_Bs, 2, 0 );
 # c_Bs.Update(); c_Bs.RedrawAxis(); #c_Bs.GetFrame().Draw();
-# c_Bs.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_Bs_prelim_' + str(mode) + '.pdf')
+# # c_Bs.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_Bs_prelim_' + str(mode) + '.pdf')
+#
+# ###--- plotting ll ---###
+#
+# nll = model_1D_Bs.createNLL(data_Bs)
+# pll = nll.createProfile(ROOT.RooArgSet(N_sig_Bs))
+#
+# c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600); ll_left = 0; ll_right = 200
+# frame_nll = N_sig_Bs.frame(RF.Bins(100), RF.Range(ll_left, ll_right)) #N_sig_Bs.getVal() + 40
+# frame_nll.SetTitle('')
+#
+# nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
+# # nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
+# pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
+#
+# frame_nll.SetMaximum(30.)
+# frame_nll.SetMinimum(0.)
+# frame_nll.Draw()
+#
+# line_width = 4
+# line_5sigma = ROOT.TLine(ll_left, 12.5, ll_right, 12.5)
+# line_5sigma.SetLineWidth(line_width); line_5sigma.SetLineColor(47)
+# line_5sigma.Draw();
+#
+# CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
+# c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
+# c_ll.SaveAs('prelim_Bs_pll.pdf')
 
 
 # # ###---- Significance ----####
@@ -254,7 +307,34 @@ plot_on_frame(PHI_mass_Cjp, data_phi, model_1D_phi, ' ', left_phi_data, right_ph
 CMS_tdrStyle_lumi.CMS_lumi( c_phi, 2, 0 );
 c_phi.Update(); c_phi.RedrawAxis(); #c_phi.GetFrame().Draw();
 # c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
-#
+
+
+###--- plotting ll ---###
+
+nll = model_1D_phi.createNLL(data_phi)
+pll = nll.createProfile(ROOT.RooArgSet(N_sig_phi))
+
+c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600); ll_left = 0; ll_right = 200
+frame_nll = N_sig_phi.frame(RF.Bins(100), RF.Range(ll_left, ll_right)) #N_sig_Bs.getVal() + 40
+frame_nll.SetTitle('')
+
+nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
+# nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
+pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
+
+frame_nll.SetMaximum(30.)
+frame_nll.SetMinimum(0.)
+frame_nll.Draw()
+
+line_width = 4
+line_5sigma = ROOT.TLine(ll_left, 12.5, ll_right, 12.5)
+line_5sigma.SetLineWidth(line_width); line_5sigma.SetLineColor(47)
+line_5sigma.Draw();
+
+CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
+c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
+c_ll.SaveAs('prelim_phi_pll.pdf')
+
 # # ###-----###
 #
 # w = ROOT.RooWorkspace("w", True)
