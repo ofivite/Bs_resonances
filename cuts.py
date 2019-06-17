@@ -1,6 +1,14 @@
-mode = 'psi'
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("mode", help="mode to study: psi/X", type=str)
+args = parser.parse_args()
+if args.mode not in ['psi', 'X']:
+    raise argparse.ArgumentTypeError('wrong naming, enter psi or X')
+
+mode = args.mode
 refl_ON = False
-get_MC_N_evts = True
+get_MC_N_evts = False
 
 sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
 sPlot_cut = 'control'; sPlot_from = 'Bs'; sPlot_to = 'phi'
@@ -13,7 +21,7 @@ refl_line = '_refl' if refl_ON else ''
 
 left_jpsi = 3.094 - 0.1; right_jpsi = 3.094 + 0.1; nbins_jpsi = 100
 
-left_discr_data =  5.3669 - 0.2; right_discr_data = 5.3669 + 0.2; nbins_discr_data = 40
+left_discr_data =  5.27; right_discr_data = 5.47; nbins_discr_data = 40 # 5.3669 + 0.1
 left_discr_MC =  5.3669 - 0.035; right_discr_MC = 5.3669 + 0.035; nbins_discr_MC = 35
 
 # lrn_phi_data = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 32]}
