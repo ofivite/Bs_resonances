@@ -65,20 +65,24 @@ if get_MC_N_evts:
 # mean_delta.setVal(0.); mean_delta.setConstant(1)
 # gamma_BW_phi.setVal(0.0042); #gamma_BW_phi.setConstant(0)
 #
-# # sig_delta_1 = ROOT.RooGaussian("sig_delta_1", "", PHI_mass_Cjp, mean_delta, sigma_delta_1)
-# # sig_delta_2 = ROOT.RooGaussian("sig_delta_2", "", PHI_mass_Cjp, mean_delta, sigma_delta_2)
-# # signal_delta = ROOT.RooAddPdf("signal_delta", "signal_delta", ROOT.RooArgList(sig_delta_1, sig_delta_2), ROOT.RooArgList(fr_delta))  ## ---- BASELINE
-# #
-# # CB_sum = ROOT.RooAddPdf("CB+CB", "CB_sum", ROOT.RooArgList(CB_phi_1, CB_phi_2), ROOT.RooArgList(fr_phi)) ## ---- BASELINE
-# # # signal_phi = ROOT.RooFFTConvPdf('resolxrelBW', '', PHI_mass_Cjp, relBW_phi, signal_delta)
-# # signal_phi = ROOT.RooFFTConvPdf('resolxCB_sum', '', PHI_mass_Cjp, CB_sum, signal_delta)
+# sig_delta_1 = ROOT.RooGaussian("sig_delta_1", "", PHI_mass_Cjp, mean_delta, sigma_delta_1)
+# sig_delta_2 = ROOT.RooGaussian("sig_delta_2", "", PHI_mass_Cjp, mean_delta, sigma_delta_2)
+# signal_delta = ROOT.RooAddPdf("signal_delta", "signal_delta", ROOT.RooArgList(sig_delta_1, sig_delta_2), ROOT.RooArgList(fr_delta))  ## ---- BASELINE
+#
+# CB_sum = ROOT.RooAddPdf("CB+CB", "CB_sum", ROOT.RooArgList(CB_phi_1, CB_phi_2), ROOT.RooArgList(fr_phi)) ## ---- BASELINE
+# # signal_phi = ROOT.RooFFTConvPdf('resolxrelBW', '', PHI_mass_Cjp, relBW_phi, signal_delta)
+# signal_phi = ROOT.RooFFTConvPdf('resolxCB_sum', '', PHI_mass_Cjp, CB_sum, signal_delta)
 #
 # mean_phi.setVal(1.0195); mean_phi.setConstant(1);
 # if mode == 'psi':
-#     alpha_phi_1.setVal(-3.21894e-01); alpha_phi_2.setVal(7.90416e-01)
-#     fr_phi.setVal(0.55);
-#     n_phi_1.setVal(2.89); n_phi_2.setVal(2.616); n_phi_2.setMax(100.)
-#     sigmaCB_phi_1.setVal(8.25160e-04); sigmaCB_phi_1.setVal(1.54419e-03);
+#     alpha_phi_1.setVal(-2.20); alpha_phi_2.setVal(1.22)
+#     fr_phi.setVal(0.86);
+#     n_phi_1.setVal(0.31); n_phi_2.setVal(29.6); n_phi_2.setMax(100.)
+#     sigmaCB_phi_1.setVal(1.52); sigmaCB_phi_2.setVal(5.19);
+#     # alpha_phi_1.setVal(-3.21894e-01); alpha_phi_2.setVal(7.90416e-01)
+#     # fr_phi.setVal(0.55);
+#     # n_phi_1.setVal(2.89); n_phi_2.setVal(2.616); n_phi_2.setMax(100.)
+#     # sigmaCB_phi_1.setVal(8.25160e-04); sigmaCB_phi_1.setVal(1.54419e-03);
 #
 # signal_phi.fitTo(data_MC_matched, RF.Extended(ROOT.kFALSE))
 # mean_phi.setConstant(0);
@@ -146,6 +150,8 @@ if get_MC_N_evts: file_out_MC.close()
 ###-----###
 
 c_MC_1 = ROOT.TCanvas("c_MC_1", "c_MC_1", 800, 600)
+left_discr_MC =  5.34; right_discr_MC = 5.4; nbins_discr_MC = 120*5
+
 plot_on_frame(var_discr, data_MC, model_1D_Bs if get_MC_N_evts else signal_Bs, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}}#phi)', left_discr_MC, right_discr_MC, nbins_discr_MC, plot_discr_param, True, chi_dict)
 CMS_tdrStyle_lumi.CMS_lumi( c_MC_1, 0, 0 );
 c_MC_1.Update(); c_MC_1.RedrawAxis(); c_MC_1.GetFrame().Draw();
@@ -153,6 +159,9 @@ if not get_MC_N_evts: c_MC_1.SaveAs('~/Study/Bs_resonances/MC_'  + mode + '_fit_
 
 #
 # c_MC_2 = ROOT.TCanvas("c_MC_2", "c_MC_2", 800, 600)
+# lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 320], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 320*2]}
+# left_phi_MC, right_phi_MC, nbins_phi_MC = lrn_phi_MC[mode]
+#
 # plot_on_frame(PHI_mass_Cjp, data_MC, model_1D_phi if get_MC_N_evts else signal_phi, 'MC: m(K^{+}K^{#font[122]{\55}})', left_phi_MC, right_phi_MC, nbins_phi_MC, plot_phi_param, True, chi_dict)
 # CMS_tdrStyle_lumi.CMS_lumi( c_MC_2, 0, 0 );
 # c_MC_2.Update(); c_MC_2.RedrawAxis(); c_MC_2.GetFrame().Draw();
@@ -160,6 +169,9 @@ if not get_MC_N_evts: c_MC_1.SaveAs('~/Study/Bs_resonances/MC_'  + mode + '_fit_
 
 #
 # c_MC_3 = ROOT.TCanvas("c_MC_3", "c_MC_3", 800, 600)
+# lrn_control_MC = {'X': [3.872 - 0.018, 3.872 + 0.018, 180], 'psi': [3.686 - 0.018, 3.686 + 0.018, 540]}
+# left_control_MC, right_control_MC, nbins_control_MC = lrn_control_MC[mode]
+#
 # plot_on_frame(var_control, data_MC, model_control if get_MC_N_evts else signal_control, 'MC: m(J/#psi#pi^{+}#pi^{#font[122]{\55}})', left_control_MC, right_control_MC, nbins_control_MC, plot_control_param[mode], True, chi_dict)
 # CMS_tdrStyle_lumi.CMS_lumi( c_MC_3, 0, 0 );
 # c_MC_3.Update(); c_MC_3.RedrawAxis(); c_MC_3.GetFrame().Draw();
