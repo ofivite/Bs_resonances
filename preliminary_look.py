@@ -2,7 +2,7 @@ from RooSpace import *
 from cuts import *
 from math import sqrt
 
-
+chi_dict = {}
 file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
 # file_data = ROOT.TFile('~/Study/Bs_resonances_ML/masses_tree_RF_0p9_both.root')
 # file_data = ROOT.TFile('new_noKaon_fabs_76e92fd.root')
@@ -115,19 +115,19 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 #############################################################################################
 # control variable
 
-# data_control = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean_Bs_MC) + ') < ' + str(window_Bs) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean_phi_MC) + ') < 0.01')
-# mean_X.setConstant(1); mean_psi.setConstant(1)
-# model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
-# mean_X.setConstant(0); mean_psi.setConstant(0)
-# model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
-# rrr_sig = model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE), RF.Save())
-#
-# c_control = ROOT.TCanvas("c_control", "c_control", 800, 600)
-# plot_on_frame(var_control, data_control, model_control, ' ', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode], False)
-# CMS_tdrStyle_lumi.CMS_lumi( c_control, 2, 0 );
-# c_control.Update(); c_control.RedrawAxis(); #c_control.GetFrame().Draw();
+data_control = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean_Bs_MC) + ') < ' + str(window_Bs) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean_phi_MC) + ') < 0.01')
+mean_X.setConstant(1); mean_psi.setConstant(1)
+model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
+mean_X.setConstant(0); mean_psi.setConstant(0)
+model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE))
+rrr_sig = model_control.fitTo(data_control, RF.Extended(ROOT.kTRUE), RF.Save())
+
+c_control = ROOT.TCanvas("c_control", "c_control", 800, 600)
+plot_on_frame(var_control, data_control, model_control, ' ', left_control_data, right_control_data, nbins_control_data, plot_control_param[mode], False, chi_dict)
+CMS_tdrStyle_lumi.CMS_lumi( c_control, 2, 0 );
+c_control.Update(); c_control.RedrawAxis(); #c_control.GetFrame().Draw();
 # c_control.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_control_prelim_' + str(mode) + '.pdf')
-#
+
 # ###--- plotting ll ---###
 #
 # nll = model_control.createNLL(data_control)
@@ -199,63 +199,63 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 #############################################################################################
 # Bs
 
-data_Bs = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(mean_control_MC[mode]) + ') < ' + str(window_control) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean_phi_MC) + ') < 0.01')
-model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
-model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
-rrr_sig = model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE), RF.Save())
+# data_Bs = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(mean_control_MC[mode]) + ') < ' + str(window_control) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean_phi_MC) + ') < 0.01')
+# model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
+# model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
+# rrr_sig = model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE), RF.Save())
+#
+# c_Bs = ROOT.TCanvas("c_Bs", "c_Bs", 800, 600)
+# plot_on_frame(var_discr, data_Bs, model_1D_Bs, '', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False, chi_dict)
+# CMS_tdrStyle_lumi.CMS_lumi( c_Bs, 2, 0 );
+# c_Bs.Update(); c_Bs.RedrawAxis(); #c_Bs.GetFrame().Draw();
+# # c_Bs.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_Bs_prelim_' + str(mode) + '.pdf')
+#
 
-c_Bs = ROOT.TCanvas("c_Bs", "c_Bs", 800, 600)
-plot_on_frame(var_discr, data_Bs, model_1D_Bs, '', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False)
-CMS_tdrStyle_lumi.CMS_lumi( c_Bs, 2, 0 );
-c_Bs.Update(); c_Bs.RedrawAxis(); #c_Bs.GetFrame().Draw();
-# c_Bs.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_Bs_prelim_' + str(mode) + '.pdf')
-
-
-w = ROOT.RooWorkspace("w", True)
-Import = getattr(ROOT.RooWorkspace, 'import')
-Import(w, model_1D_Bs)
-mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-mc.SetPdf(w.pdf(model_1D_Bs.GetName()))
-mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_Bs.GetName())))
-# w.var("N_sig_X").setError(20.)
-mc.SetObservables(ROOT.RooArgSet(w.var(var_discr.GetName())))
-# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
-mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_Bs.GetName())))
-Import(w, mc)
-
-sbModel = w.obj("ModelConfig")
-sbModel.SetName("S+B Model")
-poi = sbModel.GetParametersOfInterest().first()
-sbModel.SetSnapshot(ROOT.RooArgSet(poi))
-bModel = sbModel.Clone()
-bModel.SetName("B Model")
-oldval = poi.getVal()
-poi.setVal(0)
-bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# poi.setVal(oldval)
-
-
-fc = ROOT.RooStats.FrequentistCalculator(data_Bs, sbModel, bModel)
-fc.SetToys(1000,500)
-# fc.SetNToysInTails(500, 100)
-profll = ROOT.RooStats.ProfileLikelihoodTestStat(sbModel.GetPdf())
-profll.SetOneSidedDiscovery(True)
-
-toymcs = ROOT.RooStats.ToyMCSampler(fc.GetTestStatSampler())
-toymcs.SetTestStatistic(profll)
-
-if not sbModel.GetPdf().canBeExtended():
-    toymcs.SetNEventsPerToy(1)
-    print ('adjusting for non-extended formalism')
-
-fqResult = fc.GetHypoTest()
-fqResult.Print()
-
-c = ROOT.TCanvas()
-plot = ROOT.RooStats.HypoTestPlot(fqResult)
-plot.SetLogYaxis(True)
-plot.Draw()
-c.Draw()
+# w = ROOT.RooWorkspace("w", True)
+# Import = getattr(ROOT.RooWorkspace, 'import')
+# Import(w, model_1D_Bs)
+# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
+# mc.SetPdf(w.pdf(model_1D_Bs.GetName()))
+# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_Bs.GetName())))
+# # w.var("N_sig_X").setError(20.)
+# mc.SetObservables(ROOT.RooArgSet(w.var(var_discr.GetName())))
+# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
+# mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_Bs.GetName())))
+# Import(w, mc)
+#
+# sbModel = w.obj("ModelConfig")
+# sbModel.SetName("S+B Model")
+# poi = sbModel.GetParametersOfInterest().first()
+# sbModel.SetSnapshot(ROOT.RooArgSet(poi))
+# bModel = sbModel.Clone()
+# bModel.SetName("B Model")
+# oldval = poi.getVal()
+# poi.setVal(0)
+# bModel.SetSnapshot(ROOT.RooArgSet(poi))
+# # poi.setVal(oldval)
+#
+#
+# fc = ROOT.RooStats.FrequentistCalculator(data_Bs, sbModel, bModel)
+# fc.SetToys(1000,500)
+# # fc.SetNToysInTails(500, 100)
+# profll = ROOT.RooStats.ProfileLikelihoodTestStat(sbModel.GetPdf())
+# profll.SetOneSidedDiscovery(True)
+#
+# toymcs = ROOT.RooStats.ToyMCSampler(fc.GetTestStatSampler())
+# toymcs.SetTestStatistic(profll)
+#
+# if not sbModel.GetPdf().canBeExtended():
+#     toymcs.SetNEventsPerToy(1)
+#     print ('adjusting for non-extended formalism')
+#
+# fqResult = fc.GetHypoTest()
+# fqResult.Print()
+#
+# c = ROOT.TCanvas()
+# plot = ROOT.RooStats.HypoTestPlot(fqResult)
+# plot.SetLogYaxis(True)
+# plot.Draw()
+# c.Draw()
 
 # ###--- plotting ll ---###
 #
@@ -338,7 +338,7 @@ c.Draw()
 # rrr_sig = model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE), RF.Save())
 #
 # c_phi = ROOT.TCanvas("c_phi", "c_phi", 800, 600)
-# plot_on_frame(PHI_mass_Cjp, data_phi, model_1D_phi, ' ', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param, False)
+# plot_on_frame(PHI_mass_Cjp, data_phi, model_1D_phi, ' ', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param, False, chi_dict)
 # CMS_tdrStyle_lumi.CMS_lumi( c_phi, 2, 0 );
 # c_phi.Update(); c_phi.RedrawAxis(); #c_phi.GetFrame().Draw();
 # # c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
