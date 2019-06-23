@@ -15,7 +15,6 @@ def explore(data, model, fit_kwargs, signif_kwargs, id = 1, simple_pull = False,
         raise IOError('wrong id')
     # c = ROOT.TCanvas("c", "c", 800, 600)
 
-
     fit_data(data, model, **fit_kwargs)
     # plot_on_frame(roovar, data, model], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
     # CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
@@ -37,13 +36,12 @@ def fit_data(data, model, is_extended, is_sum_w2, fix_float, **kwargs):
     """
 
     model.fitTo(data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
-    model.fitTo(data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
     for param in fix_float:
         param.setConstant(1)
     model.fitTo(data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
-    model.fitTo(data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
     for param in fix_float:
         param.setConstant(0)
+    model.fitTo(data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
     model.fitTo(data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
 
 ################################################################################################################################
@@ -90,3 +88,28 @@ def asympt_signif(w):
     ac.SetOneSidedDiscovery(True)
     as_result = ac.GetHypoTest()
     return as_result
+
+
+nll = model[sPlot_from].createNLL(data_sig)
+pll = nll.createProfile(ROOT.RooArgSet(N[sPlot_from]))
+
+c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600); ll_left = 0; ll_right = 200
+frame_nll = N[sPlot_from].frame(RF.Bins(100), RF.Range(ll_left, ll_right)) #N_sig_Bs.getVal() + 40
+frame_nll.SetTitle('')
+
+nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
+# nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
+pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
+
+frame_nll.SetMaximum(25.)
+frame_nll.SetMinimum(0.)
+frame_nll.Draw()
+
+line_width = 4
+line_5sigma = ROOT.TLine(ll_left, 12.5, ll_right, 12.5)
+line_5sigma.SetLineWidth(line_width); line_5sigma.SetLineColor(47)
+line_5sigma.Draw();
+
+CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
+c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
+c_ll.SaveAs(mode + '1_pll.pdf')

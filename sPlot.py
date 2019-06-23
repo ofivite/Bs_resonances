@@ -1,7 +1,7 @@
 from RooSpace import *
 from math import sqrt
 import json
-from SignalExtractor import explore
+from DataExplorer import explore
 
 chi_dict = {}
 file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
@@ -182,31 +182,6 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
 
 
-# ###--- plotting ll ---###
-#
-# nll = model[sPlot_from].createNLL(data_sig)
-# pll = nll.createProfile(ROOT.RooArgSet(N[sPlot_from]))
-#
-# c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600); ll_left = 0; ll_right = 200
-# frame_nll = N[sPlot_from].frame(RF.Bins(100), RF.Range(ll_left, ll_right)) #N_sig_Bs.getVal() + 40
-# frame_nll.SetTitle('')
-#
-# nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
-# # nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
-# pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
-#
-# frame_nll.SetMaximum(25.)
-# frame_nll.SetMinimum(0.)
-# frame_nll.Draw()
-#
-# line_width = 4
-# line_5sigma = ROOT.TLine(ll_left, 12.5, ll_right, 12.5)
-# line_5sigma.SetLineWidth(line_width); line_5sigma.SetLineColor(47)
-# line_5sigma.Draw();
-#
-# CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
-# c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
-# c_ll.SaveAs(mode + '1_pll.pdf')
 #
 #             #--------------#
 #             ##  sPlot II  ##
