@@ -1,7 +1,7 @@
 from RooSpace import *
-from cuts import *
 from math import sqrt
 import json
+from SignalExtractor import explore
 
 chi_dict = {}
 file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
@@ -163,47 +163,14 @@ else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
 
+poly_params = [a1, a2, a3, a4, a1_phi, a2_phi, a3_phi, a4_phi, a1_ext, a2_ext, a3_ext, a4_ext]
+fit_params = {'fix_float': poly_params, 'is_extended': True, 'is_sum_w2': False, 'dummy': 0}
+signif_kwargs = {'poi': N[sPlot_from].GetName(), 'nuisances': [a1.GetName(), a2.GetName()], 'roovar': var_discr.GetName()}
+
+
 if mode == 'X': mean[sPlot_from].setConstant(1)
-#
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
-a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
-a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
+explore(data_sig, model[sPlot_from], fit_params, signif_kwargs)
 
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
-a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
-a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
-
-model[sPlot_from].fitTo(data_sig, RF.Extended(ROOT.kTRUE))
-
-# w = ROOT.RooWorkspace("w", True)
-# Import = getattr(ROOT.RooWorkspace, 'import')
-# Import(w, model[sPlot_from])
-# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-# mc.SetPdf(w.pdf(model[sPlot_from].GetName()))
-# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
-# # w.var("N_sig_X").setError(20.)
-# mc.SetObservables(ROOT.RooArgSet(w.var(var[sPlot_from].GetName())))
-# mc.SetNuisanceParameters(ROOT.RooArgSet(w.var("a1"), w.var("a2"), w.var(N_bkgr[sPlot_from].GetName()), w.var(mean[sPlot_from].GetName())))
-# mc.SetSnapshot(ROOT.RooArgSet(w.var(N[sPlot_from].GetName())))
-# Import(w, mc)
-#
-# sbModel = w.obj("ModelConfig")
-# sbModel.SetName("S+B_model")
-# poi = sbModel.GetParametersOfInterest().first()
-# bModel = sbModel.Clone()
-# bModel.SetName("B_only_model")
-# oldval = poi.getVal()
-# poi.setVal(0)
-# bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# poi.setVal(oldval)
-# ac = ROOT.RooStats.AsymptoticCalculator(data_sig, sbModel, bModel)
-# ac.SetOneSidedDiscovery(True)
-# asResult = ac.GetHypoTest()
-# asResult.Print()
 
 # file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
 plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
@@ -240,93 +207,107 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 # CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
 # c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
 # c_ll.SaveAs(mode + '1_pll.pdf')
-
-            #--------------#
-            ##  sPlot II  ##
-            #--------------#
-
-### Fixing model's parameters except for yields is needed according to sPlot tutorial
-# a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
-# mean_Bs.setConstant(1);
-
-sPlot_list = ROOT.RooArgList(N[sPlot_from], N_bkgr[sPlot_from], N_B0_refl) if sPlot_from == 'Bs' else ROOT.RooArgList(N[sPlot_from], N_bkgr[sPlot_from])
-sData_Bs_psi_sig = ROOT.RooStats.SPlot('sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model[sPlot_from], sPlot_list)
-data_sig_weighted = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N[sPlot_from].GetName() + '_sw') ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
-data_sig_weighted.SetName('sig_w')
-# hist_sig_weighted = data_sig_weighted.binnedClone()
-hist_sig_weighted = ROOT.RooDataHist('h', 'h', ROOT.RooArgSet(PHI_mass_Cjp), data_sig_weighted)
-
-# currentlist = ROOT.RooLinkedList()
-# # cmd = RF.Save()
+#
+#             #--------------#
+#             ##  sPlot II  ##
+#             #--------------#
+#
+# ### Fixing model's parameters except for yields is needed according to sPlot tutorial
+# # a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
+# # mean_Bs.setConstant(1);
+#
+# sPlot_list = ROOT.RooArgList(N[sPlot_from], N_bkgr[sPlot_from], N_B0_refl) if sPlot_from == 'Bs' else ROOT.RooArgList(N[sPlot_from], N_bkgr[sPlot_from])
+# sData_Bs_psi_sig = ROOT.RooStats.SPlot('sData_Bs_psi_sig', 'sData_Bs_psi_sig', data_sig, model[sPlot_from], sPlot_list)
+# data_sig_weighted = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N[sPlot_from].GetName() + '_sw') ; # cuts_Bs_data + '&&' + cuts_phi_data + '&&' + cuts_psi
+# data_sig_weighted.SetName('sig_w')
+# # hist_sig_weighted = data_sig_weighted.binnedClone()
+# hist_sig_weighted = ROOT.RooDataHist('h', 'h', ROOT.RooArgSet(PHI_mass_Cjp), data_sig_weighted)
+#
+# # currentlist = ROOT.RooLinkedList()
+# # # cmd = RF.Save()
+# # # currentlist.Add(cmd)
+# # N_sig_phi_sw = ROOT.RooRealVar('N_sig_phi_sw', 'N_sig_phi_sw', -100000000, 100000000)
+# # cmd = RF.YVar(N_sig_phi_sw)
 # # currentlist.Add(cmd)
-# N_sig_phi_sw = ROOT.RooRealVar('N_sig_phi_sw', 'N_sig_phi_sw', -100000000, 100000000)
-# cmd = RF.YVar(N_sig_phi_sw)
-# currentlist.Add(cmd)
-# mean_phi.setVal(1.0196); N_sig_phi.setVal(130.); N_bkgr_phi.setVal(50.)
-# # aaa = model[sPlot_to].chi2FitTo(hist_sig_weighted) # RF.SumW2Error(ROOT.kTRUE)
+# # mean_phi.setVal(1.0196); N_sig_phi.setVal(130.); N_bkgr_phi.setVal(50.)
+# # # aaa = model[sPlot_to].chi2FitTo(hist_sig_weighted) # RF.SumW2Error(ROOT.kTRUE)
+#
+# # model[sPlot_to].fitTo(data_sig_weighted, RF.SumW2Error(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
+# # model[sPlot_to].fitTo(data_sig_weighted, RF.SumW2Error(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
+# # model[sPlot_to].fitTo(data_sig_weighted, RF.SumW2Error(ROOT.kTRUE))
+# # # a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
+# # # a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
+# # # a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
+# # # rrr_sig = model[sPlot_to].chi2FitTo(hist_sig_weighted, RF.Save())
+# # #
+# # # a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
+# # # a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
+# # # a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
+# # model[sPlot_to].fitTo(hist_sig_weighted, RF.SumW2Error(ROOT.kTRUE))
+# # model[sPlot_to].fitTo(hist_sig_weighted, RF.SumW2Error(ROOT.kTRUE))
+# # model[sPlot_to].fitTo(hist_sig_weighted, RF.SumW2Error(ROOT.kTRUE))
+# # rrr_sig = model[sPlot_to].fitTo(hist_sig_weighted, RF.Save(), RF.SumW2Error(ROOT.kTRUE))
+#
 
-# model[sPlot_to].fitTo(data_sig_weighted, RF.SumW2Error(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
-# model[sPlot_to].fitTo(data_sig_weighted, RF.SumW2Error(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
-# model[sPlot_to].fitTo(data_sig_weighted, RF.SumW2Error(ROOT.kTRUE))
+
+#     # Note that entries with zero bins are _not_ allowed
+#     # for a proper chi^2 calculation and will give error
+#     # messages
+#     dsmall = d.reduce(ROOT.RooFit.EventRange(1, 100))
+#     dhsmall = dsmall.binnedClone()
+#     chi2_lowstat = ROOT.RooChi2Var("chi2_lowstat", "chi2", model, dhsmall)
+# print chi2_lowstat.getVal()
+#
+
+# chi2 = ROOT.RooChi2Var("chi2","chi2", model[sPlot_to], hist_sig_weighted, extended = ROOT.kFALSE, nCPU = 2, RF.DataError(ROOT.RooAbsData.SumW2))
+#
+# # m = ROOT.RooMinuit(chi2)
+# # m.migrad()
+# # m.migrad()
+# # m.migrad()
+# # m.migrad()
+#
+# m = ROOT.RooMinimizer(chi2)
+# m.setMinimizerType("Minuit2");
+# m.setPrintLevel(3)
+#
+# m.minimize("Minuit2","minimize") ;
+# m.minimize("Minuit2","minimize") ;
+# m.hesse()
+# r_chi2 = m.save()
+# r_chi2.Print() ;
+#
+# ##########
+#
+# c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600)
+#
+# # # mean[sPlot_to].setConstant(1)
+# # model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
+# # model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
+# # model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
 # # a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
 # # a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
 # # a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
-# # rrr_sig = model[sPlot_to].chi2FitTo(hist_sig_weighted, RF.Save())
+# # rrr_sig = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
 # #
 # # a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
 # # a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
 # # a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
-# model[sPlot_to].fitTo(hist_sig_weighted, RF.SumW2Error(ROOT.kTRUE))
-# model[sPlot_to].fitTo(hist_sig_weighted, RF.SumW2Error(ROOT.kTRUE))
-# model[sPlot_to].fitTo(hist_sig_weighted, RF.SumW2Error(ROOT.kTRUE))
-# rrr_sig = model[sPlot_to].fitTo(hist_sig_weighted, RF.Save(), RF.SumW2Error(ROOT.kTRUE))
-
-chi2 = ROOT.RooChi2Var("chi2","chi2", model[sPlot_to], hist_sig_weighted, RF.DataError(ROOT.RooAbsData.SumW2))
-
-# m = ROOT.RooMinuit(chi2)
-# m.migrad()
-# m.migrad()
-# m.migrad()
-# m.migrad()
-
-m = ROOT.RooMinimizer(chi2)
-m.setMinimizerType("Minuit2");
-m.setPrintLevel(3)
-
-m.minimize("Minuit2","minimize") ;
-m.minimize("Minuit2","minimize") ;
-m.hesse()
-r_chi2 = m.save()
-r_chi2.Print() ;
-
-##########
-
-c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600)
-
-# # mean[sPlot_to].setConstant(1)
-# model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
-# model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE)) # RF.SumW2Error(ROOT.kTRUE)
-# model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
-# a1.setConstant(1); a2.setConstant(1); a3.setConstant(1); a4.setConstant(1);
-# a1_phi.setConstant(1); a2_phi.setConstant(1); a3_phi.setConstant(1); a4_phi.setConstant(1);
-# a1_ext.setConstant(1); a2_ext.setConstant(1); a3_ext.setConstant(1); a4_ext.setConstant(1);
-# rrr_sig = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
+# # rrr_sig = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
 #
-# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
-# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
-# a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
-# rrr_sig = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
-
-# file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
-plot_on_frame(var[sPlot_to], data_sig_weighted, model[sPlot_to], ' ', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], None, False, chi_dict)
-# plot_pull(var[sPlot_to], data_sig_weighted, model[sPlot_to], save = True)
-# plot_MCStudy(var[sPlot_to], model[sPlot_to], var_to_study = N_sig_phi,  N_toys = 1000, N_gen = int(data_sig_weighted.sumEntries()), save = True, label = data_sig_weighted.GetName())
-
-CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
-# c_sPlot_2.GetFrame().Draw();
-# c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
+# # file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
+# plot_on_frame(var[sPlot_to], data_sig_weighted, model[sPlot_to], ' ', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], None, False, chi_dict)
+# # plot_pull(var[sPlot_to], data_sig_weighted, model[sPlot_to], save = True)
+# # plot_MCStudy(var[sPlot_to], model[sPlot_to], var_to_study = N_sig_phi,  N_toys = 1000, N_gen = int(data_sig_weighted.sumEntries()), save = True, label = data_sig_weighted.GetName())
 #
-#
+# CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
+# # c_sPlot_2.GetFrame().Draw();
+# # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
+
+
+
+
+
 # ###--- plotting ll ---###
 #
 # nll = model[sPlot_to].createNLL(data_sig_weighted)
