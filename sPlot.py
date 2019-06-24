@@ -1,19 +1,19 @@
 from RooSpace import *
 from math import sqrt
 import json
-from DataExplorer import explore
+from DataExplorer import DataExplorer
 
 chi_dict = {}
 file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
 
 ###
-w_Bs, f_Bs = get_workspace('workspace_' + mode + '_Bs.root', 'workspace')
+w_Bs, f_Bs = get_workspace('workspace_' + MODE + '_Bs.root', 'workspace')
 w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
 w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
-w_phi, f_phi = get_workspace('workspace_' + mode + '_phi.root', 'workspace')
+w_phi, f_phi = get_workspace('workspace_' + MODE + '_phi.root', 'workspace')
 
 ###
-w_delta_phi, f_delta_phi = get_workspace('workspace_' + mode + '_delta_gen_phi_dRmatched_qM.root', 'workspace')
+w_delta_phi, f_delta_phi = get_workspace('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root', 'workspace')
 sigma_delta_1.setVal(w_delta_phi.var('sigma_delta_1').getVal());  sigma_delta_2.setVal(w_delta_phi.var('sigma_delta_2').getVal());
 fr_delta.setVal(w_delta_phi.var('fr_delta').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
 # mean_delta.setVal(w_delta_phi.var('mean_delta').getVal());
@@ -82,15 +82,15 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
             ##   ------------------------    ##
 
 CMS_tdrStyle_lumi.extraText = "Preliminary"
-# file_out_data = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/' + mode +'_data_evtN.txt', 'w')
+# file_out_data = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/' + MODE +'_data_evtN.txt', 'w')
 
 var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data); var_discr.setBins(nbins_discr_data)
 PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data); PHI_mass_Cjp.setBins(nbins_phi_data)
 var_control.setMin(left_control_data); var_control.setMax(right_control_data);  var_control.setBins(nbins_control_data)
 
-fr = {'control': fr_X.getVal() if mode == 'X' else fr_psi.getVal(), 'Bs': fr_Bs.getVal()}
-sigma_1 = {'control': sigma_X_1.getVal() if mode == 'X' else sigma_psi_1.getVal(), 'Bs': sigma_Bs_1.getVal()}
-sigma_2 = {'control': sigma_X_2.getVal() if mode == 'X' else sigma_psi_2.getVal(), 'Bs': sigma_Bs_2.getVal()}
+fr = {'control': fr_X.getVal() if MODE == 'X' else fr_psi.getVal(), 'Bs': fr_Bs.getVal()}
+sigma_1 = {'control': sigma_X_1.getVal() if MODE == 'X' else sigma_psi_1.getVal(), 'Bs': sigma_Bs_1.getVal()}
+sigma_2 = {'control': sigma_X_2.getVal() if MODE == 'X' else sigma_psi_2.getVal(), 'Bs': sigma_Bs_2.getVal()}
 sigma_eff = sqrt( fr[sPlot_cut] * sigma_1[sPlot_cut]**2 + (1 - fr[sPlot_cut]) * sigma_2[sPlot_cut]**2) if sPlot_cut != 'phi' else 0.
 
 window = 0.01 if sPlot_cut == 'phi' else 3*sigma_eff
@@ -99,7 +99,7 @@ wind_sideband_dist = 0.005 if sPlot_cut == 'phi' else 2*sigma_eff
 # data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
 
 data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
-data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[mode])
+data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE])
 
             #---------------#
             ##  Inclusive  ##
@@ -113,14 +113,14 @@ model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
 mean[sPlot_cut].setConstant(0);
 model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
 
-plot_on_frame(var[sPlot_cut], data, model[sPlot_cut], '', left[sPlot_cut], right[sPlot_cut], nbins[sPlot_cut], None, False, chi_dict)
+# plot_on_frame(var[sPlot_cut], data, model[sPlot_cut], '', left[sPlot_cut], right[sPlot_cut], nbins[sPlot_cut], None, False, chi_dict)
 # plot_pull(var[sPlot_cut], data, model[sPlot_cut], save = True)
 
             #----------------#
             ##  Draw lines  ##
             #----------------#
 
-y_sdb_l = {'control': 950 if mode == 'X' else 1750}; y_sig = {'control': 1280 if mode == 'X' else 2400 }; y_sdb_r = {'control': 1420 if mode == 'X' else 2750 };
+y_sdb_l = {'control': 950 if MODE == 'X' else 1750}; y_sig = {'control': 1280 if MODE == 'X' else 2400 }; y_sdb_r = {'control': 1420 if MODE == 'X' else 2750 };
 line_width = 4
 
 line_ll_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, y_sdb_l['control'])
@@ -141,7 +141,7 @@ line_ll_sdb.Draw(); line_lr_sdb.Draw(); line_rl_sdb.Draw(); line_rr_sdb.Draw(); 
 
 CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
 c_inclus.Update(); c_inclus.RedrawAxis(); # c_inclus.GetFrame().Draw();
-# c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(mode) + refl_line + '.pdf')
+# c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(MODE) + refl_line + '.pdf')
 
             # ---------------------#
             # #  SR/SdR division  ##
@@ -154,32 +154,33 @@ data_sideband = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' - ' + s
 data_sig.SetName('sig')
 data_sideband.SetName('sideband')
 
-if refl_ON and mode == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
+if REFL_ON and MODE == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
 else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
             #-------------#
             ##  sPlot I  ##
             #-------------#
 
+
+if MODE == 'X': mean[sPlot_from].setConstant(1)
+X1 = DataExplorer(data = data_sig, model = model[sPlot_from], mode = MODE, var = var_discr, refl_ON = REFL_ON )
+
+X1.fit_data(fix_float = [a1, a2, a3, a4], is_extended = True, is_sum_w2 = False)
+w1 = X1.prepare_workspace(poi = N[sPlot_from], nuisances = [a1, a2, mean_Bs, N_bkgr_Bs])
+asympt_rrr = X1.asympt_signif(w = w1)
+asympt_rrr.Print()
+
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
-
-poly_params = [a1, a2, a3, a4, a1_phi, a2_phi, a3_phi, a4_phi, a1_ext, a2_ext, a3_ext, a4_ext]
-fit_params = {'fix_float': poly_params, 'is_extended': True, 'is_sum_w2': False, 'dummy': 0}
-signif_kwargs = {'poi': N[sPlot_from].GetName(), 'nuisances': [a1.GetName(), a2.GetName()], 'roovar': var_discr.GetName()}
-
-
-if mode == 'X': mean[sPlot_from].setConstant(1)
-explore(data_sig, model[sPlot_from], fit_params, signif_kwargs)
-
+frame_X1 = X1.plot_var()
+frame_X1.Draw()
+CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
+# c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(MODE) + refl_line + '.pdf')
 
 # file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
-plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
+# plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
 # plot_pull(var[sPlot_from], data_sig, model[sPlot_from], save = True)
-# plot_MCStudy(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sig.sumEntries()), save = True, label = data_sig.GetName())
+# plot_toys_pull(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sig.sumEntries()), save = True, label = data_sig.GetName())
 
-
-CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
-# c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(mode) + refl_line + '.pdf')
 
 
 #
@@ -273,11 +274,11 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 # # file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
 # plot_on_frame(var[sPlot_to], data_sig_weighted, model[sPlot_to], ' ', left[sPlot_to], right[sPlot_to], nbins[sPlot_to], None, False, chi_dict)
 # # plot_pull(var[sPlot_to], data_sig_weighted, model[sPlot_to], save = True)
-# # plot_MCStudy(var[sPlot_to], model[sPlot_to], var_to_study = N_sig_phi,  N_toys = 1000, N_gen = int(data_sig_weighted.sumEntries()), save = True, label = data_sig_weighted.GetName())
+# # plot_toys_pull(var[sPlot_to], model[sPlot_to], var_to_study = N_sig_phi,  N_toys = 1000, N_gen = int(data_sig_weighted.sumEntries()), save = True, label = data_sig_weighted.GetName())
 #
 # CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_2, 2, 0 ); c_sPlot_2.Update(); c_sPlot_2.RedrawAxis();
 # # c_sPlot_2.GetFrame().Draw();
-# # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(mode) + refl_line + '.pdf')
+# # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_2_' + str(MODE) + refl_line + '.pdf')
 
 
 
@@ -307,7 +308,7 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 #
 # CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
 # c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
-# c_ll.SaveAs(mode + '2_pll.pdf')
+# c_ll.SaveAs(MODE + '2_pll.pdf')
 
 
 
@@ -362,7 +363,7 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 #             #---------------#
 #
 # c_sPlot_3 = ROOT.TCanvas("c_sPlot_3", "c_sPlot_3", 800, 600)
-# mean_Bs.setConstant(1); mean_phi.setConstant(1); mean_control[mode].setConstant(1);
+# mean_Bs.setConstant(1); mean_phi.setConstant(1); mean_control[MODE].setConstant(1);
 # N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 #
 # model[sPlot_from].fitTo(data_sideband, RF.Extended(ROOT.kTRUE))
@@ -382,11 +383,11 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 # # file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
 # plot_on_frame(var[sPlot_from], data_sideband, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
 # plot_pull(var[sPlot_from], data_sideband, model[sPlot_from], save=True)
-# plot_MCStudy(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sideband.sumEntries()), save = True, label = data_sideband.GetName())
+# plot_toys_pull(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sideband.sumEntries()), save = True, label = data_sideband.GetName())
 #
 # CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_3, 2, 0 );
 # c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
-# # c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_3_' + str(mode) + refl_line + '.pdf')
+# # c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_3_' + str(MODE) + refl_line + '.pdf')
 #
 #
 #             #--------------#
@@ -418,11 +419,11 @@ CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.Red
 #
 # CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_4, 2, 0 );
 # c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
-# # c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_4_' + str(mode) + refl_line + '.pdf')
+# # c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_4_' + str(MODE) + refl_line + '.pdf')
 #
 # a1.setConstant(0); a2.setConstant(0); a3.setConstant(0); a4.setConstant(0);
 # a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0); a4_phi.setConstant(0);
 # a1_ext.setConstant(0); a2_ext.setConstant(0); a3_ext.setConstant(0); a4_ext.setConstant(0);
 #
-# with open('./fit_validation/chis_' + mode + '.txt', 'w') as file:
+# with open('./fit_validation/chis_' + MODE + '.txt', 'w') as file:
 #     file.write(json.dumps(chi_dict))
