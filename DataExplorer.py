@@ -3,28 +3,46 @@
 import ROOT
 from ROOT import RooFit as RF
 from scipy.stats import chi2
+from cuts import MODE
 
 class DataExplorer(object):
     """docstring for DataExplorer."""
-    # def __init__(self, data, model, mode, var, poi):
-        # super(DataExplorer, self).__init__()
-        # self.data = data
-        # self.model = model
-        # self.mode = mode
-        # self.var = var
-        # self.poi = poi
-        # self.is_fitted = False
+    # def __init__(self, iterable=(), **kwargs):
+    #     self.__dict__.update(iterable, **kwargs)
+    def __init__(self, data, model, var):
+        super(DataExplorer, self).__init__()
+        #
+        self.data = data
+        self.model = model
+        self.var = var
+        self.mode = MODE
 
-    def __init__(self, iterable=(), **kwargs):
-        self.__dict__.update(iterable, **kwargs)
+        try:
+            var_refl = model.getParameters(data).find('N_B0_refl')
+            self.refl_ON = False if var_refl.getVal() and var_refl.isConstant() else True
+        except:
+            print('no N_B0_refl was found in model params: set refl_ON to False')
+            self.refl_ON = False
+        #
         self.is_fitted = False
         self.chi_dict  = {}
-        self.left  = self.var.getMin()
-        self.right = self.var.getMax()
-        self.nbins = self.var.numBins()
+        #
+        self.var_left  = self.var.getMin();
+        self.var_right = self.var.getMax();
+        self.var_nbins = self.var.numBins()
 
 
-    def fit_data(self, is_extended, is_sum_w2, fix_float, **kwargs):
+    # def make_windows():
+    #     fr = {'control': fr_X.getVal() if MODE == 'X' else fr_psi.getVal(), 'Bs': fr_Bs.getVal()}
+    #     sigma_1 = {'control': sigma_X_1.getVal() if MODE == 'X' else sigma_psi_1.getVal(), 'Bs': sigma_Bs_1.getVal()}
+    #     sigma_2 = {'control': sigma_X_2.getVal() if MODE == 'X' else sigma_psi_2.getVal(), 'Bs': sigma_Bs_2.getVal()}
+    #     sigma_eff = sqrt( fr[sPlot_cut] * sigma_1[sPlot_cut]**2 + (1 - fr[sPlot_cut]) * sigma_2[sPlot_cut]**2) if sPlot_cut != 'phi' else 0.
+    #
+    #     window = 0.01 if sPlot_cut == 'phi' else 3*sigma_eff
+    #     wind_sideband_dist = 0.005 if sPlot_cut == 'phi' else 2*sigma_eff
+
+
+    def fit_data(self, is_extended, is_sum_w2, fix_float=[], **kwargs):
         """
         Fit some data distribution.
         NB: the corresponding model parameters will be updated after executing
@@ -41,8 +59,9 @@ class DataExplorer(object):
             param.setConstant(0)
         #
         self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
-        self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
+        self.fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
         self.is_fitted = True
+
 
     def prepare_workspace(self, poi, nuisances):
         """
@@ -50,10 +69,8 @@ class DataExplorer(object):
 
         :return: RooWorkspace
         """
-
         if not self.is_fitted:
-            print('no workspace to be created: fit me to the data first')
-            return
+            raise Exception('Model was not fitted to data, fit it first')
 
         w = ROOT.RooWorkspace("w", True)
         Import = getattr(ROOT.RooWorkspace, 'import') # special trick to make things not crush
@@ -121,7 +138,7 @@ class DataExplorer(object):
         if save: c_ll.SaveAs(self.mode + '1_pll.pdf')
 
 
-    def plot_var(self, title = ' ', plot_params = ROOT.RooArgSet()):
+    def plot_on_var(self, title = ' ', plot_params = ROOT.RooArgSet()):
         """
         Plot the class model and data on the class variable's frame
 
@@ -130,7 +147,7 @@ class DataExplorer(object):
 
         :return: RooPlot frame
         """
-        frame = ROOT.RooPlot(" ", title, self.var, self.left, self.right, self.nbins)
+        frame = ROOT.RooPlot(" ", title, self.var, self.var_left, self.var_right, self.var_nbins)
         self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
         self.model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange('full'), RF.Range('full')
         self.model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_params))
@@ -138,7 +155,7 @@ class DataExplorer(object):
 
         # Do chi2 GoF test
         nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
-        ndf = self.nbins - nfloat; chi = frame.chiSquare(nfloat) * ndf;
+        ndf = self.var_nbins - nfloat; chi = frame.chiSquare(nfloat) * ndf;
         pvalue = 1 - chi2.cdf(chi, ndf)
         self.chi_dict.update({self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]})
 
@@ -155,7 +172,7 @@ class DataExplorer(object):
         if self.refl_ON: self.model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44))
         self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto)) # plotting data at the beginning once sometimes doesn't work
         #
-        frame.GetYaxis().SetTitle('Candidates / ' + str(round((self.right - self.left) * 1000. / self.nbins, 1)) + ' MeV')
+        frame.GetYaxis().SetTitle('Candidates / ' + str(round((self.var_right - self.var_left) * 1000. / self.var_nbins, 1)) + ' MeV')
         frame.GetXaxis().SetTitleSize(0.04)
         frame.GetYaxis().SetTitleSize(0.04)
         frame.GetXaxis().SetLabelSize(0.033)
@@ -178,6 +195,12 @@ class DataExplorer(object):
         if save: c_pulls.SaveAs('~/Study/Bs_resonances/fit_validation/'+ self.mode + '_' + self.data.GetName() + '.pdf')
 
     def plot_toys_pull(self, var_to_study, N_toys=100, N_gen = 1, label = '', save = False):
+        """
+        Make bias checks in fitted model parameter var_to_study by generating toys with RooMCStudy()
+        """
+        if not self.is_fitted:
+            raise Exception('Model was not fitted to data, fit it first')
+
         width_N = 80 if self.mode == 'X' else 250
         err_upper = 30 if self.mode == 'X' else 400; err_nbins = 30
         var_lower = var_to_study.getVal() - width_N; var_upper = var_to_study.getVal() + width_N; var_nbins = 50
@@ -202,3 +225,47 @@ class DataExplorer(object):
             c_pull.SaveAs('~/Study/Bs_resonances/fit_validation/'+ self.mode + '_' + self.var.GetName() + '_' + label + '_pull.pdf')
 
 ################################################################################################################################
+
+# def draw_inclus_lines():
+#     #### Lines
+#     mean_inclus = mean[sPlot_cut].getVal()
+#     y_sdb_l, y_sr, y_sdb_r = (950, 1280, 1420) if MODE == 'X' else (1750, 2400, 2750)
+#
+#     line_ll_sdb = (ROOT.TLine(mean_inclus - 2.*window - wind_sideband_dist, 0, mean_inclus - 2.*window - wind_sideband_dist, y_sdb_l),  ROOT.kBlue-8)
+#     line_lr_sdb = (ROOT.TLine(mean_inclus - window - wind_sideband_dist,    0, mean_inclus - window - wind_sideband_dist,    y_sdb_l) , ROOT.kBlue-8)
+#     line_rl_sdb = (ROOT.TLine(mean_inclus + 2.*window + wind_sideband_dist, 0, mean_inclus + 2.*window + wind_sideband_dist, y_sdb_r) , ROOT.kBlue-8)
+#     line_rr_sdb = (ROOT.TLine(mean_inclus + window + wind_sideband_dist   , 0, mean_inclus + window + wind_sideband_dist,    y_sdb_r) , ROOT.kBlue-8)
+#     line_l_sig  = (ROOT.TLine(mean_inclus - window,                         0, mean_inclus - window,                         y_sr)    , 47)
+#     line_r_sig  = (ROOT.TLine(mean_inclus + window,                         0, mean_inclus + window,                         y_sr)    , 47)
+#     lines = (line_ll_sdb, line_lr_sdb, line_rl_sdb, line_rr_sdb, line_l_sig, line_r_sig)
+#
+#     for line, color in lines:
+#         line.SetLineColor(color)
+#         line.Draw()
+#
+
+
+# class Line(object):
+#     """
+#     Just some line
+#     """
+#     def __init__(self, type, x1, y1, x2, y2, line_color, line_width = 4):
+#         super(Line, self).__init__()
+#         self.type = type
+#         self.x1 = x1
+#         self.y1 = y1
+#         self.x2 = x2
+#         self.y2 = y2
+#         self.line_width = line_width
+#         self.line_color = line_color
+#
+# def make_lines(self, lines):
+#     for line_obj in lines:
+#         line = ROOT.TLine(line_obj.x1, line_obj.y1, line_obj.x2, line_obj.y2)
+#         line.SetLineWidth(line_obj.line_width)
+#         if line_obj.type == 'SR':
+#             line.SetLineColor(47)
+#             if line_obj.type == 'SdR':
+#                 line.SetLineColor(ROOT.kBlue-8)
+#                 yield line
+#

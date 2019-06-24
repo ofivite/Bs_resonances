@@ -88,6 +88,9 @@ var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data); var_discr
 PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data); PHI_mass_Cjp.setBins(nbins_phi_data)
 var_control.setMin(left_control_data); var_control.setMax(right_control_data);  var_control.setBins(nbins_control_data)
 
+data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
+data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE])
+
 fr = {'control': fr_X.getVal() if MODE == 'X' else fr_psi.getVal(), 'Bs': fr_Bs.getVal()}
 sigma_1 = {'control': sigma_X_1.getVal() if MODE == 'X' else sigma_psi_1.getVal(), 'Bs': sigma_Bs_1.getVal()}
 sigma_2 = {'control': sigma_X_2.getVal() if MODE == 'X' else sigma_psi_2.getVal(), 'Bs': sigma_Bs_2.getVal()}
@@ -98,47 +101,18 @@ wind_sideband_dist = 0.005 if sPlot_cut == 'phi' else 2*sigma_eff
 
 # data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
 
-data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
-data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE])
 
             #---------------#
             ##  Inclusive  ##
             #---------------#
 
+DE_inclus = DataExplorer(data, model[sPlot_cut], var[sPlot_cut])
+DE_inclus.fit_data(is_extended=True, is_sum_w2=False)
+
 c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
-
-mean[sPlot_cut].setConstant(1);
-model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
-model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
-mean[sPlot_cut].setConstant(0);
-model[sPlot_cut].fitTo(data, RF.Extended(ROOT.kTRUE))
-
-# plot_on_frame(var[sPlot_cut], data, model[sPlot_cut], '', left[sPlot_cut], right[sPlot_cut], nbins[sPlot_cut], None, False, chi_dict)
-# plot_pull(var[sPlot_cut], data, model[sPlot_cut], save = True)
-
-            #----------------#
-            ##  Draw lines  ##
-            #----------------#
-
-y_sdb_l = {'control': 950 if MODE == 'X' else 1750}; y_sig = {'control': 1280 if MODE == 'X' else 2400 }; y_sdb_r = {'control': 1420 if MODE == 'X' else 2750 };
-line_width = 4
-
-line_ll_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - 2.*window - wind_sideband_dist, y_sdb_l['control'])
-line_lr_sdb = ROOT.TLine(mean[sPlot_cut].getVal() - window - wind_sideband_dist, 0, mean[sPlot_cut].getVal() - window - wind_sideband_dist, y_sdb_l['control'])
-line_rl_sdb = ROOT.TLine(mean[sPlot_cut].getVal() + 2.*window + wind_sideband_dist, 0, mean[sPlot_cut].getVal() + 2.*window + wind_sideband_dist, y_sdb_r['control'])
-line_rr_sdb = ROOT.TLine(mean[sPlot_cut].getVal() + window + wind_sideband_dist, 0, mean[sPlot_cut].getVal() + window + wind_sideband_dist, y_sdb_r['control'])
-line_l_sig = ROOT.TLine(mean[sPlot_cut].getVal() - window, 0, mean[sPlot_cut].getVal() - window, y_sig['control'])
-line_r_sig = ROOT.TLine(mean[sPlot_cut].getVal() + window, 0, mean[sPlot_cut].getVal() + window, y_sig['control'])
-
-#
-line_ll_sdb.SetLineWidth(line_width); line_lr_sdb.SetLineWidth(line_width); line_rl_sdb.SetLineWidth(line_width); line_rr_sdb.SetLineWidth(line_width);
-line_l_sig.SetLineWidth(line_width); line_r_sig.SetLineWidth(line_width);
-#
-line_l_sig.SetLineColor(47); line_r_sig.SetLineColor(47)
-line_ll_sdb.SetLineColor(ROOT.kBlue-8); line_lr_sdb.SetLineColor(ROOT.kBlue-8); line_rl_sdb.SetLineColor(ROOT.kBlue-8); line_rr_sdb.SetLineColor(ROOT.kBlue-8);
-#
-line_ll_sdb.Draw(); line_lr_sdb.Draw(); line_rl_sdb.Draw(); line_rr_sdb.Draw(); line_l_sig.Draw(); line_r_sig.Draw()
-
+frame_inclus = DE_inclus.plot_on_var()
+# draw_inclus_lines()
+frame_inclus.Draw()
 CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
 c_inclus.Update(); c_inclus.RedrawAxis(); # c_inclus.GetFrame().Draw();
 # c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(MODE) + refl_line + '.pdf')
@@ -146,8 +120,6 @@ c_inclus.Update(); c_inclus.RedrawAxis(); # c_inclus.GetFrame().Draw();
             # ---------------------#
             # #  SR/SdR division  ##
             # ---------------------#
-
-print('\n\n' + 30*'#' + '\n\n\n         Data psi(2S): Bs mass now         \n\n\n' + 30*'#' + '\n\n')
 
 data_sig = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' -' + str(mean[sPlot_cut].getVal()) + ')<' + str(window))
 data_sideband = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' - ' + str(mean[sPlot_cut].getVal()) + ')>' + str(window + wind_sideband_dist) + ' && TMath::Abs(' + var[sPlot_cut].GetName() + ' - ' + str(mean[sPlot_cut].getVal()) + ')<' + str(2.*window + wind_sideband_dist))
@@ -161,9 +133,8 @@ else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
             ##  sPlot I  ##
             #-------------#
 
-
 if MODE == 'X': mean[sPlot_from].setConstant(1)
-X1 = DataExplorer(data = data_sig, model = model[sPlot_from], mode = MODE, var = var_discr, refl_ON = REFL_ON )
+X1 = DataExplorer(data = data_sig, model = model[sPlot_from], var = var[sPlot_from])
 
 X1.fit_data(fix_float = [a1, a2, a3, a4], is_extended = True, is_sum_w2 = False)
 w1 = X1.prepare_workspace(poi = N[sPlot_from], nuisances = [a1, a2, mean_Bs, N_bkgr_Bs])
@@ -171,17 +142,10 @@ asympt_rrr = X1.asympt_signif(w = w1)
 asympt_rrr.Print()
 
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
-frame_X1 = X1.plot_var()
+frame_X1 = X1.plot_on_var()
 frame_X1.Draw()
 CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(MODE) + refl_line + '.pdf')
-
-# file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
-# plot_on_frame(var[sPlot_from], data_sig, model[sPlot_from], '', left[sPlot_from], right[sPlot_from], nbins[sPlot_from], None, False, chi_dict)
-# plot_pull(var[sPlot_from], data_sig, model[sPlot_from], save = True)
-# plot_toys_pull(var[sPlot_from], model[sPlot_from], var_to_study = N_sig_Bs,  N_toys = 1000, N_gen = int(data_sig.sumEntries()), save = True, label = data_sig.GetName())
-
-
 
 #
 #             #--------------#

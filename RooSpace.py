@@ -16,6 +16,7 @@ jpsi_mass = ROOT.RooRealVar('JPSI_mass_Cmumu', 'm(#mu^{+}#mu^{-}) [GeV]', 1., 4.
 gen_phi_mass = ROOT.RooRealVar('gen_phi_mass', 'm_{gen}(K^{+}K^{-}) [GeV]', 0., 3.)
 delta_phi_mass = ROOT.RooRealVar('delta_phi_mass', 'm(K^{+}K^{-}) - m_{gen}(K^{+}K^{-}) [GeV]', -0.1, 0.1)
 
+PHI_mass_Cjp.setBins(10000, "cache") # important for convolutions!
 SAMEEVENT = ROOT.RooRealVar('SAMEEVENT', 'SAMEEVENT', 0., 2.)
 
 mu_max_pt = ROOT.RooRealVar('mu_max_pt', 'p_{T}^{max}(#mu) [GeV]', 0., 400.)
@@ -36,9 +37,6 @@ pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
 BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
 BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
 
-PHI_mass_Cjp.setBins(10000, "cache")
-# PHI_mass_Cjp.setBins(nbins_phi_data)
-# PHI_mass_Cjp.setRange(left_phi_data, right_phi_data)
 
 dR_mup = ROOT.RooRealVar('dR_mup', '', 0., 5.)
 dR_mum = ROOT.RooRealVar('dR_mum', '', 0., 5.)
