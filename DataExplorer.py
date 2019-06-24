@@ -3,44 +3,55 @@
 import ROOT
 from ROOT import RooFit as RF
 from scipy.stats import chi2
-from cuts import MODE
+from cuts import MODE, REFL_ON
+from math import sqrt
 
 class DataExplorer(object):
     """docstring for DataExplorer."""
     # def __init__(self, iterable=(), **kwargs):
     #     self.__dict__.update(iterable, **kwargs)
-    def __init__(self, data, model, var):
+    def __init__(self, data, model, var, name):
         super(DataExplorer, self).__init__()
         #
         self.data = data
         self.model = model
         self.var = var
+        self.name = name
         self.mode = MODE
-
-        try:
-            var_refl = model.getParameters(data).find('N_B0_refl')
-            self.refl_ON = False if var_refl.getVal() and var_refl.isConstant() else True
-        except:
-            print('no N_B0_refl was found in model params: set refl_ON to False')
-            self.refl_ON = False
+        self.refl_ON = REFL_ON
         #
         self.is_fitted = False
         self.chi_dict  = {}
-        #
-        self.var_left  = self.var.getMin();
-        self.var_right = self.var.getMax();
-        self.var_nbins = self.var.numBins()
 
+    def make_regions(self):
+        fr      = self.model.getParameters(self.data).find('fr_' + self.name).getVal()
+        sigma_1 = self.model.getParameters(self.data).find('sigma_' + self.name + '_1').getVal()
+        sigma_2 = self.model.getParameters(self.data).find('sigma_' + self.name + '_2').getVal()
+        sigma_eff = sqrt( fr * sigma_1**2 + (1 - fr) * sigma_2**2) if self.name != 'phi' else 0.
 
-    # def make_windows():
-    #     fr = {'control': fr_X.getVal() if MODE == 'X' else fr_psi.getVal(), 'Bs': fr_Bs.getVal()}
-    #     sigma_1 = {'control': sigma_X_1.getVal() if MODE == 'X' else sigma_psi_1.getVal(), 'Bs': sigma_Bs_1.getVal()}
-    #     sigma_2 = {'control': sigma_X_2.getVal() if MODE == 'X' else sigma_psi_2.getVal(), 'Bs': sigma_Bs_2.getVal()}
-    #     sigma_eff = sqrt( fr[sPlot_cut] * sigma_1[sPlot_cut]**2 + (1 - fr[sPlot_cut]) * sigma_2[sPlot_cut]**2) if sPlot_cut != 'phi' else 0.
-    #
-    #     window = 0.01 if sPlot_cut == 'phi' else 3*sigma_eff
-    #     wind_sideband_dist = 0.005 if sPlot_cut == 'phi' else 2*sigma_eff
+        self.window = 0.01 if self.name == 'phi' else 3*sigma_eff
+        self.wind_sideband_dist = 0.005 if self.name == 'phi' else 2*sigma_eff
 
+    def get_regioned_data(self):
+        data_sig = self.data.reduce('TMath::Abs(' + self.var.GetName() + ' -' + str(self.mean) + ')<' + str(self.window))
+        data_sideband = self.data.reduce('TMath::Abs(' + self.var.GetName() + ' - ' + str(self.mean) + ')>' + str(self.window + self.wind_sideband_dist) + ' && TMath::Abs(' + self.var.GetName() + ' - ' + str(self.mean) + ')<' + str(2.*self.window + self.wind_sideband_dist))
+        data_sig.SetName('sig')
+        data_sideband.SetName('sideband')
+        return data_sig, data_sideband
+
+    def draw_regions(self, y_sdb_left, y_sr, y_sdb_right):
+        #### Lines
+        line_ll_sdb = (ROOT.TLine(self.mean - 2.*self.window - self.wind_sideband_dist, 0, self.mean - 2.*self.window - self.wind_sideband_dist, y_sdb_left),  ROOT.kBlue-8)
+        line_lr_sdb = (ROOT.TLine(self.mean - self.window - self.wind_sideband_dist,    0, self.mean - self.window - self.wind_sideband_dist,    y_sdb_left),  ROOT.kBlue-8)
+        line_rl_sdb = (ROOT.TLine(self.mean + 2.*self.window + self.wind_sideband_dist, 0, self.mean + 2.*self.window + self.wind_sideband_dist, y_sdb_right), ROOT.kBlue-8)
+        line_rr_sdb = (ROOT.TLine(self.mean + self.window + self.wind_sideband_dist   , 0, self.mean + self.window + self.wind_sideband_dist,    y_sdb_right), ROOT.kBlue-8)
+        line_l_sig  = (ROOT.TLine(self.mean - self.window,                              0, self.mean - self.window,                              y_sr)        , 47)
+        line_r_sig  = (ROOT.TLine(self.mean + self.window,                              0, self.mean + self.window,                              y_sr)        , 47)
+        lines = (line_ll_sdb, line_lr_sdb, line_rl_sdb, line_rr_sdb, line_l_sig, line_r_sig)
+
+        for line, color in lines:
+            line.SetLineColor(color)
+            line.Draw()
 
     def fit_data(self, is_extended, is_sum_w2, fix_float=[], **kwargs):
         """
@@ -61,6 +72,7 @@ class DataExplorer(object):
         self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         self.fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
         self.is_fitted = True
+        self.mean = self.model.getParameters(self.data).find('mean_'+self.name).getVal()
 
 
     def prepare_workspace(self, poi, nuisances):
@@ -121,7 +133,6 @@ class DataExplorer(object):
         frame_nll.SetTitle('')
         #
         nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
-        # nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
         pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
         #
         frame_nll.SetMaximum(25.)
@@ -147,7 +158,11 @@ class DataExplorer(object):
 
         :return: RooPlot frame
         """
-        frame = ROOT.RooPlot(" ", title, self.var, self.var_left, self.var_right, self.var_nbins)
+        var_left  = self.var.getMin();
+        var_right = self.var.getMax();
+        var_nbins = self.var.numBins()
+
+        frame = ROOT.RooPlot(" ", title, self.var, var_left, var_right, var_nbins)
         self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
         self.model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange('full'), RF.Range('full')
         self.model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_params))
@@ -155,7 +170,7 @@ class DataExplorer(object):
 
         # Do chi2 GoF test
         nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
-        ndf = self.var_nbins - nfloat; chi = frame.chiSquare(nfloat) * ndf;
+        ndf = var_nbins - nfloat; chi = frame.chiSquare(nfloat) * ndf;
         pvalue = 1 - chi2.cdf(chi, ndf)
         self.chi_dict.update({self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]})
 
@@ -172,7 +187,7 @@ class DataExplorer(object):
         if self.refl_ON: self.model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44))
         self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto)) # plotting data at the beginning once sometimes doesn't work
         #
-        frame.GetYaxis().SetTitle('Candidates / ' + str(round((self.var_right - self.var_left) * 1000. / self.var_nbins, 1)) + ' MeV')
+        frame.GetYaxis().SetTitle('Candidates / ' + str(round((var_right - var_left) * 1000. / var_nbins, 1)) + ' MeV')
         frame.GetXaxis().SetTitleSize(0.04)
         frame.GetYaxis().SetTitleSize(0.04)
         frame.GetXaxis().SetLabelSize(0.033)
@@ -182,7 +197,7 @@ class DataExplorer(object):
         #
         return frame
 
-    def plot_pull(self, save = False):
+    def plot_pull(self, save = False, save_path = '~/Study/Bs_resonances/fit_validation/'):
         c_pulls = ROOT.TCanvas("c_pulls", "c_pulls", 800, 600)
         frame = self.var.frame()
         self.data.plotOn(frame)
@@ -192,9 +207,9 @@ class DataExplorer(object):
         frame2 = self.var.frame()
         frame2.addPlotable(pull_hist, 'P')
         frame2.Draw()
-        if save: c_pulls.SaveAs('~/Study/Bs_resonances/fit_validation/'+ self.mode + '_' + self.data.GetName() + '.pdf')
+        if save: c_pulls.SaveAs(save_path + self.mode + '_' + self.data.GetName() + '.pdf')
 
-    def plot_toys_pull(self, var_to_study, N_toys=100, N_gen = 1, label = '', save = False):
+    def plot_toys_pull(self, var_to_study, N_toys=100, N_gen = 1, label = '', save = False, save_path = '~/Study/Bs_resonances/fit_validation/'):
         """
         Make bias checks in fitted model parameter var_to_study by generating toys with RooMCStudy()
         """
@@ -220,29 +235,12 @@ class DataExplorer(object):
             c_pull = ROOT.TCanvas("c_pull", "c_pull", 800, 600)
             frame_pull.Draw()
             #
-            c_var.SaveAs('~/Study/Bs_resonances/fit_validation/' + self.mode + '_' + self.var.GetName() + '_' + label + '.pdf')
-            c_err.SaveAs('~/Study/Bs_resonances/fit_validation/' + self.mode + '_' + self.var.GetName() + '_' + label + '_err.pdf')
-            c_pull.SaveAs('~/Study/Bs_resonances/fit_validation/'+ self.mode + '_' + self.var.GetName() + '_' + label + '_pull.pdf')
+            c_var. SaveAs(save_path + self.mode + '_' + self.var.GetName() + '_' + label + '.pdf')
+            c_err. SaveAs(save_path + self.mode + '_' + self.var.GetName() + '_' + label + '_err.pdf')
+            c_pull.SaveAs(save_path + self.mode + '_' + self.var.GetName() + '_' + label + '_pull.pdf')
 
 ################################################################################################################################
 
-# def draw_inclus_lines():
-#     #### Lines
-#     mean_inclus = mean[sPlot_cut].getVal()
-#     y_sdb_l, y_sr, y_sdb_r = (950, 1280, 1420) if MODE == 'X' else (1750, 2400, 2750)
-#
-#     line_ll_sdb = (ROOT.TLine(mean_inclus - 2.*window - wind_sideband_dist, 0, mean_inclus - 2.*window - wind_sideband_dist, y_sdb_l),  ROOT.kBlue-8)
-#     line_lr_sdb = (ROOT.TLine(mean_inclus - window - wind_sideband_dist,    0, mean_inclus - window - wind_sideband_dist,    y_sdb_l) , ROOT.kBlue-8)
-#     line_rl_sdb = (ROOT.TLine(mean_inclus + 2.*window + wind_sideband_dist, 0, mean_inclus + 2.*window + wind_sideband_dist, y_sdb_r) , ROOT.kBlue-8)
-#     line_rr_sdb = (ROOT.TLine(mean_inclus + window + wind_sideband_dist   , 0, mean_inclus + window + wind_sideband_dist,    y_sdb_r) , ROOT.kBlue-8)
-#     line_l_sig  = (ROOT.TLine(mean_inclus - window,                         0, mean_inclus - window,                         y_sr)    , 47)
-#     line_r_sig  = (ROOT.TLine(mean_inclus + window,                         0, mean_inclus + window,                         y_sr)    , 47)
-#     lines = (line_ll_sdb, line_lr_sdb, line_rl_sdb, line_rr_sdb, line_l_sig, line_r_sig)
-#
-#     for line, color in lines:
-#         line.SetLineColor(color)
-#         line.Draw()
-#
 
 
 # class Line(object):

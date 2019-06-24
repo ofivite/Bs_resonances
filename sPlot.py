@@ -3,8 +3,18 @@ from math import sqrt
 import json
 from DataExplorer import DataExplorer
 
-chi_dict = {}
+CMS_tdrStyle_lumi.extraText = "Preliminary"
+var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data); var_discr.setBins(nbins_discr_data)
+PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data); PHI_mass_Cjp.setBins(nbins_phi_data)
+var_control.setMin(left_control_data); var_control.setMax(right_control_data);  var_control.setBins(nbins_control_data)
+
 file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
+data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
+data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE])
+
+            #------------------#
+            ##  fixing shape  ##
+            #------------------#
 
 ###
 w_Bs, f_Bs = get_workspace('workspace_' + MODE + '_Bs.root', 'workspace')
@@ -77,74 +87,46 @@ fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
 
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
-            ##   ------------------------    ##
-            ##      DATA & DEFINITIONS       ##
-            ##   ------------------------    ##
-
-CMS_tdrStyle_lumi.extraText = "Preliminary"
-# file_out_data = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/' + MODE +'_data_evtN.txt', 'w')
-
-var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data); var_discr.setBins(nbins_discr_data)
-PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data); PHI_mass_Cjp.setBins(nbins_phi_data)
-var_control.setMin(left_control_data); var_control.setMax(right_control_data);  var_control.setBins(nbins_control_data)
-
-data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
-data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE])
-
-fr = {'control': fr_X.getVal() if MODE == 'X' else fr_psi.getVal(), 'Bs': fr_Bs.getVal()}
-sigma_1 = {'control': sigma_X_1.getVal() if MODE == 'X' else sigma_psi_1.getVal(), 'Bs': sigma_Bs_1.getVal()}
-sigma_2 = {'control': sigma_X_2.getVal() if MODE == 'X' else sigma_psi_2.getVal(), 'Bs': sigma_Bs_2.getVal()}
-sigma_eff = sqrt( fr[sPlot_cut] * sigma_1[sPlot_cut]**2 + (1 - fr[sPlot_cut]) * sigma_2[sPlot_cut]**2) if sPlot_cut != 'phi' else 0.
-
-window = 0.01 if sPlot_cut == 'phi' else 3*sigma_eff
-wind_sideband_dist = 0.005 if sPlot_cut == 'phi' else 2*sigma_eff
-
-# data = (ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(ROOT.RooArgSet(ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp, mu_max_pt, mu_min_pt, mu_max_eta, mu_min_eta), ROOT.RooArgSet(K_max_pt, K_min_pt, K_max_eta, K_min_eta, pi_max_pt, pi_min_pt, pi_max_eta, pi_min_eta)), ROOT.RooArgSet(BU_pt_Cjp, BU_eta_Cjp)),
-
 
             #---------------#
             ##  Inclusive  ##
             #---------------#
 
-DE_inclus = DataExplorer(data, model[sPlot_cut], var[sPlot_cut])
-DE_inclus.fit_data(is_extended=True, is_sum_w2=False)
+# file_out_data = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/' + MODE +'_data_evtN.txt', 'w')
 
-c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
+DE_inclus = DataExplorer(data, model[sPlot_cut], var[sPlot_cut], name = MODE)
+DE_inclus.fit_data(is_extended = True, is_sum_w2 = False)
+#
+DE_inclus.make_regions()
+data_sig, data_sideband = DE_inclus.get_regioned_data()
+#
+c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600); CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
 frame_inclus = DE_inclus.plot_on_var()
-# draw_inclus_lines()
 frame_inclus.Draw()
-CMS_tdrStyle_lumi.CMS_lumi( c_inclus, 2, 0 );
-c_inclus.Update(); c_inclus.RedrawAxis(); # c_inclus.GetFrame().Draw();
+# y_sdb_left, y_sr, y_sdb_right = (950, 1280, 1420) if MODE == 'X' else (1750, 2400, 2750)
+# DE_inclus.draw_regions(y_sdb_left, y_sr, y_sdb_right)
+# c_inclus.Update(); c_inclus.RedrawAxis(); #c_inclus.GetFrame().Draw();
 # c_inclus.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_inclus___' + str(MODE) + refl_line + '.pdf')
-
-            # ---------------------#
-            # #  SR/SdR division  ##
-            # ---------------------#
-
-data_sig = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' -' + str(mean[sPlot_cut].getVal()) + ')<' + str(window))
-data_sideband = data.reduce('TMath::Abs(' + var[sPlot_cut].GetName() + ' - ' + str(mean[sPlot_cut].getVal()) + ')>' + str(window + wind_sideband_dist) + ' && TMath::Abs(' + var[sPlot_cut].GetName() + ' - ' + str(mean[sPlot_cut].getVal()) + ')<' + str(2.*window + wind_sideband_dist))
-data_sig.SetName('sig')
-data_sideband.SetName('sideband')
-
-if REFL_ON and MODE == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
-else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
             #-------------#
             ##  sPlot I  ##
             #-------------#
 
-if MODE == 'X': mean[sPlot_from].setConstant(1)
-X1 = DataExplorer(data = data_sig, model = model[sPlot_from], var = var[sPlot_from])
+if REFL_ON and MODE == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
+else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
+if sPlot_from == 'Bs' and MODE == 'X': mean[sPlot_from].setConstant(1)
 
-X1.fit_data(fix_float = [a1, a2, a3, a4], is_extended = True, is_sum_w2 = False)
-w1 = X1.prepare_workspace(poi = N[sPlot_from], nuisances = [a1, a2, mean_Bs, N_bkgr_Bs])
-asympt_rrr = X1.asympt_signif(w = w1)
+DE_1 = DataExplorer(data = data_sig, model = model[sPlot_from], var = var[sPlot_from], name = sPlot_from)
+DE_1.fit_data(fix_float = [a1, a2, a3, a4], is_extended = True, is_sum_w2 = False)
+#
+w1 = DE_1.prepare_workspace(poi = N[sPlot_from], nuisances = [a1, a2, mean_Bs, N_bkgr_Bs])
+asympt_rrr = DE_1.asympt_signif(w = w1)
 asympt_rrr.Print()
-
-c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
-frame_X1 = X1.plot_on_var()
-frame_X1.Draw()
-CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 ); c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
+#
+c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600); CMS_tdrStyle_lumi.CMS_lumi( c_sPlot_1, 2, 0 );
+frame_DE_1 = DE_1.plot_on_var()
+frame_DE_1.Draw()
+# c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(MODE) + refl_line + '.pdf')
 
 #
