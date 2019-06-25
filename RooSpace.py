@@ -5,8 +5,6 @@ from datetime import datetime
 import ROOT
 from ROOT import RooFit as RF
 from cuts import *
-import CMS_tdrStyle_lumi
-from scipy import stats
 
 var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
 var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)

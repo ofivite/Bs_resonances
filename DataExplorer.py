@@ -1,4 +1,13 @@
-# TODO: proper docstring for Functions, class implementation
+"""
+TODO
+
+* proper docstring for Functions
+* complex inherited classes (StatisticsExplorer?)
+* exception handling
+* private/protected items
+* remove functions from the end of RooSpace.py (but study them firstly)
+
+"""
 
 import ROOT
 from ROOT import RooFit as RF
@@ -17,43 +26,30 @@ class DataExplorer(object):
         self.model = model
         self.var = var
         self.name = name
+        #
         self.mode = MODE
         self.refl_ON = REFL_ON
-        #
         self.is_fitted = False
-        self.chi_dict  = {}
+        self.chi2_results  = {}
+        self.frame = None
 
     def make_regions(self):
         fr      = self.model.getParameters(self.data).find('fr_' + self.name).getVal()
         sigma_1 = self.model.getParameters(self.data).find('sigma_' + self.name + '_1').getVal()
         sigma_2 = self.model.getParameters(self.data).find('sigma_' + self.name + '_2').getVal()
-        sigma_eff = sqrt( fr * sigma_1**2 + (1 - fr) * sigma_2**2) if self.name != 'phi' else 0.
+        sigma_eff = sqrt(fr*sigma_1**2 + (1-fr)*sigma_2**2) if self.name != 'phi' else 0.
 
         self.window = 0.01 if self.name == 'phi' else 3*sigma_eff
-        self.wind_sideband_dist = 0.005 if self.name == 'phi' else 2*sigma_eff
+        self.distance_to_sdb = 0.005 if self.name == 'phi' else 2*sigma_eff
 
     def get_regioned_data(self):
         data_sig = self.data.reduce('TMath::Abs(' + self.var.GetName() + ' -' + str(self.mean) + ')<' + str(self.window))
-        data_sideband = self.data.reduce('TMath::Abs(' + self.var.GetName() + ' - ' + str(self.mean) + ')>' + str(self.window + self.wind_sideband_dist) + ' && TMath::Abs(' + self.var.GetName() + ' - ' + str(self.mean) + ')<' + str(2.*self.window + self.wind_sideband_dist))
+        data_sideband = self.data.reduce('TMath::Abs(' + self.var.GetName() + ' - ' + str(self.mean) + ')>' + str(self.window + self.distance_to_sdb) + ' && TMath::Abs(' + self.var.GetName() + ' - ' + str(self.mean) + ')<' + str(2.*self.window + self.distance_to_sdb))
         data_sig.SetName('sig')
         data_sideband.SetName('sideband')
         return data_sig, data_sideband
 
-    def draw_regions(self, y_sdb_left, y_sr, y_sdb_right):
-        #### Lines
-        line_ll_sdb = (ROOT.TLine(self.mean - 2.*self.window - self.wind_sideband_dist, 0, self.mean - 2.*self.window - self.wind_sideband_dist, y_sdb_left),  ROOT.kBlue-8)
-        line_lr_sdb = (ROOT.TLine(self.mean - self.window - self.wind_sideband_dist,    0, self.mean - self.window - self.wind_sideband_dist,    y_sdb_left),  ROOT.kBlue-8)
-        line_rl_sdb = (ROOT.TLine(self.mean + 2.*self.window + self.wind_sideband_dist, 0, self.mean + 2.*self.window + self.wind_sideband_dist, y_sdb_right), ROOT.kBlue-8)
-        line_rr_sdb = (ROOT.TLine(self.mean + self.window + self.wind_sideband_dist   , 0, self.mean + self.window + self.wind_sideband_dist,    y_sdb_right), ROOT.kBlue-8)
-        line_l_sig  = (ROOT.TLine(self.mean - self.window,                              0, self.mean - self.window,                              y_sr)        , 47)
-        line_r_sig  = (ROOT.TLine(self.mean + self.window,                              0, self.mean + self.window,                              y_sr)        , 47)
-        lines = (line_ll_sdb, line_lr_sdb, line_rl_sdb, line_rr_sdb, line_l_sig, line_r_sig)
-
-        for line, color in lines:
-            line.SetLineColor(color)
-            line.Draw()
-
-    def fit_data(self, is_extended, is_sum_w2, fix_float=[], **kwargs):
+    def fit(self, is_extended, is_sum_w2, fix_float=[], **kwargs):
         """
         Fit some data distribution.
         NB: the corresponding model parameters will be updated after executing
@@ -73,6 +69,21 @@ class DataExplorer(object):
         self.fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
         self.is_fitted = True
         self.mean = self.model.getParameters(self.data).find('mean_'+self.name).getVal()
+
+    def chi2_fit(self, is_extended = False):
+        chi2 = ROOT.RooChi2Var("chi2","chi2", self.model, self.data, RF.DataError(ROOT.RooAbsData.Auto))
+        m = ROOT.RooMinimizer(chi2)
+        m.setMinimizerType("Minuit2");
+        m.setPrintLevel(3)
+        #
+        m.minimize("Minuit2","minimize") ;
+        m.minimize("Minuit2","minimize") ;
+        m.minimize("Minuit2","minimize") ;
+        m.hesse()
+        self.is_fitted = True
+        self.mean = self.model.getParameters(self.data).find('mean_'+self.name).getVal()
+        # r_chi2 = m.save()  # <-- these bring segmentation fault
+        # r_chi2.Print() ;
 
 
     def prepare_workspace(self, poi, nuisances):
@@ -99,6 +110,83 @@ class DataExplorer(object):
         self.w = w
         return w
 
+    def plot_on_var(self, title = ' ', chi2_test = True, plot_params = ROOT.RooArgSet()):
+        """
+        Plot the class model and data on the class variable's frame
+
+        :title: Title for a RooPlot frame
+        :plot_params: RooArgset with parameters to be shown on Legend
+
+        :return: RooPlot frame
+        """
+        var_left  = self.var.getMin();
+        var_right = self.var.getMax();
+        var_nbins = self.var.numBins()
+
+        frame = ROOT.RooPlot(" ", title, self.var, var_left, var_right, var_nbins)
+        self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
+        self.model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange('full'), RF.Range('full')
+        self.model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_params))
+        # frame.getAttText().SetTextSize(0.053)
+
+        # Loop over model components and plot'em
+        iter = self.model.getComponents().iterator()
+        iter_comp = iter.Next()
+        while iter_comp:
+            if 'sig' in iter_comp.GetName().split('_'):
+                self.model.plotOn(frame, RF.Components(iter_comp.GetName()), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4))
+            if 'bkgr' in iter_comp.GetName().split('_'):
+                self.model.plotOn(frame, RF.Components(iter_comp.GetName()), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4))
+            iter_comp = iter.Next()
+        #
+        if self.refl_ON: self.model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44))
+        self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto)) # plotting data at the beginning once sometimes doesn't work
+        #
+        frame.GetYaxis().SetTitle('Candidates / ' + str(round((var_right - var_left) * 1000. / var_nbins, 1)) + ' MeV')
+        frame.GetXaxis().SetTitleSize(0.04)
+        frame.GetYaxis().SetTitleSize(0.04)
+        frame.GetXaxis().SetLabelSize(0.033)
+        frame.GetYaxis().SetLabelSize(0.033)
+        frame.GetXaxis().SetTitleOffset(1.05)
+        frame.GetYaxis().SetTitleOffset(1.3)
+        #
+        self.frame = frame
+        return frame
+
+    def plot_regions(self, frame, y_sdb_left, y_sr, y_sdb_right, line_width=4):
+        #### Lines
+        line_ll_sdb = (ROOT.TLine(self.mean - 2.*self.window - self.distance_to_sdb, 0, self.mean - 2.*self.window - self.distance_to_sdb, y_sdb_left),  ROOT.kBlue-8)
+        line_lr_sdb = (ROOT.TLine(self.mean - self.window - self.distance_to_sdb,    0, self.mean - self.window - self.distance_to_sdb,    y_sdb_left),  ROOT.kBlue-8)
+        line_rl_sdb = (ROOT.TLine(self.mean + 2.*self.window + self.distance_to_sdb, 0, self.mean + 2.*self.window + self.distance_to_sdb, y_sdb_right), ROOT.kBlue-8)
+        line_rr_sdb = (ROOT.TLine(self.mean + self.window + self.distance_to_sdb   , 0, self.mean + self.window + self.distance_to_sdb,    y_sdb_right), ROOT.kBlue-8)
+        line_l_sig  = (ROOT.TLine(self.mean - self.window,                           0, self.mean - self.window,                           y_sr)        , 47)
+        line_r_sig  = (ROOT.TLine(self.mean + self.window,                           0, self.mean + self.window,                           y_sr)        , 47)
+        lines = (line_ll_sdb, line_lr_sdb, line_rl_sdb, line_rr_sdb, line_l_sig, line_r_sig)
+
+        for line, color in lines:
+            line.SetLineColor(color)
+            line.SetLineWidth(line_width)
+            frame.addObject(line)
+        return frame
+
+################################################################################################################################
+
+    def chi2_test(self):
+        """
+        Do chi2 goodness-of-fit test
+        """
+        nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
+        ndf = self.var.numBins() - nfloat
+        try:
+            frame = self.frame
+            chi = frame.chiSquare(nfloat) * ndf
+        except:
+            raise Exception('Cannot calculate chi2 using self.frame: was the frame filled?')
+        else:
+            pvalue = 1 - chi2.cdf(chi, ndf)
+            self.chi2_results.update({self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]})
+        return self.chi2_results
+
     def asympt_signif(self, w):
         """
         Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator
@@ -124,6 +212,25 @@ class DataExplorer(object):
         as_result = ac.GetHypoTest()
         return as_result
 
+    # def _asympt_signif_(self):
+    #     """
+    #     Function to calculate one-sided significance for a given in the workspace s+b model by bare hands
+    #
+    #     :param: w: workspace to open
+    #     :returns: GetHypoTest() object for printing with Print()
+    #     """
+    #     N[sPlot_to].setVal(0); N[sPlot_to].setConstant(1);
+    #     model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
+    #     rrr_null = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
+    #
+    #     nll_sig  = rrr_sig.minNll()
+    #     nll_null = rrr_null.minNll()
+    #     P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! should be always ndf = 1 = number of poi for this formula to work
+    #     # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
+    #     S = ROOT.Math.gaussian_quantile_c(P, 1)
+    #     print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
+
+
     def plot_ll(self, poi, save = False):
         nll = self.model.createNLL(self.data)
         pll = nll.createProfile(ROOT.RooArgSet(poi))
@@ -148,57 +255,8 @@ class DataExplorer(object):
         c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
         if save: c_ll.SaveAs(self.mode + '1_pll.pdf')
 
-
-    def plot_on_var(self, title = ' ', plot_params = ROOT.RooArgSet()):
-        """
-        Plot the class model and data on the class variable's frame
-
-        :title: Title for a RooPlot frame
-        :plot_params: RooArgset with parameters to be shown on Legend
-
-        :return: RooPlot frame
-        """
-        var_left  = self.var.getMin();
-        var_right = self.var.getMax();
-        var_nbins = self.var.numBins()
-
-        frame = ROOT.RooPlot(" ", title, self.var, var_left, var_right, var_nbins)
-        self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
-        self.model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange('full'), RF.Range('full')
-        self.model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_params))
-        frame.getAttText().SetTextSize(0.053)
-
-        # Do chi2 GoF test
-        nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
-        ndf = var_nbins - nfloat; chi = frame.chiSquare(nfloat) * ndf;
-        pvalue = 1 - chi2.cdf(chi, ndf)
-        self.chi_dict.update({self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]})
-
-        # Loop over model components and plot'em
-        iter = self.model.getComponents().iterator()
-        iter_comp = iter.Next()
-        while iter_comp:
-            if 'sig' in iter_comp.GetName().split('_'):
-                self.model.plotOn(frame, RF.Components(iter_comp.GetName()), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4))
-            if 'bkgr' in iter_comp.GetName().split('_'):
-                self.model.plotOn(frame, RF.Components(iter_comp.GetName()), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4))
-            iter_comp = iter.Next()
-        #
-        if self.refl_ON: self.model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44))
-        self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto)) # plotting data at the beginning once sometimes doesn't work
-        #
-        frame.GetYaxis().SetTitle('Candidates / ' + str(round((var_right - var_left) * 1000. / var_nbins, 1)) + ' MeV')
-        frame.GetXaxis().SetTitleSize(0.04)
-        frame.GetYaxis().SetTitleSize(0.04)
-        frame.GetXaxis().SetLabelSize(0.033)
-        frame.GetYaxis().SetLabelSize(0.033)
-        frame.GetXaxis().SetTitleOffset(1.05)
-        frame.GetYaxis().SetTitleOffset(1.3)
-        #
-        return frame
-
     def plot_pull(self, save = False, save_path = '~/Study/Bs_resonances/fit_validation/'):
-        c_pulls = ROOT.TCanvas("c_pulls", "c_pulls", 800, 600)
+        c_pull = ROOT.TCanvas("c_pull", "c_pull", 800, 600)
         frame = self.var.frame()
         self.data.plotOn(frame)
         self.model.plotOn(frame)
@@ -207,7 +265,7 @@ class DataExplorer(object):
         frame2 = self.var.frame()
         frame2.addPlotable(pull_hist, 'P')
         frame2.Draw()
-        if save: c_pulls.SaveAs(save_path + self.mode + '_' + self.data.GetName() + '.pdf')
+        if save: c_pull.SaveAs(save_path + self.mode + '_' + self.data.GetName() + '.pdf')
 
     def plot_toys_pull(self, var_to_study, N_toys=100, N_gen = 1, label = '', save = False, save_path = '~/Study/Bs_resonances/fit_validation/'):
         """
@@ -267,3 +325,7 @@ class DataExplorer(object):
 #                 line.SetLineColor(ROOT.kBlue-8)
 #                 yield line
 #
+
+
+
+# ~~~ #
