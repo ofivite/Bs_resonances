@@ -22,7 +22,6 @@ chi2_results = {}
             ##  fixing shape  ##
             #------------------#
 
-###
 w_Bs, f_Bs = get_workspace('workspace_' + MODE + '_Bs.root', 'workspace')
 w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
 w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
@@ -100,7 +99,7 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
 # file_out_data = open('/home/yaourt/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/' + MODE +'_data_evtN.txt', 'w')
 
-DE_inclus = DataExplorer(data, model[sPlot_cut], var[sPlot_cut], name=MODE)
+DE_inclus = DataExplorer(data, model[sPlot_cut], var[sPlot_cut], poi=N[sPlot_cut], name=MODE)
 DE_inclus.fit(is_extended=True, is_sum_w2=False)
 #
 DE_inclus.set_regions()
@@ -125,12 +124,8 @@ if REFL_ON and MODE == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
 else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 if sPlot_from == 'Bs' and MODE == 'X': mean[sPlot_from].setConstant(1)
 
-DE_1 = DataExplorer(data=data_sig, model=model[sPlot_from], var=var[sPlot_from], name=sPlot_from)
+DE_1 = DataExplorer(data=data_sig, model=model[sPlot_from], var=var[sPlot_from], poi=N[sPlot_from], name=sPlot_from)
 DE_1.fit(fix_float=[a1, a2, a3, a4], is_extended=True, is_sum_w2=False)
-#
-# w1 = DE_1.prepare_workspace(poi = N[sPlot_from], nuisances = [a1, a2, mean_Bs, N_bkgr_Bs])
-# asympt_rrr = DE_1.asympt_signif(w = w1)
-# asympt_rrr.Print()
 #
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_1, 2, 0);
 frame_DE_1 = DE_1.plot_on_var()
@@ -151,81 +146,77 @@ data_sig_w = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, 
 data_sig_w.SetName('sig_w')
 hist_sig_weighted = ROOT.RooDataHist('hist_sig_weighted', 'hist_sig_weighted', ROOT.RooArgSet(var[sPlot_to]), data_sig_w) ### binning for this var was already previously set
 #
-DE_2 = DataExplorer(data=hist_sig_weighted, model=model[sPlot_to], var=var[sPlot_to], name=sPlot_to)
-DE_2.chi2_fit(is_extended=False)
-# #
-# w2 = DE_2.prepare_workspace(poi = fr_model_phi, nuisances = [a1_phi, a2_phi, mean_phi])
-# asympt_rrr = DE_2.asympt_signif(w = w2)
-# asympt_rrr.Print()
-# #
-c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0);
-frame_DE_2 = DE_2.plot_on_var()
-chi2_results.update(DE_2.chi2_test(frame_DE_2))
-frame_DE_2.Draw()
+mean_phi.setVal(1.01946); mean_phi.setConstant(1)
+DE_2 = DataExplorer(data=hist_sig_weighted, model=model[sPlot_to], var=var[sPlot_to], poi = fr_model_phi, name=sPlot_to)
+# chi2_2 = DE_2.chi2_fit(is_extended=False)
+# fr_model_phi.setVal(0.); fr_model_phi.setConstant(1)
+# chi2_2_b = DE_2.chi2_fit(is_extended=False)
+
+t_list = DE_2.tnull_toys(n_toys = 7000)
+with open('./tnull_toys/t.txt', 'w') as f:
+    for item in t_list:
+        f.write(f'{item}\n')
+
+
+# c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0);
+# frame_DE_2 = DE_2.plot_on_var()
+# chi2_results.update(DE_2.chi2_test(frame_DE_2))
+# frame_DE_2.Draw()
 # c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(MODE) + refl_line + '.pdf')
 
-
-# # Note that entries with zero bins are _not_ allowed
-# # for a proper chi^2 calculation and will give error
-# # messages
-# # dsmall = data_sig_w.reduce(ROOT.RooFit.EventRange(-100000, 100000))
-# # dhsmall = ROOT.RooDataHist('h', 'h', ROOT.RooArgSet(PHI_mass_Cjp), dsmall)
-# # dhsmall = hist_sig_weighted.reduce(ROOT.RooFit.EventRange(1, 1000))
-# chi2_lowstat = ROOT.RooChi2Var("chi2_lowstat", "chi2", model[sPlot_to], dhsmall)
-# print (chi2_lowstat.getVal())
-
-
-
-            #---------------#
-            ##  sPlot III  ##
-            #---------------#
-
-mean[sPlot_from].setConstant(1)
-N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
-
-DE_3 = DataExplorer(data=data_side, model=model[sPlot_from], var=var[sPlot_from], name=sPlot_from)
-DE_3.fit(fix_float=[a1, a2, a3, a4], is_extended=True, is_sum_w2=False)
+#             #---------------#
+#             ##  sPlot III  ##
+#             #---------------#
 #
-w3 = DE_3.prepare_workspace(poi=N[sPlot_from], nuisances=[a1, a2, mean_Bs, N_bkgr_Bs])
-asympt_rrr = DE_3.asympt_signif(w=w3)
-asympt_rrr.Print()
+# mean[sPlot_from].setConstant(1)
+# N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 #
-c_sPlot_3 = ROOT.TCanvas("c_sPlot_3", "c_sPlot_3", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_3, 2, 0);
-frame_DE_3 = DE_3.plot_on_var()
-chi2_results.update(DE_3.chi2_test(frame_DE_3))
-frame_DE_3.Draw()
-# c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
-# c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_3_' + str(MODE) + refl_line + '.pdf')
-
-# file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
-
-            #--------------#
-            ##  sPlot IV  ##
-            #--------------#
-
-mean[sPlot_to].setConstant(1)
-
-sData_side = ROOT.RooStats.SPlot('sData_side', 'sData_side', data_side, model[sPlot_from], sPlot_list)
-data_side_w = ROOT.RooDataSet(data_side.GetName(), data_side.GetTitle(), data_side, data_side.get(), '1 > 0', N[sPlot_from].GetName() + '_sw')
-data_side_w.SetName('side_w')
-hist_side_weighted = ROOT.RooDataHist('hist_side_weighted', 'hist_side_weighted', ROOT.RooArgSet(var[sPlot_to]), data_side_w) ### binning for this var was already previously set
-#
-DE_4 = DataExplorer(data=hist_side_weighted, model=model[sPlot_to], var=var[sPlot_to], name=sPlot_to)
-DE_4.chi2_fit(is_extended=False)
+# DE_3 = DataExplorer(data=data_side, model=model[sPlot_from], var=var[sPlot_from], poi=N[sPlot_from], name=sPlot_from)
+# DE_3.fit(fix_float=[a1, a2, a3, a4], is_extended=True, is_sum_w2=False)
 # #
-# w4 = DE_4.prepare_workspace(poi = fr_model_phi, nuisances = [a1_phi, a2_phi, mean_phi])
-# asympt_rrr = DE_4.asympt_signif(w = w4)
+# w3 = DE_3.prepare_workspace(poi=N[sPlot_from], nuisances=[a1, a2, mean_Bs, N_bkgr_Bs])
+# asympt_rrr = DE_3.asympt_signif(w=w3)
 # asympt_rrr.Print()
 # #
-c_sPlot_4 = ROOT.TCanvas("c_sPlot_4", "c_sPlot_4", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_4, 2, 0);
-frame_DE_4 = DE_4.plot_on_var()
-chi2_results.update(DE_4.chi2_test(frame_DE_4))
-frame_DE_4.Draw()
-# c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
-# c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_4_' + str(MODE) + refl_line + '.pdf')
-
+# c_sPlot_3 = ROOT.TCanvas("c_sPlot_3", "c_sPlot_3", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_3, 2, 0);
+# frame_DE_3 = DE_3.plot_on_var()
+# chi2_results.update(DE_3.chi2_test(frame_DE_3))
+# frame_DE_3.Draw()
+# # c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
+# # c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_3_' + str(MODE) + refl_line + '.pdf')
+#
+# # file_out_data.write(str(N[sPlot_from].getVal()) + ' ' + str(N[sPlot_from].getError()) + '\n')
+#
+#             #--------------#
+#             ##  sPlot IV  ##
+#             #--------------#
+#
+# mean[sPlot_to].setConstant(1)
+#
+# sData_side = ROOT.RooStats.SPlot('sData_side', 'sData_side', data_side, model[sPlot_from], sPlot_list)
+# data_side_w = ROOT.RooDataSet(data_side.GetName(), data_side.GetTitle(), data_side, data_side.get(), '1 > 0', N[sPlot_from].GetName() + '_sw')
+# data_side_w.SetName('side_w')
+# hist_side_weighted = ROOT.RooDataHist('hist_side_weighted', 'hist_side_weighted', ROOT.RooArgSet(var[sPlot_to]), data_side_w) ### binning for this var was already previously set
 # #
+# DE_4 = DataExplorer(data=hist_side_weighted, model=model[sPlot_to], var=var[sPlot_to], poi = fr_model_phi, name=sPlot_to)
+# DE_4.chi2_fit(is_extended=False)
+# # #
+# # w4 = DE_4.prepare_workspace(poi = fr_model_phi, nuisances = [a1_phi, a2_phi, mean_phi])
+# # asympt_rrr = DE_4.asympt_signif(w = w4)
+# # asympt_rrr.Print()
+# # #
+# c_sPlot_4 = ROOT.TCanvas("c_sPlot_4", "c_sPlot_4", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_4, 2, 0);
+# frame_DE_4 = DE_4.plot_on_var()
+# chi2_results.update(DE_4.chi2_test(frame_DE_4))
+# frame_DE_4.Draw()
+# # c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
+# # c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_4_' + str(MODE) + refl_line + '.pdf')
+
+            #-------------#
+            ##  Writing  ##
+            #-------------#
+
 # file_out_data.write(str(N[sPlot_to].getVal()) + ' ' + str(N[sPlot_to].getError()) + '\n')
 # file_out_data.close()
 

@@ -13,21 +13,21 @@ from ROOT import RooFit as RF
 from scipy.stats import chi2
 from cuts import MODE, REFL_ON
 from math import sqrt
+from pandas import DataFrame
 
 class DataExplorer(object):
     """Base class exploring data-model relationship in Bs->X(3872)phi study"""
     mode = MODE
     refl_ON = REFL_ON
 
-    def __init__(self, data, model, var, name):
+    def __init__(self, data, model, var, poi, name):
         super(DataExplorer, self).__init__()
         self.data = data
         self.model = model
         self.var = var
+        self.poi = poi
         self.name = name
-        #
         self.is_fitted = False
-        self.chi2_results  = {}
 
     def set_regions(self):
         """Set signal region (SR) window and distance to sidebands (SdR)
@@ -73,7 +73,7 @@ class DataExplorer(object):
         is_extended: bool
             include extended term into the likelihood
         is_sum_w2: bool
-            correct Hessian with data weights matrix, see RooStats tutorial (link here)
+            correct Hessian with data weights matrix to get correct errors, see RooFit tutorial rf403__weightedevts
         fix_float: list of RooRealVar, optional (default=[])
             variables from this list will be firstly setConstant(1) in the fit and then setConstant(0)
 
@@ -96,12 +96,12 @@ class DataExplorer(object):
 
     def chi2_fit(self, is_extended = False, is_sum_w2 = 'auto'):
         """Fit the instance data with binned chi2 method
-        NB: weights presence is taken care of for automatically
+        NB: weights presence is taken care of automatically
 
         Parameters
         ----------
 
-        //to be added//
+        //to be completed//
 
         Returns
         -------
@@ -116,18 +116,18 @@ class DataExplorer(object):
         m.minimize("Minuit2","minimize") ;
         m.minimize("Minuit2","minimize") ;
         m.hesse()
+        # m.minos(ROOT.RooArgSet(self.poi))
         self.is_fitted = True
         # r_chi2 = m.save()  # <-- these bring segmentation fault
-        # r_chi2.Print() ;
-        return self
+        # r_chi2.Print()
+        return chi2
 
-    def prepare_workspace(self, poi, nuisances):
-        """Create a workspace with the fitted to the data model and passed poi and nuisance parameters.
+    def prepare_workspace(self, nuisances):
+        """Create a workspace with the fitted to the data model, poi and nuisance parameters.
 
         Parameters
         ----------
-        poi: RooRealVar
-            parameter of interest in statistical inference
+
         nuisances: list of RooRealVar
             nuisance parameters in statistical inference
 
@@ -143,11 +143,11 @@ class DataExplorer(object):
         Import(w, self.model)
         mc = ROOT.RooStats.ModelConfig("ModelConfig", w)
         mc.SetPdf(w.pdf(self.model.GetName()))
-        mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(poi.GetName())))
+        mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(self.poi.GetName())))
         # w.var("N_sig_X").setError(20.)
         mc.SetObservables(ROOT.RooArgSet(w.var(self.var.GetName())))
         mc.SetNuisanceParameters(ROOT.RooArgSet(*[w.var(nui.GetName()) for nui in nuisances]))
-        mc.SetSnapshot(ROOT.RooArgSet(w.var(poi.GetName())))
+        mc.SetSnapshot(ROOT.RooArgSet(w.var(self.poi.GetName())))
         Import(w, mc, 'ModelConfig')
         Import(w, self.data, 'data')
         return w
@@ -170,11 +170,10 @@ class DataExplorer(object):
         var_right = self.var.getMax();
         var_nbins = self.var.numBins()
 
-        frame = ROOT.RooPlot(" ", title, self.var, var_left, var_right, var_nbins)
+        frame = ROOT.RooPlot(" ", title, self.var, var_left, var_right, var_nbins)  # frame.getAttText().SetTextSize(0.053)
         self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
         self.model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange('full'), RF.Range('full')
         self.model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_params))
-        # frame.getAttText().SetTextSize(0.053)
 
         # Loop over model components and plot'em
         iter = self.model.getComponents().iterator()
@@ -247,10 +246,10 @@ class DataExplorer(object):
             raise Exception('Cannot calculate chi2 using self.frame: was the frame filled?')
         else:
             pvalue = 1 - chi2.cdf(chi, ndf)
-            self.chi2_results.update({self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]})
-        return self.chi2_results
+            return {self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]}
 
-    def asympt_signif(self, w):
+    @staticmethod
+    def asympt_signif(w):
         """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator
 
         :param: w: workspace to open
@@ -274,29 +273,30 @@ class DataExplorer(object):
         as_result = ac.GetHypoTest()
         return as_result
 
-    def toys_signif(self, w):
-        """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator
-
-        :param: w: workspace to open
-        :returns: GetHypoTest() object for printing with Print()
-        """
-        data = w.obj("data")
-        #
-        sbModel = w.obj("ModelConfig")
-        sbModel.SetName("S+B_model")
-        poi = sbModel.GetParametersOfInterest().first()
-        #
-        bModel = sbModel.Clone()
-        bModel.SetName("B_only_model")
-        oldval = poi.getVal()
-        poi.setVal(0)
-        bModel.SetSnapshot(ROOT.RooArgSet(poi))
-        poi.setVal(oldval)
-        #
-        ac = ROOT.RooStats.AsymptoticCalculator(data, sbModel, bModel)
-        ac.SetOneSidedDiscovery(True)
-        as_result = ac.GetHypoTest()
-        return as_result
+    # @staticmethod
+    # def toys_signif(w):
+    #     """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator
+    #
+    #     :param: w: workspace to open
+    #     :returns: GetHypoTest() object for printing with Print()
+    #     """
+    #     data = w.obj("data")
+    #     #
+    #     sbModel = w.obj("ModelConfig")
+    #     sbModel.SetName("S+B_model")
+    #     poi = sbModel.GetParametersOfInterest().first()
+    #     #
+    #     bModel = sbModel.Clone()
+    #     bModel.SetName("B_only_model")
+    #     oldval = poi.getVal()
+    #     poi.setVal(0)
+    #     bModel.SetSnapshot(ROOT.RooArgSet(poi))
+    #     poi.setVal(oldval)
+    #     #
+    #     ac = ROOT.RooStats.AsymptoticCalculator(data, sbModel, bModel)
+    #     ac.SetOneSidedDiscovery(True)
+    #     as_result = ac.GetHypoTest()
+    #     return as_result
 
     # def _asympt_signif_(self):
     #     """
@@ -317,12 +317,73 @@ class DataExplorer(object):
     #     print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
 
-    def plot_ll(self, poi, save=False):
+    def tnull_toys(self, n_toys = 1000):
+        t = []
+        self.poi.setVal(0); self.poi.setConstant(1);
+        self.chi2_fit() ### assuming the data to be RooDataHist()
+        data_TH1 = self.data.createHistogram(self.var.GetName())
+        max_error = max([data_TH1.GetBinError(i) for i in range(1, data_TH1.GetNbinsX() + 1)])
+
+        for _ in range(n_toys):
+            self.poi.setVal(0); self.poi.setConstant(1);
+            toy_data = self.model.generate(ROOT.RooArgSet(self.var), self.data.sumEntries())
+            toy_roohist = ROOT.RooDataHist('toy_TH1', 'toy_TH1', ROOT.RooArgSet(self.var), toy_data)
+            toy_TH1 = toy_roohist.createHistogram(self.var.GetName())
+            for i in range(1, toy_TH1.GetNbinsX()+1):
+                toy_TH1.SetBinError(i, max_error)
+            toy_hist = ROOT.RooDataHist('toy_hist', 'toy_hist', ROOT.RooArgList(self.var), RF.Import(toy_TH1))
+
+            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            # self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            chi2_null = ROOT.RooChi2Var("chi2_null","chi2_null", self.model, toy_hist, RF.Extended(False), RF.DataError(ROOT.RooAbsData.Auto))
+            chi2_null = chi2_null.getVal()
+            # m_null = ROOT.RooMinimizer(chi2_null)
+            # m_null.setMinimizerType("Minuit2");
+            # m_null.setPrintLevel(3)
+            # m_null.minimize("Minuit2","minimize") ;
+            # m_null.minimize("Minuit2","minimize") ;
+            c_null = ROOT.TCanvas("c_null", "c_null", 800, 600); #CMS_tdrStyle_lumi.CMS_lumi(c_null, 2, 0);
+            frame_null = self.var.frame()
+            toy_hist.plotOn(frame_null, RF.DataError(ROOT.RooAbsData.SumW2))
+            self.model.plotOn(frame_null)
+            frame_null.Draw()
+            c_null.SaveAs('./tnull_toys/null_' + str(_) + '.pdf')
+
+
+            self.poi.setConstant(0); self.poi.setVal(20.);
+            # self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            chi2_sb = ROOT.RooChi2Var("chi2_sb","chi2_sb", self.model, toy_hist, RF.Extended(False), RF.DataError(ROOT.RooAbsData.Auto))
+            chi2_sb = chi2_sb.getVal()
+            # m_sb = ROOT.RooMinimizer(chi2_sb)
+            # m_sb.setMinimizerType("Minuit2");
+            # m_sb.setPrintLevel(3)
+            # m_sb.minimize("Minuit2","minimize") ;
+            # m_sb.minimize("Minuit2","minimize") ;
+            c_sb = ROOT.TCanvas("c_sb", "c_sb", 800, 600); #CMS_tdrStyle_lumi.CMS_lumi(c_sb, 2, 0);
+            frame_sb = self.var.frame()
+            toy_hist.plotOn(frame_sb, RF.DataError(ROOT.RooAbsData.SumW2))
+            self.model.plotOn(frame_sb)
+            frame_sb.Draw()
+            c_sb.SaveAs('./tnull_toys/sb_' + str(_) + '.pdf')
+            #
+            t.append([chi2_null - chi2_sb, chi2_null, chi2_sb])
+        df = DataFrame(t, columns=['t', 'chi2_null', 'chi2_sb'])
+        df.to_pickle('t_list_.pkl')
+        return t
+
+
+
+    def plot_ll(self, save=False):
         nll = self.model.createNLL(self.data)
-        pll = nll.createProfile(ROOT.RooArgSet(poi))
+        pll = nll.createProfile(ROOT.RooArgSet(self.poi))
         #
         c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600); ll_left = 0; ll_right = 200
-        frame_nll = poi.frame(RF.Bins(100), RF.Range(ll_left, ll_right))
+        frame_nll = self.poi.frame(RF.Bins(100), RF.Range(ll_left, ll_right))
         frame_nll.SetTitle('')
         #
         nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
@@ -341,7 +402,7 @@ class DataExplorer(object):
         c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
         if save: c_ll.SaveAs(self.mode + '1_pll.pdf')
 
-    def plot_pull(self, save=False, save_path='~/Study/Bs_resonances/fit_validation/'):
+    def plot_pull(self, save=False, save_path='./fit_validation/'):
         c_pull = ROOT.TCanvas("c_pull", "c_pull", 800, 600)
         frame = self.var.frame()
         self.data.plotOn(frame)
@@ -353,7 +414,7 @@ class DataExplorer(object):
         frame2.Draw()
         if save: c_pull.SaveAs(save_path + self.mode + '_' + self.data.GetName() + '.pdf')
 
-    def plot_toys_pull(self, var_to_study, N_toys=100, N_gen=1, label='', save=False, save_path='~/Study/Bs_resonances/fit_validation/'):
+    def plot_toys_pull(self, var_to_study, N_toys=100, N_gen=1, label='', save=False, save_path='./fit_validation/'):
         """Make bias checks in fitted model parameter var_to_study by generating toys with RooMCStudy()
         """
         if not self.is_fitted:
