@@ -2,7 +2,8 @@
 #   TODO
 #
 # proper docstring for Functions
-# complex inherited classes (StatisticsExplorer?)
+# complex inherited classes (StatExplorer?)
+# override chi2fit in StatExplorer with optional data
 # exception handling
 # private/protected items
 # remove functions from the end of RooSpace.py (but study them firstly)
@@ -94,7 +95,7 @@ class DataExplorer(object):
         self.is_fitted = True
         return fit_results
 
-    def chi2_fit(self, is_extended = False, is_sum_w2 = 'auto'):
+    def chi2_fit(self, data = None, is_extended = False, fix_float=[], run_minos = False, is_sum_w2 = 'auto'):
         """Fit the instance data with binned chi2 method
         NB: weights presence is taken care of automatically
 
@@ -103,24 +104,36 @@ class DataExplorer(object):
 
         //to be completed//
 
+        run_minos: bool
+            whether to calculate MINOS errors
+
+        fix_float: list of RooRealVar, optional (default=[])
+            variables from this list will be firstly setConstant(1) in the fit and then setConstant(0)
+
         Returns
         -------
         self, object
+
         """
-        chi2 = ROOT.RooChi2Var("chi2","chi2", self.model, self.data, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
-        m = ROOT.RooMinimizer(chi2)
-        m.setMinimizerType("Minuit2");
-        m.setPrintLevel(3)
-        #
-        m.minimize("Minuit2","minimize") ;
-        m.minimize("Minuit2","minimize") ;
-        m.minimize("Minuit2","minimize") ;
-        m.hesse()
-        # m.minos(ROOT.RooArgSet(self.poi))
+
+        data_to_fit = self.data if data is None else data
+        self.model.chi2FitTo(data_to_fit, ROOT.RooLinkedList())
+        for param in fix_float:
+            param.setConstant(1)
+        self.model.chi2FitTo(data_to_fit, ROOT.RooLinkedList())
+        for param in fix_float:
+            param.setConstant(0)
+        self.model.chi2FitTo(data_to_fit, ROOT.RooLinkedList()) # couldn't make it save RooFitResult
         self.is_fitted = True
-        # r_chi2 = m.save()  # <-- these bring segmentation fault
-        # r_chi2.Print()
-        return chi2
+        #
+        if run_minos:
+            chi2 = ROOT.RooChi2Var("chi2","chi2", self.model, data_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+            m = ROOT.RooMinimizer(chi2)
+            m.setMinimizerType("Minuit2");
+            m.setPrintLevel(3)
+            m.minimize("Minuit2","minimize") ;
+            m.minos(ROOT.RooArgSet(self.poi))
+        return self
 
     def prepare_workspace(self, nuisances):
         """Create a workspace with the fitted to the data model, poi and nuisance parameters.
@@ -317,8 +330,10 @@ class DataExplorer(object):
     #     print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
 
-    def tnull_toys(self, n_toys = 1000):
-        t = []
+    def tnull_toys(self, n_toys = 1000, seed = 333, save=False):
+        ROOT.RooRandom.randomGenerator().SetSeed(seed)
+        t_list = []
+        #
         self.poi.setVal(0); self.poi.setConstant(1);
         self.chi2_fit() ### assuming the data to be RooDataHist()
         data_TH1 = self.data.createHistogram(self.var.GetName())
@@ -332,49 +347,33 @@ class DataExplorer(object):
             for i in range(1, toy_TH1.GetNbinsX()+1):
                 toy_TH1.SetBinError(i, max_error)
             toy_hist = ROOT.RooDataHist('toy_hist', 'toy_hist', ROOT.RooArgList(self.var), RF.Import(toy_TH1))
-
-            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
-            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
-            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
-            # self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            #
+            self.chi2_fit(data=toy_hist)
             chi2_null = ROOT.RooChi2Var("chi2_null","chi2_null", self.model, toy_hist, RF.Extended(False), RF.DataError(ROOT.RooAbsData.Auto))
             chi2_null = chi2_null.getVal()
-            # m_null = ROOT.RooMinimizer(chi2_null)
-            # m_null.setMinimizerType("Minuit2");
-            # m_null.setPrintLevel(3)
-            # m_null.minimize("Minuit2","minimize") ;
-            # m_null.minimize("Minuit2","minimize") ;
-            c_null = ROOT.TCanvas("c_null", "c_null", 800, 600); #CMS_tdrStyle_lumi.CMS_lumi(c_null, 2, 0);
-            frame_null = self.var.frame()
-            toy_hist.plotOn(frame_null, RF.DataError(ROOT.RooAbsData.SumW2))
-            self.model.plotOn(frame_null)
-            frame_null.Draw()
-            c_null.SaveAs('./tnull_toys/null_' + str(_) + '.pdf')
-
-
+            #
+            if save:
+                c_null = ROOT.TCanvas("c_null", "c_null", 800, 600); #CMS_tdrStyle_lumi.CMS_lumi(c_null, 2, 0);
+                frame_null = self.var.frame()
+                toy_hist.plotOn(frame_null, RF.DataError(ROOT.RooAbsData.SumW2))
+                self.model.plotOn(frame_null)
+                frame_null.Draw()
+                c_null.SaveAs('./tnull_toys/null_' + str(_) + '.pdf')
+            #
             self.poi.setConstant(0); self.poi.setVal(20.);
-            # self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
-            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
-            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
-            self.model.chi2FitTo(toy_hist, ROOT.RooLinkedList())
+            self.chi2_fit(data=toy_hist)
             chi2_sb = ROOT.RooChi2Var("chi2_sb","chi2_sb", self.model, toy_hist, RF.Extended(False), RF.DataError(ROOT.RooAbsData.Auto))
             chi2_sb = chi2_sb.getVal()
-            # m_sb = ROOT.RooMinimizer(chi2_sb)
-            # m_sb.setMinimizerType("Minuit2");
-            # m_sb.setPrintLevel(3)
-            # m_sb.minimize("Minuit2","minimize") ;
-            # m_sb.minimize("Minuit2","minimize") ;
+            t_list.append([chi2_null - chi2_sb, chi2_null, chi2_sb])
+
+        if save:
             c_sb = ROOT.TCanvas("c_sb", "c_sb", 800, 600); #CMS_tdrStyle_lumi.CMS_lumi(c_sb, 2, 0);
             frame_sb = self.var.frame()
             toy_hist.plotOn(frame_sb, RF.DataError(ROOT.RooAbsData.SumW2))
             self.model.plotOn(frame_sb)
             frame_sb.Draw()
             c_sb.SaveAs('./tnull_toys/sb_' + str(_) + '.pdf')
-            #
-            t.append([chi2_null - chi2_sb, chi2_null, chi2_sb])
-        df = DataFrame(t, columns=['t', 'chi2_null', 'chi2_sb'])
-        df.to_pickle('t_list_.pkl')
-        return t
+        return DataFrame(t_list, columns=['t', 'chi2_null', 'chi2_sb'])
 
 
 

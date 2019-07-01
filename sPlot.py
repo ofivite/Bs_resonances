@@ -148,20 +148,21 @@ hist_sig_weighted = ROOT.RooDataHist('hist_sig_weighted', 'hist_sig_weighted', R
 #
 mean_phi.setVal(1.01946); mean_phi.setConstant(1)
 DE_2 = DataExplorer(data=hist_sig_weighted, model=model[sPlot_to], var=var[sPlot_to], poi = fr_model_phi, name=sPlot_to)
-# chi2_2 = DE_2.chi2_fit(is_extended=False)
+# DE_2.chi2_fit(is_extended=False)
 # fr_model_phi.setVal(0.); fr_model_phi.setConstant(1)
 # chi2_2_b = DE_2.chi2_fit(is_extended=False)
 
-t_list = DE_2.tnull_toys(n_toys = 7000)
-with open('./tnull_toys/t.txt', 'w') as f:
-    for item in t_list:
-        f.write(f'{item}\n')
+df = DE_2.tnull_toys(n_toys = 40000, seed = 332, save=False)
+df.to_pickle('t_more.pkl')
+# with open('./tnull_toys/t.txt', 'w') as f:
+#     for item in t_list:
+#         f.write(f'{item}\n')
 
 
-# c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0);
-# frame_DE_2 = DE_2.plot_on_var()
-# chi2_results.update(DE_2.chi2_test(frame_DE_2))
-# frame_DE_2.Draw()
+c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0);
+frame_DE_2 = DE_2.plot_on_var()
+chi2_results.update(DE_2.chi2_test(frame_DE_2))
+frame_DE_2.Draw()
 # c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + sPlot_from_text + '->' + sPlot_to_text + '/c_sPlot_1_' + str(MODE) + refl_line + '.pdf')
 
