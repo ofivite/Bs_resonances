@@ -154,7 +154,7 @@ mean_phi.setVal(1.01946); mean_phi.setConstant(1)
 DE_2 = DataExplorer(name=SPLOT_TO, var=var[SPLOT_TO], data=hist_sig_weighted, model=model[SPLOT_TO], poi = fr_model_phi)
 DE_2.chi2_fit()
 
-# df = DE_2.tnull_toys(n_toys = 40000, seed = 332, save=False)
+# df = DE_2.toy_tstat(n_toys = 40000, seed = 332, save=False)
 
 c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0);
 frame_DE_2 = DE_2.plot_on_var()

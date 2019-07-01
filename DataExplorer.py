@@ -162,8 +162,9 @@ class DataExplorer(object):
         self.is_fitted = True
         #
         if run_minos:
-            chi2 = ROOT.RooChi2Var("chi2","chi2", self.model, data_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
-            m = ROOT.RooMinimizer(chi2)
+            is_extended = self.model.canBeExtended()
+            chi = ROOT.RooChi2Var("chi","chi", self.model, data_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+            m = ROOT.RooMinimizer(chi)
             m.setMinimizerType("Minuit2");
             m.setPrintLevel(3)
             m.minimize("Minuit2","minimize") ;
@@ -352,7 +353,7 @@ class DataExplorer(object):
         c.SaveAs('./toy_signif_' + model_sb.GetPdf().GetName() + '.pdf')
         return
 
-    def tnull_toys(self, n_toys = 1000, seed = 333, save=False):
+    def toy_tstat(self, n_toys = 1000, seed = 333, save=False):
         ROOT.RooRandom.randomGenerator().SetSeed(seed)
         t_list = []
         #
