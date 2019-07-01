@@ -8,14 +8,11 @@ if args.mode not in ['psi', 'X']:
 
 MODE = args.mode
 REFL_ON = False
-get_MC_N_evts = False
+GET_MC_N_EVTS = False
+SPLOT_CUT = MODE; SPLOT_FROM = 'Bs'; SPLOT_TO = 'phi'
 
-sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
-sPlot_cut = 'control'; sPlot_from = 'Bs'; sPlot_to = 'phi'
-if sPlot_from != 'Bs': REFL_ON = False
-sPlot_from_text = MODE if sPlot_from == 'control' else sPlot_from
-sPlot_to_text = MODE if sPlot_to == 'control' else sPlot_to
-
+# sPlot_from_1 = 'Bs'; sPlot_from_2 = 'phi';
+if SPLOT_FROM != 'Bs': REFL_ON = False
 refl_line = '_refl' if REFL_ON else ''
 # gStyle.SetTitleFontSize(.085)
 

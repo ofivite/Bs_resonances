@@ -21,10 +21,11 @@ class DataExplorer(object):
     mode = MODE
     refl_ON = REFL_ON
 
-    def __init__(self, data, model, var, poi, name):
+    def __init__(self, name, var, data, model, is_extended, poi):
         super(DataExplorer, self).__init__()
         self.data = data
         self.model = model
+        self.is_extended = is_extended
         self.var = var
         self.poi = poi
         self.name = name
@@ -65,14 +66,48 @@ class DataExplorer(object):
         data_sideband.SetName('sideband')
         return data_sig, data_sideband
 
-    def fit(self, is_extended, is_sum_w2, fix_float=[]):
+    def plot_regions(self, frame, y_sdb_left=0, y_sr=0, y_sdb_right=0, line_width=4):
+        """Add vertical lines illustrating SR and SdR regions to the frame.
+        NB: SR=|m-mean|<window;
+            SdR=|m-mean|>window+distance_to_sdb &
+                |m-mean|<2*window+distance_to_sdb
+
+        Parameters
+        ----------
+        frame: RooPlot
+            RooPlot frame to draw the lines on
+        y_sdb_left: float, optional (default=0)
+            y-coordinate for the left sideband region
+        y_sr: float, optional (default=0)
+            y-coordinate for the signal region
+        y_sdb_right: float, optional (default=0)
+            y-coordinate for the right sideband region
+
+        Returns
+        -------
+        frame: RooPlot
+        """
+        mean = self.model.getParameters(self.data).find('mean_'+self.name).getVal()
+        line_ll_sdb = (ROOT.TLine(mean - 2.*self.window - self.distance_to_sdb, 0, mean - 2.*self.window - self.distance_to_sdb, y_sdb_left),  ROOT.kBlue-8)
+        line_lr_sdb = (ROOT.TLine(mean - self.window - self.distance_to_sdb,    0, mean - self.window - self.distance_to_sdb,    y_sdb_left),  ROOT.kBlue-8)
+        line_rl_sdb = (ROOT.TLine(mean + 2.*self.window + self.distance_to_sdb, 0, mean + 2.*self.window + self.distance_to_sdb, y_sdb_right), ROOT.kBlue-8)
+        line_rr_sdb = (ROOT.TLine(mean + self.window + self.distance_to_sdb   , 0, mean + self.window + self.distance_to_sdb,    y_sdb_right), ROOT.kBlue-8)
+        line_l_sig  = (ROOT.TLine(mean - self.window,                           0, mean - self.window,                           y_sr)        , 47)
+        line_r_sig  = (ROOT.TLine(mean + self.window,                           0, mean + self.window,                           y_sr)        , 47)
+        lines = (line_ll_sdb, line_lr_sdb, line_rl_sdb, line_rr_sdb, line_l_sig, line_r_sig)
+
+        for line, color in lines:
+            line.SetLineColor(color)
+            line.SetLineWidth(line_width)
+            frame.addObject(line)
+        return frame
+
+    def fit(self, is_sum_w2, fix_float=[]):
         """Fit instance data with instance model using fitTo() method. Set is_fitted=True.
         NB: the corresponding model parameters will be updated outside of the class instance after executing!
 
         Parameters
         ----------
-        is_extended: bool
-            include extended term into the likelihood
         is_sum_w2: bool
             correct Hessian with data weights matrix to get correct errors, see RooFit tutorial rf403__weightedevts
         fix_float: list of RooRealVar, optional (default=[])
@@ -82,20 +117,20 @@ class DataExplorer(object):
         -------
         fit_results: RooFitResult
         """
-        self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
+        self.model.fitTo(self.data, RF.Extended(self.is_extended), RF.SumW2Error(is_sum_w2))
         for param in fix_float:
             param.setConstant(1)
         #
-        self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
+        self.model.fitTo(self.data, RF.Extended(self.is_extended), RF.SumW2Error(is_sum_w2))
         for param in fix_float:
             param.setConstant(0)
         #
-        self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
-        fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
+        self.model.fitTo(self.data, RF.Extended(self.is_extended), RF.SumW2Error(is_sum_w2))
+        fit_results = self.model.fitTo(self.data, RF.Extended(self.is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
         self.is_fitted = True
         return fit_results
 
-    def chi2_fit(self, data = None, is_extended = False, fix_float=[], run_minos = False, is_sum_w2 = 'auto'):
+    def chi2_fit(self, data = None, fix_float=[], run_minos = False, is_sum_w2 = 'auto'):
         """Fit the instance data with binned chi2 method
         NB: weights presence is taken care of automatically
 
@@ -127,43 +162,13 @@ class DataExplorer(object):
         self.is_fitted = True
         #
         if run_minos:
-            chi2 = ROOT.RooChi2Var("chi2","chi2", self.model, data_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+            chi2 = ROOT.RooChi2Var("chi2","chi2", self.model, data_to_fit, RF.Extended(self.is_extended), RF.DataError(ROOT.RooAbsData.Auto))
             m = ROOT.RooMinimizer(chi2)
             m.setMinimizerType("Minuit2");
             m.setPrintLevel(3)
             m.minimize("Minuit2","minimize") ;
             m.minos(ROOT.RooArgSet(self.poi))
         return self
-
-    def prepare_workspace(self, nuisances):
-        """Create a workspace with the fitted to the data model, poi and nuisance parameters.
-
-        Parameters
-        ----------
-
-        nuisances: list of RooRealVar
-            nuisance parameters in statistical inference
-
-        Returns
-        -------
-        w: RooWorkspace
-        """
-        if not self.is_fitted:
-            raise Exception('Model was not fitted to data, fit it first')
-
-        w = ROOT.RooWorkspace("w", True)
-        Import = getattr(ROOT.RooWorkspace, 'import') # special trick to make things not crush
-        Import(w, self.model)
-        mc = ROOT.RooStats.ModelConfig("ModelConfig", w)
-        mc.SetPdf(w.pdf(self.model.GetName()))
-        mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(self.poi.GetName())))
-        # w.var("N_sig_X").setError(20.)
-        mc.SetObservables(ROOT.RooArgSet(w.var(self.var.GetName())))
-        mc.SetNuisanceParameters(ROOT.RooArgSet(*[w.var(nui.GetName()) for nui in nuisances]))
-        mc.SetSnapshot(ROOT.RooArgSet(w.var(self.poi.GetName())))
-        Import(w, mc, 'ModelConfig')
-        Import(w, self.data, 'data')
-        return w
 
     def plot_on_var(self, title=' ', plot_params=ROOT.RooArgSet()):
         """Plot the instance model with all its components and data on the RooPlot frame
@@ -210,106 +215,69 @@ class DataExplorer(object):
         frame.GetYaxis().SetTitleOffset(1.3)
         return frame
 
-    def plot_regions(self, frame, y_sdb_left=0, y_sr=0, y_sdb_right=0, line_width=4):
-        """Add vertical lines illustrating SR and SdR regions to the frame.
-        NB: SR=|m-mean|<window;
-            SdR=|m-mean|>window+distance_to_sdb &
-                |m-mean|<2*window+distance_to_sdb
+    def prepare_workspace(self, nuisances):
+        """Create a workspace with the fitted to the data model, poi and nuisance parameters.
 
         Parameters
         ----------
-        frame: RooPlot
-            RooPlot frame to draw the lines on
-        y_sdb_left: float, optional (default=0)
-            y-coordinate for the left sideband region
-        y_sr: float, optional (default=0)
-            y-coordinate for the signal region
-        y_sdb_right: float, optional (default=0)
-            y-coordinate for the right sideband region
+
+        nuisances: list of RooRealVar
+            nuisance parameters in statistical inference
 
         Returns
         -------
-        frame: RooPlot
+        w: RooWorkspace
         """
-        mean = self.model.getParameters(self.data).find('mean_'+self.name).getVal()
-        line_ll_sdb = (ROOT.TLine(mean - 2.*self.window - self.distance_to_sdb, 0, mean - 2.*self.window - self.distance_to_sdb, y_sdb_left),  ROOT.kBlue-8)
-        line_lr_sdb = (ROOT.TLine(mean - self.window - self.distance_to_sdb,    0, mean - self.window - self.distance_to_sdb,    y_sdb_left),  ROOT.kBlue-8)
-        line_rl_sdb = (ROOT.TLine(mean + 2.*self.window + self.distance_to_sdb, 0, mean + 2.*self.window + self.distance_to_sdb, y_sdb_right), ROOT.kBlue-8)
-        line_rr_sdb = (ROOT.TLine(mean + self.window + self.distance_to_sdb   , 0, mean + self.window + self.distance_to_sdb,    y_sdb_right), ROOT.kBlue-8)
-        line_l_sig  = (ROOT.TLine(mean - self.window,                           0, mean - self.window,                           y_sr)        , 47)
-        line_r_sig  = (ROOT.TLine(mean + self.window,                           0, mean + self.window,                           y_sr)        , 47)
-        lines = (line_ll_sdb, line_lr_sdb, line_rl_sdb, line_rr_sdb, line_l_sig, line_r_sig)
+        if not self.is_fitted:
+            raise Exception('Model was not fitted to data, fit it first')
 
-        for line, color in lines:
-            line.SetLineColor(color)
-            line.SetLineWidth(line_width)
-            frame.addObject(line)
-        return frame
-
-################################################################################################################################
-
-    def chi2_test(self, frame):
-        """Do chi2 goodness-of-fit test
-        """
-        nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
-        ndf = self.var.numBins() - nfloat
-        try:
-            chi = frame.chiSquare(nfloat) * ndf
-        except:
-            raise Exception('Cannot calculate chi2 using self.frame: was the frame filled?')
-        else:
-            pvalue = 1 - chi2.cdf(chi, ndf)
-            return {self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]}
+        w = ROOT.RooWorkspace("w", True)
+        Import = getattr(ROOT.RooWorkspace, 'import') # special trick to make things not crush
+        Import(w, self.model)
+        mc = ROOT.RooStats.ModelConfig("ModelConfig", w)
+        mc.SetPdf(w.pdf(self.model.GetName()))
+        mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(self.poi.GetName())))
+        # w.var("N_sig_X").setError(20.)
+        mc.SetObservables(ROOT.RooArgSet(w.var(self.var.GetName())))
+        mc.SetNuisanceParameters(ROOT.RooArgSet(*[w.var(nui.GetName()) for nui in nuisances]))
+        mc.SetSnapshot(ROOT.RooArgSet(w.var(self.poi.GetName())))
+        Import(w, mc, 'ModelConfig')
+        Import(w, self.data, 'data')
+        return w
 
     @staticmethod
-    def asympt_signif(w):
-        """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator
+    def extract(w):
+        """Extract data, signal+background and background-only models from a given RooWorkspace.
+        Background-only model is taken from the s+b model by setting the parameter of interest to be 0.
 
-        :param: w: workspace to open
-        :returns: GetHypoTest() object for printing with Print()
+        NB: naming conventions assume that data's name is 'data', and that the parameter of interest is the first one and corresponds to the signal yield.
+
+        Parameters:
+        -----------
+
+        w, RooWorkspace
+            workspace with saved data and s+b model to unpack
+
+        Returns:
+        --------
+        data, model_sb, model_b: RooAbsData, RooAbsPdf, RooAbsPdf
+            Tuple with data, s+b and b-only models
         """
         data = w.obj("data")
         #
-        sbModel = w.obj("ModelConfig")
-        sbModel.SetName("S+B_model")
-        poi = sbModel.GetParametersOfInterest().first()
+        model_sb = w.obj("ModelConfig")
+        model_sb.SetName("model_sb")
+        poi = model_sb.GetParametersOfInterest().first()
         #
-        bModel = sbModel.Clone()
-        bModel.SetName("B_only_model")
+        model_b = model_sb.Clone()
+        model_b.SetName("B_only_model")
         oldval = poi.getVal()
         poi.setVal(0)
-        bModel.SetSnapshot(ROOT.RooArgSet(poi))
+        model_b.SetSnapshot(ROOT.RooArgSet(poi))
         poi.setVal(oldval)
-        #
-        ac = ROOT.RooStats.AsymptoticCalculator(data, sbModel, bModel)
-        ac.SetOneSidedDiscovery(True)
-        as_result = ac.GetHypoTest()
-        return as_result
+        return data, model_sb, model_b
 
-    # @staticmethod
-    # def toys_signif(w):
-    #     """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator
-    #
-    #     :param: w: workspace to open
-    #     :returns: GetHypoTest() object for printing with Print()
-    #     """
-    #     data = w.obj("data")
-    #     #
-    #     sbModel = w.obj("ModelConfig")
-    #     sbModel.SetName("S+B_model")
-    #     poi = sbModel.GetParametersOfInterest().first()
-    #     #
-    #     bModel = sbModel.Clone()
-    #     bModel.SetName("B_only_model")
-    #     oldval = poi.getVal()
-    #     poi.setVal(0)
-    #     bModel.SetSnapshot(ROOT.RooArgSet(poi))
-    #     poi.setVal(oldval)
-    #     #
-    #     ac = ROOT.RooStats.AsymptoticCalculator(data, sbModel, bModel)
-    #     ac.SetOneSidedDiscovery(True)
-    #     as_result = ac.GetHypoTest()
-    #     return as_result
+################################################################################################################################
 
     # def _asympt_signif_(self):
     #     """
@@ -329,6 +297,56 @@ class DataExplorer(object):
     #     S = ROOT.Math.gaussian_quantile_c(P, 1)
     #     print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
+    def chi2_test(self):
+        """Do chi2 goodness-of-fit test
+        """
+        data_hist = ROOT.RooDataHist('data_hist', 'data_hist', ROOT.RooArgSet(self.var), self.data) # binning is taken from self.var definition
+        nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
+        ndf = self.var.numBins() - nfloat
+        chi = ROOT.RooChi2Var("chi","chi", self.model, data_hist, RF.Extended(self.is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+        chi = chi.getVal()
+        pvalue = 1 - chi2.cdf(chi, ndf)
+        return {self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]}
+
+    @staticmethod
+    def asympt_signif(w):
+        """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator
+
+        :param: w: workspace to open
+        :returns: GetHypoTest() object for printing with Print()
+        """
+        data, model_sb, model_b = DataExplorer.extract(w)
+        ac = ROOT.RooStats.AsymptoticCalculator(data, model_sb, model_b)
+        ac.SetOneSidedDiscovery(True)
+        as_result = ac.GetHypoTest()
+        return as_result
+
+    @staticmethod
+    def toy_signif(w, n_toys = 1000, seed = 333, save=False):
+        """
+        // to be completed //
+        """
+        data, model_sb, model_b = DataExplorer.extract(w)
+        fc = ROOT.RooStats.FrequentistCalculator(data, model_sb, model_b)
+        fc.SetToys(n_toys, n_toys); # fc.SetNToysInTails(500, 100)
+        profll = ROOT.RooStats.ProfileLikelihoodTestStat(model_sb.GetPdf())
+        profll.SetOneSidedDiscovery(True)
+        toymcs = ROOT.RooStats.ToyMCSampler(fc.GetTestStatSampler())
+        toymcs.SetTestStatistic(profll)
+        #
+        if not model_sb.GetPdf().canBeExtended():
+            toymcs.SetNEventsPerToy(1)
+            print ('adjusting for non-extended formalism')
+        #
+        fqResult = fc.GetHypoTest()
+        fqResult.Print()
+
+        c = ROOT.TCanvas()
+        plot = ROOT.RooStats.HypoTestPlot(fqResult)
+        plot.SetLogYaxis(True)
+        plot.Draw()
+        c.Draw()
+        return as_result
 
     def tnull_toys(self, n_toys = 1000, seed = 333, save=False):
         ROOT.RooRandom.randomGenerator().SetSeed(seed)
@@ -373,9 +391,10 @@ class DataExplorer(object):
             self.model.plotOn(frame_sb)
             frame_sb.Draw()
             c_sb.SaveAs('./tnull_toys/sb_' + str(_) + '.pdf')
-        return DataFrame(t_list, columns=['t', 'chi2_null', 'chi2_sb'])
 
-
+        df = DataFrame(t_list, columns=['t', 'chi2_null', 'chi2_sb'])
+        df.to_pickle('t_.pkl')
+        return df
 
     def plot_ll(self, save=False):
         nll = self.model.createNLL(self.data)
@@ -444,4 +463,4 @@ class DataExplorer(object):
 
 ################################################################################################################################
 
-# ~~~ #
+print('\n\n\n   ~~~' + '\n\n\n')
