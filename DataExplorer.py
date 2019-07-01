@@ -8,7 +8,7 @@
 # private/protected items
 # remove functions from the end of RooSpace.py (but study them firstly)
 # are is_extended and is_sum_w2 necessary?
-
+# make poi instance variable of StatExplorer, not DataExplorer
 import ROOT
 from ROOT import RooFit as RF
 from scipy.stats import chi2
@@ -21,11 +21,10 @@ class DataExplorer(object):
     mode = MODE
     refl_ON = REFL_ON
 
-    def __init__(self, name, var, data, model, is_extended, poi):
+    def __init__(self, name, var, data, model, poi):
         super(DataExplorer, self).__init__()
         self.data = data
         self.model = model
-        self.is_extended = is_extended
         self.var = var
         self.poi = poi
         self.name = name
@@ -117,16 +116,17 @@ class DataExplorer(object):
         -------
         fit_results: RooFitResult
         """
-        self.model.fitTo(self.data, RF.Extended(self.is_extended), RF.SumW2Error(is_sum_w2))
+        is_extended = self.model.canBeExtended()
+        self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         for param in fix_float:
             param.setConstant(1)
         #
-        self.model.fitTo(self.data, RF.Extended(self.is_extended), RF.SumW2Error(is_sum_w2))
+        self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         for param in fix_float:
             param.setConstant(0)
         #
-        self.model.fitTo(self.data, RF.Extended(self.is_extended), RF.SumW2Error(is_sum_w2))
-        fit_results = self.model.fitTo(self.data, RF.Extended(self.is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
+        self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
+        fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
         self.is_fitted = True
         return fit_results
 
@@ -162,7 +162,7 @@ class DataExplorer(object):
         self.is_fitted = True
         #
         if run_minos:
-            chi2 = ROOT.RooChi2Var("chi2","chi2", self.model, data_to_fit, RF.Extended(self.is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+            chi2 = ROOT.RooChi2Var("chi2","chi2", self.model, data_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
             m = ROOT.RooMinimizer(chi2)
             m.setMinimizerType("Minuit2");
             m.setPrintLevel(3)
@@ -300,10 +300,13 @@ class DataExplorer(object):
     def chi2_test(self):
         """Do chi2 goodness-of-fit test
         """
+        if not self.is_fitted:
+            raise Exception('Model was not fitted to data, fit it first')
+        is_extended = self.model.canBeExtended()
         data_hist = ROOT.RooDataHist('data_hist', 'data_hist', ROOT.RooArgSet(self.var), self.data) # binning is taken from self.var definition
         nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
         ndf = self.var.numBins() - nfloat
-        chi = ROOT.RooChi2Var("chi","chi", self.model, data_hist, RF.Extended(self.is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+        chi = ROOT.RooChi2Var("chi","chi", self.model, data_hist, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
         chi = chi.getVal()
         pvalue = 1 - chi2.cdf(chi, ndf)
         return {self.model.GetName() + '_' + self.data.GetName(): [chi, ndf, pvalue]}
@@ -322,7 +325,7 @@ class DataExplorer(object):
         return as_result
 
     @staticmethod
-    def toy_signif(w, n_toys = 1000, seed = 333, save=False):
+    def toy_signif(w, n_toys = 1000, seed = 333):
         """
         // to be completed //
         """
@@ -340,13 +343,14 @@ class DataExplorer(object):
         #
         fqResult = fc.GetHypoTest()
         fqResult.Print()
-
+        #
         c = ROOT.TCanvas()
         plot = ROOT.RooStats.HypoTestPlot(fqResult)
         plot.SetLogYaxis(True)
         plot.Draw()
         c.Draw()
-        return as_result
+        c.SaveAs('./toy_signif_' + model_sb.GetPdf().GetName() + '.pdf')
+        return
 
     def tnull_toys(self, n_toys = 1000, seed = 333, save=False):
         ROOT.RooRandom.randomGenerator().SetSeed(seed)
@@ -463,4 +467,4 @@ class DataExplorer(object):
 
 ################################################################################################################################
 
-print('\n\n\n   ~~~' + '\n\n\n')
+print('\n\n         ~~~' + '\n\n')

@@ -1,3 +1,13 @@
+# Important: Naming conventions
+# // to be completed //
+#
+# * bkgr polynomial parameters start with 'a'
+# *
+# *
+#
+# Important: model construction
+# * Do not build models which share parameters - they can thus overwrite each other
+
 import os
 import sys
 from datetime import datetime
@@ -263,7 +273,7 @@ signal_phi = ROOT.RooFFTConvPdf('signal_phi', 'resolxCB_sum', PHI_mass_Cjp, CB_s
 # signal_phi = ROOT.RooFFTConvPdf('relBWxGauss', '', PHI_mass_Cjp, relBW_phi, gauss_phi)
 # signal_phi = ROOT.RooFFTConvPdf('relBWxBW', '', PHI_mass_Cjp, relBW_phi, BW_phi)
 
-
+fr_model_phi = ROOT.RooRealVar('fr_model_phi', 'fr_model_phi', 0.3, 0., 1.)
 N_sig_phi = ROOT.RooRealVar('N_sig_phi', '', 20000., 0., 100000)
 
 # relBW_phi = ROOT.RooGenericPdf("relBW_phi", "relBW_phi", "(1. / ( TMath::Power( (PHI_mass_Cjp * PHI_mass_Cjp - mean_phi * mean_phi) , 2) + TMath::Power( mean_phi * gamma_BW_phi , 2))) ", ROOT.RooArgList(PHI_mass_Cjp, mean_phi, gamma_BW_phi))
@@ -345,10 +355,9 @@ N_B0_refl = ROOT.RooRealVar('N_B0_refl', '', 990., 0., 1000.)
 model_1D_X = ROOT.RooAddPdf('model_1D_X', 'model_1D_X', ROOT.RooArgList(signal_X, bkgr_X), ROOT.RooArgList(N_sig_X, N_bkgr_X))
 model_1D_psi = ROOT.RooAddPdf('model_1D_psi', 'model_1D_psi', ROOT.RooArgList(signal_psi, bkgr_psi), ROOT.RooArgList(N_sig_psi, N_bkgr_psi))
 # model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
-fr_model_phi = ROOT.RooRealVar('fr_model_phi', 'fr_model_phi', 0.3, 0., 1.)
 model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(fr_model_phi))
-# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
 model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
 
 # ----------------------------------------------------------------------------------------------------------------------------
 # control_signals = {'X': signal_X, 'psi': signal_psi}
@@ -366,11 +375,19 @@ var = {'Bs': var_discr, 'phi': PHI_mass_Cjp, 'X': var_control, 'psi': var_contro
 
 model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'X': model_1D_X, 'psi': model_1D_psi}
 signal = {'Bs': signal_Bs, 'phi': signal_phi, 'X': signal_X, 'psi': signal_psi}
+bkgr = {'Bs': bkgr_Bs, 'phi': bkgr_phi, 'X': bkgr_X, 'psi': bkgr_psi}
 N_sig = {'Bs': N_sig_Bs, 'phi': N_sig_phi, 'X': N_sig_X, 'psi': N_sig_psi}
 N_bkgr =  {'Bs': N_bkgr_Bs, 'phi': N_bkgr_phi, 'X': N_bkgr_X, 'psi': N_bkgr_psi}
-a = {'Bs': [a1, a2, a3, a4], 'phi': [a1_phi, a2_phi, a3_phi, a4_phi], 'X': [a1_X, a2_X, a3_X, a4_X], 'psi': [a1_psi, a2_psi, a3_psi, a4_psi]}
 mean = {'Bs': mean_Bs, 'phi': mean_phi, 'X': mean_X, 'psi': mean_psi}
-
+bkgr_params = {}
+for key, b in bkgr.items():
+    b_list = []
+    iter = b.getVariables().iterator()
+    iter_comp = iter.Next()
+    while iter_comp:
+        if iter_comp.GetName() != var[key].GetName(): b_list.append(iter_comp)
+        iter_comp = iter.Next()
+    bkgr_params.update({key: b_list})
 # ----------------------------------------------------------------------------------------------------------------------------
 
 # model_ss_2D = ROOT.RooProdPdf('model_ss_2D', 'model_ss_2D', ROOT.RooArgList(signal[sPlot_from_1], signal[sPlot_from_2]))
@@ -388,7 +405,6 @@ mean = {'Bs': mean_Bs, 'phi': mean_phi, 'X': mean_X, 'psi': mean_psi}
 #
 plot_discr_param = ROOT.RooArgSet(mean_Bs, sigma_Bs_1, sigma_Bs_2, fr_Bs, N_sig_Bs, N_bkgr_Bs)
 plot_phi_param = ROOT.RooArgSet(ROOT.RooArgSet(mean_phi, gamma_BW_phi), ROOT.RooArgSet(sigmaCB_phi_1, sigmaCB_phi_2, alpha_phi_1, alpha_phi_2, n_phi_1, n_phi_2, N_sig_phi, N_bkgr_phi, fr_phi))
-# plot_phi_param = ROOT.RooArgSet(mean_phi, gamma_BW_phi, sigma_phi_1, sigma_phi_2, sigmaCB_phi_1, sigmaCB_phi_2, alpha_phi_1, alpha_phi_2, n_phi_1, n_phi_2, N_sig_phi, N_bkgr_phi, fr_phi)
 plot_psi_param = ROOT.RooArgSet(mean_psi, sigma_psi_1, sigma_psi_2, fr_psi, N_sig_psi, N_bkgr_psi)
 plot_X_param = ROOT.RooArgSet(mean_X, sigma_X_1, sigma_X_2, fr_X, N_sig_X, N_bkgr_X)
 plot_param = {'Bs': plot_discr_param, 'phi': plot_phi_param, 'X': plot_X_param, 'psi': plot_psi_param}
