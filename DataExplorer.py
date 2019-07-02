@@ -40,14 +40,20 @@ class DataExplorer(object):
         -------
         self, object
         """
-        fr      = self.model.getParameters(self.data).find('fr_' + self.name).getVal()
-        sigma_1 = self.model.getParameters(self.data).find('sigma_' + self.name + '_1').getVal()
-        sigma_2 = self.model.getParameters(self.data).find('sigma_' + self.name + '_2').getVal()
-        sigma_eff = sqrt(fr*sigma_1**2 + (1-fr)*sigma_2**2) if self.name != 'phi' else 0.  ### effective sigma of sum of two gaussians with common mean
 
-        self.window = 0.01 if self.name == 'phi' else 3*sigma_eff
-        self.distance_to_sdb = 0.005 if self.name == 'phi' else 2*sigma_eff
-        return self
+        if self.name == 'phi':
+            self.window = 0.01
+            self.distance_to_sdb = 0.005
+            return self
+        else:
+            fr      = self.model.getParameters(self.data).find('fr_' + self.name).getVal()
+            sigma_1 = self.model.getParameters(self.data).find('sigma_' + self.name + '_1').getVal()
+            sigma_2 = self.model.getParameters(self.data).find('sigma_' + self.name + '_2').getVal()
+            sigma_eff = sqrt(fr*sigma_1**2 + (1-fr)*sigma_2**2) if self.name != 'phi' else 0.  ### effective sigma of sum of two gaussians with common mean
+            #
+            self.window = 3*sigma_eff
+            self.distance_to_sdb = 2*sigma_eff
+            return self
 
     def get_regions(self):
         """Reduce instance dataset with SR and SdR cuts
@@ -342,16 +348,18 @@ class DataExplorer(object):
             toymcs.SetNEventsPerToy(1)
             print ('adjusting for non-extended formalism')
         #
-        fqResult = fc.GetHypoTest()
+        fqResult = fc.GetHypoTest() # default name: HypoTestCalculator_result
         fqResult.Print()
+        fqResult.SaveAs('fqResult_' + model_sb.GetPdf().GetName() + '.root')
         #
         c = ROOT.TCanvas()
         plot = ROOT.RooStats.HypoTestPlot(fqResult)
         plot.SetLogYaxis(True)
         plot.Draw()
         c.Draw()
+        plot.SetLogYaxis(False)
         c.SaveAs('./toy_signif_' + model_sb.GetPdf().GetName() + '.pdf')
-        return
+        return fqResult
 
     def toy_tstat(self, n_toys = 1000, seed = 333, save=False):
         ROOT.RooRandom.randomGenerator().SetSeed(seed)
