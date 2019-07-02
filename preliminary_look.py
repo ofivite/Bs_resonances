@@ -18,82 +18,34 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 #
 chi2_results = {}
 
-            #------------------#
-            ##  fixing shape  ##
-            #------------------#
+            #-------------------#
+            ##  fixing shapes  ##
+            #-------------------#
 
 w_Bs, f_Bs = get_workspace('workspace_' + MODE + '_Bs.root', 'workspace')
 w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
 w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
 w_phi, f_phi = get_workspace('workspace_' + MODE + '_phi.root', 'workspace')
-
-###
 w_delta_phi, f_delta_phi = get_workspace('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root', 'workspace')
-sigma_delta_1.setVal(w_delta_phi.var('sigma_delta_1').getVal());  sigma_delta_2.setVal(w_delta_phi.var('sigma_delta_2').getVal());
-fr_delta.setVal(w_delta_phi.var('fr_delta').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
-# mean_delta.setVal(w_delta_phi.var('mean_delta').getVal());
+w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
 
-###
-sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var('sigma_Bs_2').getVal());
-# sigma_Bs_3.setVal(w_Bs.var('sigma_Bs_3').getVal());
-# sigma_Bs.setVal(w_Bs.var('sigma_Bs').getVal());
-# gamma_BW_Bs.setVal(w_Bs.var('gamma_BW_Bs').getVal());
-fr_Bs.setVal(w_Bs.var('fr_Bs').getVal());
-# fr_Bs_1.setVal(w_Bs.var('fr_Bs_1').getVal()); fr_Bs_2.setVal(w_Bs.var('fr_Bs_2').getVal());
-mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
+for key, s in list(signal.items()) + [('delta', signal_delta)]:
+    iter = s.getVariables().iterator()
+    iter_comp = iter.Next()
+    while iter_comp:
+        if iter_comp.GetName() not in [v.GetName() for v in var.values()]:
+            val = w_dict[key].var(iter_comp.GetName()).getVal()
+            iter_comp.setVal(val)
+            if 'mean_' not in iter_comp.GetName():
+                iter_comp.setConstant(1)
+        iter_comp = iter.Next()
 
-###
-sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
-sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
-fr_phi.setVal(w_phi.var('fr_phi').getVal());
-# gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
-# sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
-# sigma_phi.setVal(w_phi.var('sigma_phi').getVal());
-# mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
-mean_phi.setVal(w_phi.var('mean_phi').getVal());
-
-###
-sigma_psi_1.setVal(w_psi.var('sigma_psi_1').getVal()); sigma_psi_2.setVal(w_psi.var('sigma_psi_2').getVal());
-# sigma_psi_3.setVal(w_psi.var('sigma_psi_3').getVal());
-# sigma_psi.setVal(w_psi.var('sigma_psi').getVal());
-# gamma_BW_psi.setVal(w_psi.var('gamma_BW_psi').getVal());
-fr_psi.setVal(w_psi.var('fr_psi').getVal()); # fr_psi_1.setVal(w_psi.var('fr_psi_1').getVal()); fr_psi_2.setVal(w_psi.var('fr_psi_2').getVal());
-mean_psi.setVal(w_psi.var('mean_psi').getVal());
-
-###
-sigma_X_1.setVal(w_X.var('sigma_X_1').getVal()); sigma_X_2.setVal(w_X.var('sigma_X_2').getVal());
-# sigma_X_3.setVal(w_X.var('sigma_X_3').getVal());
-# sigma_X.setVal(w_X.var('sigma_X').getVal());
-# gamma_BW_X.setVal(w_X.var('gamma_BW_X').getVal());
-fr_X.setVal(w_X.var('fr_X').getVal()); # fr_X_1.setVal(w_X.var('fr_X_1').getVal()); fr_X_2.setVal(w_X.var('fr_X_2').getVal());
-mean_X.setVal(w_X.var('mean_X').getVal());
-
-###########################################################################################################
-
-sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
-sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
-fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
-
-sigma_delta_1.setConstant(1); sigma_delta_2.setConstant(1); fr_delta.setConstant(1);
 mean_delta.setVal(0.); mean_delta.setConstant(1)
-
-sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
-sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
-fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
-
-sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1);
-sigma_psi.setConstant(1); gamma_BW_psi.setConstant(1)
-fr_psi.setConstant(1);  fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
-
-sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1);
-sigma_X.setConstant(1); gamma_BW_X.setConstant(1)
-fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
-
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
-#############################################################################################
-# set regions
+            #-----------------#
+            ##  set regions  ##
+            #-----------------#
 
 DE_Bs = DataExplorer(name='Bs', var=var['Bs'], data=data, model=model['Bs'], poi=N_sig['Bs'])
 DE_Bs.set_regions()
@@ -107,19 +59,20 @@ DE_phi.set_regions()
 #############################################################################################
 # control variable
 
-DE_control.data = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean['Bs'].getVal()) + ') < ' + str(DE_Bs.window) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean['phi'].getVal()) + ') <' + str(DE_phi.window))
-DE_control.fit(is_sum_w2=False, fix_float=bkgr_params[MODE])
-c_control = ROOT.TCanvas("c_control", "c_control", 800, 600); CMS_tdrStyle_lumi.CMS_lumi( c_control, 2, 0 );
-frame_control = DE_control.plot_on_var()
-frame_control.Draw()
-#
-chi2_results.update(DE_control.chi2_test())
-w_control = DE_control.prepare_workspace(nuisances=bkgr_params[MODE] + [mean[MODE], N_bkgr[MODE]])
-ar_control = DE_control.asympt_signif(w=w_control)
-ar_control.Print()
-#
-fqResult_control = DE_control.toy_signif(w=w_control, n_toys = 30000, seed = 333)
-# c_control.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_control_prelim_' + str(mode) + '.pdf')
+# DE_control.data = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean['Bs'].getVal()) + ') < ' + str(DE_Bs.window) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean['phi'].getVal()) + ') <' + str(DE_phi.window))
+# DE_control.fit(is_sum_w2=False, fix_float=bkgr_params[MODE])
+# c_control = ROOT.TCanvas("c_control", "c_control", 800, 600); CMS_tdrStyle_lumi.CMS_lumi( c_control, 2, 0 );
+# frame_control = DE_control.plot_on_var()
+# frame_control.Draw()
+# #
+# chi2_results.update(DE_control.chi2_test())
+# #
+# w_control = DE_control.prepare_workspace(nuisances=bkgr_params[MODE] + [mean[MODE], N_bkgr[MODE]])
+# ar_control = DE_control.asympt_signif(w=w_control)
+# ar_control.Print()
+# #
+# # fqResult_control = DE_control.toy_signif(w=w_control, n_toys = 30000, seed = 333)
+# # # c_control.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_control_prelim_' + str(mode) + '.pdf')
 
 #############################################################################################
 # Bs variable
@@ -131,245 +84,28 @@ frame_Bs = DE_Bs.plot_on_var()
 frame_Bs.Draw()
 #
 chi2_results.update(DE_Bs.chi2_test())
+#
 w_Bs = DE_Bs.prepare_workspace(nuisances=bkgr_params['Bs'] + [mean['Bs'], N_bkgr['Bs']])
 ar_Bs = DE_Bs.asympt_signif(w=w_Bs)
 ar_Bs.Print()
 #
-fqResult_Bs = DE_Bs.toy_signif(w=w_Bs, n_toys = 30000, seed = 333)
-
+# fqResult_Bs = DE_Bs.toy_signif(w=w_Bs, n_toys = 30000, seed = 333)
 # # c_Bs.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_Bs_prelim_' + str(mode) + '.pdf')
 
 #############################################################################################
 # phi variable
 
-DE_phi.data = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean['Bs'].getVal()) + ') < ' + str(DE_Bs.window) + ' && TMath::Abs(X_mass_Cjp - ' + str(mean[MODE].getVal()) + ') < ' + str(DE_control.window))
-DE_phi.fit(is_sum_w2=False, fix_float=bkgr_params['phi'])
-c_phi = ROOT.TCanvas("c_phi", "c_phi", 800, 600); CMS_tdrStyle_lumi.CMS_lumi( c_phi, 2, 0 );
-frame_phi = DE_phi.plot_on_var()
-frame_phi.Draw()
-#
-chi2_results.update(DE_phi.chi2_test())
+# DE_phi.data = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean['Bs'].getVal()) + ') < ' + str(DE_Bs.window) + ' && TMath::Abs(X_mass_Cjp - ' + str(mean[MODE].getVal()) + ') < ' + str(DE_control.window))
+# DE_phi.fit(is_sum_w2=False, fix_float=bkgr_params['phi'])
+# c_phi = ROOT.TCanvas("c_phi", "c_phi", 800, 600); CMS_tdrStyle_lumi.CMS_lumi( c_phi, 2, 0 );
+# frame_phi = DE_phi.plot_on_var()
+# frame_phi.Draw()
+# #
+# chi2_results.update(DE_phi.chi2_test())
+# #
 # w_phi = DE_phi.prepare_workspace(nuisances=bkgr_params['phi'] + [mean['phi'], N_bkgr['phi']])
 # ar_phi = DE_phi.asympt_signif(w=w_phi)
 # ar_phi.Print()
-#
-# fqResult_phi = DE_phi.toy_signif(w=w_phi, n_toys = 2, seed = 333)
-
-# # c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
-
-#############################################################################################
-# Bs
-
-# data_Bs = data.reduce('TMath::Abs(X_mass_Cjp - ' + str(mean_control_MC[mode]) + ') < ' + str(window_control) + ' && TMath::Abs(PHI_mass_Cjp - ' + str(mean_phi_MC) + ') < 0.01')
-# model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
-# model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
-# rrr_sig = model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE), RF.Save())
-#
-# c_Bs = ROOT.TCanvas("c_Bs", "c_Bs", 800, 600)
-# plot_on_frame(var_discr, data_Bs, model_1D_Bs, '', left_discr_data, right_discr_data, nbins_discr_data, plot_discr_param, False, chi_dict)
-# CMS_tdrStyle_lumi.CMS_lumi( c_Bs, 2, 0 );
-# c_Bs.Update(); c_Bs.RedrawAxis(); #c_Bs.GetFrame().Draw();
-# # c_Bs.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_Bs_prelim_' + str(mode) + '.pdf')
-#
-
-# w = ROOT.RooWorkspace("w", True)
-# Import = getattr(ROOT.RooWorkspace, 'import')
-# Import(w, model_1D_Bs)
-# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-# mc.SetPdf(w.pdf(model_1D_Bs.GetName()))
-# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_Bs.GetName())))
-# # w.var("N_sig_X").setError(20.)
-# mc.SetObservables(ROOT.RooArgSet(w.var(var_discr.GetName())))
-# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
-# mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_Bs.GetName())))
-# Import(w, mc)
-#
-# sbModel = w.obj("ModelConfig")
-# sbModel.SetName("S+B Model")
-# poi = sbModel.GetParametersOfInterest().first()
-# sbModel.SetSnapshot(ROOT.RooArgSet(poi))
-# bModel = sbModel.Clone()
-# bModel.SetName("B Model")
-# oldval = poi.getVal()
-# poi.setVal(0)
-# bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# # poi.setVal(oldval)
-#
-#
-# fc = ROOT.RooStats.FrequentistCalculator(data_Bs, sbModel, bModel)
-# fc.SetToys(1000,500)
-# # fc.SetNToysInTails(500, 100)
-# profll = ROOT.RooStats.ProfileLikelihoodTestStat(sbModel.GetPdf())
-# profll.SetOneSidedDiscovery(True)
-#
-# toymcs = ROOT.RooStats.ToyMCSampler(fc.GetTestStatSampler())
-# toymcs.SetTestStatistic(profll)
-#
-# if not sbModel.GetPdf().canBeExtended():
-#     toymcs.SetNEventsPerToy(1)
-#     print ('adjusting for non-extended formalism')
-#
-# fqResult = fc.GetHypoTest()
-# fqResult.Print()
-#
-# c = ROOT.TCanvas()
-# plot = ROOT.RooStats.HypoTestPlot(fqResult)
-# plot.SetLogYaxis(True)
-# plot.Draw()
-# c.Draw()
-
-# ###--- plotting ll ---###
-#
-# nll = model_1D_Bs.createNLL(data_Bs)
-# pll = nll.createProfile(ROOT.RooArgSet(N_sig_Bs))
-#
-# c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600); ll_left = 0; ll_right = 200
-# frame_nll = N_sig_Bs.frame(RF.Bins(100), RF.Range(ll_left, ll_right)) #N_sig_Bs.getVal() + 40
-# frame_nll.SetTitle('')
-#
-# nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
-# # nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
-# pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
-#
-# frame_nll.SetMaximum(30.)
-# frame_nll.SetMinimum(0.)
-# frame_nll.Draw()
-#
-# line_width = 4
-# line_5sigma = ROOT.TLine(ll_left, 12.5, ll_right, 12.5)
-# line_5sigma.SetLineWidth(line_width); line_5sigma.SetLineColor(47)
-# line_5sigma.Draw();
-#
-# CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
-# c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
-# c_ll.SaveAs('prelim_Bs_pll.pdf')
-
-
-# # ###---- Significance ----####
-#
-# w = ROOT.RooWorkspace("w", True)
-# Import = getattr(ROOT.RooWorkspace, 'import')
-# Import(w, model_1D_Bs)
-# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-# mc.SetPdf(w.pdf(model_1D_Bs.GetName()))
-# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_Bs.GetName())))
-# # w.var("N_sig_X").setError(20.)
-# mc.SetObservables(ROOT.RooArgSet(w.var(var_discr.GetName())))
-# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
-# mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_Bs.GetName())))
-# Import(w, mc)
-#
-# sbModel = w.obj("ModelConfig")
-# sbModel.SetName("S+B_model")
-# poi = sbModel.GetParametersOfInterest().first()
-# bModel = sbModel.Clone()
-# bModel.SetName("B_only_model")
-# oldval = poi.getVal()
-# poi.setVal(0)
-# bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# poi.setVal(oldval)
-# ac = ROOT.RooStats.AsymptoticCalculator(data_Bs, sbModel, bModel)
-# ac.SetOneSidedDiscovery(True)
-# asResult = ac.GetHypoTest()
-# print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
-
-
-# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
-# N_sig_Bs.setVal(0); N_sig_Bs.setConstant(1);
-# model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE))
-# rrr_null = model_1D_Bs.fitTo(data_Bs, RF.Extended(ROOT.kTRUE), RF.Save())
-#
-# nll_sig  = rrr_sig.minNll()
-# nll_null = rrr_null.minNll()
-# P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
-# # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
-# S = ROOT.Math.gaussian_quantile_c(P, 1)
-# print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
-
-
-#############################################################################################
-# phi
-
-# data_phi = data.reduce('TMath::Abs(BU_mass_Cjp - ' + str(mean_Bs_MC) + ') < ' + str(window_Bs) + ' && TMath::Abs(X_mass_Cjp - ' + str(mean_control_MC[mode]) + ') < ' + str(window_control))
-# mean_phi.setConstant(1);
-# model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
-# mean_phi.setConstant(0);
-# model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
-# rrr_sig = model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE), RF.Save())
-#
-# c_phi = ROOT.TCanvas("c_phi", "c_phi", 800, 600)
-# plot_on_frame(PHI_mass_Cjp, data_phi, model_1D_phi, ' ', left_phi_data, right_phi_data, nbins_phi_data, plot_phi_param, False, chi_dict)
-# CMS_tdrStyle_lumi.CMS_lumi( c_phi, 2, 0 );
-# c_phi.Update(); c_phi.RedrawAxis(); #c_phi.GetFrame().Draw();
-# # c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
-
-
-###--- plotting ll ---###
-
-# nll = model_1D_phi.createNLL(data_phi)
-# pll = nll.createProfile(ROOT.RooArgSet(N_sig_phi))
-#
-# c_ll = ROOT.TCanvas("c_ll", "c_ll", 800, 600); ll_left = 0; ll_right = 200
-# frame_nll = N_sig_phi.frame(RF.Bins(100), RF.Range(ll_left, ll_right)) #N_sig_Bs.getVal() + 40
-# frame_nll.SetTitle('')
-#
-# nll.plotOn(frame_nll, RF.ShiftToZero(), RF.LineColor(ROOT.kGreen))
-# # nll.plotOn(frame_nll, RF.LineColor(ROOT.kGreen))
-# pll.plotOn(frame_nll, RF.LineColor(ROOT.kRed))
-#
-# frame_nll.SetMaximum(30.)
-# frame_nll.SetMinimum(0.)
-# frame_nll.Draw()
-#
-# line_width = 4
-# line_5sigma = ROOT.TLine(ll_left, 12.5, ll_right, 12.5)
-# line_5sigma.SetLineWidth(line_width); line_5sigma.SetLineColor(47)
-# line_5sigma.Draw();
-#
-# CMS_tdrStyle_lumi.CMS_lumi( c_ll, 2, 0 );
-# c_ll.Update(); c_ll.RedrawAxis(); # c_inclus.GetFrame().Draw();
-# c_ll.SaveAs('prelim_phi_pll.pdf')
-
-# # ###-----###
-#
-# w = ROOT.RooWorkspace("w", True)
-# Import = getattr(ROOT.RooWorkspace, 'import')
-# Import(w, model_1D_phi)
-# mc = ROOT.RooStats.ModelConfig("ModelConfig",w)
-# mc.SetPdf(w.pdf(model_1D_phi.GetName()))
-# mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
-# # w.var("N_sig_X").setError(20.)
-# mc.SetObservables(ROOT.RooArgSet(w.var(PHI_mass_Cjp.GetName())))
-# # mc.SetNuisanceParameters(ROOT.RooArgSet(w.var('a1_phi' if sPlot_to == 'phi' else 'a1'), w.var('a2_phi' if sPlot_to == 'phi' else 'a2'), w.var(N_bkgr_Bs.GetName()), w.var(mean_Bs.GetName())))
-# mc.SetSnapshot(ROOT.RooArgSet(w.var(N_sig_phi.GetName())))
-# Import(w, mc)
-#
-# sbModel = w.obj("ModelConfig")
-# sbModel.SetName("S+B_model")
-# poi = sbModel.GetParametersOfInterest().first()
-# bModel = sbModel.Clone()
-# bModel.SetName("B_only_model")
-# oldval = poi.getVal()
-# poi.setVal(0)
-# bModel.SetSnapshot(ROOT.RooArgSet(poi))
-# poi.setVal(oldval)
-# ac = ROOT.RooStats.AsymptoticCalculator(data_phi, sbModel, bModel)
-# ac.SetOneSidedDiscovery(True)
-# asResult = ac.GetHypoTest()
-# print ('*' * 40, '\n\n\n\n\n\n', asResult.Print(), '\n\n\n\n\n\n', '*' * 40)
-
-
-
-# a1.setConstant(0); a2.setConstant(0); a3.setConstant(0);
-# a1_phi.setConstant(0); a2_phi.setConstant(0); a3_phi.setConstant(0);
-# N_sig_phi.setVal(0); N_sig_phi.setConstant(1);
-# model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE))
-# rrr_null = model_1D_phi.fitTo(data_phi, RF.Extended(ROOT.kTRUE), RF.Save())
-#
-# nll_sig  = rrr_sig.minNll()
-# nll_null = rrr_null.minNll()
-# P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! Change delta of ndf appropriately
-# # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
-# S = ROOT.Math.gaussian_quantile_c(P, 1)
-# print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
+# #
+# # fqResult_phi = DE_phi.toy_signif(w=w_phi, n_toys = 2, seed = 333)
+# # # c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(mode) + '.pdf')
