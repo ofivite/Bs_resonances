@@ -18,78 +18,29 @@ data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_d
 #
 chi2_results = {}
 
-            #------------------#
-            ##  fixing shape  ##
-            #------------------#
+            #-------------------#
+            ##  fixing shapes  ##
+            #-------------------#
 
 w_Bs, f_Bs = get_workspace('workspace_' + MODE + '_Bs.root', 'workspace')
 w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
 w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
 w_phi, f_phi = get_workspace('workspace_' + MODE + '_phi.root', 'workspace')
-
-###
 w_delta_phi, f_delta_phi = get_workspace('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root', 'workspace')
-sigma_delta_1.setVal(w_delta_phi.var('sigma_delta_1').getVal());  sigma_delta_2.setVal(w_delta_phi.var('sigma_delta_2').getVal());
-fr_delta.setVal(w_delta_phi.var('fr_delta').getVal()); # fr_Bs_1 = w_Bs.var('fr_Bs_1'); fr_Bs_2 = w_Bs.var('fr_Bs_2')
-# mean_delta.setVal(w_delta_phi.var('mean_delta').getVal());
+w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
 
-###
-sigma_Bs_1.setVal(w_Bs.var('sigma_Bs_1').getVal());  sigma_Bs_2.setVal(w_Bs.var('sigma_Bs_2').getVal());
-# sigma_Bs_3.setVal(w_Bs.var('sigma_Bs_3').getVal());
-# sigma_Bs.setVal(w_Bs.var('sigma_Bs').getVal());
-# gamma_BW_Bs.setVal(w_Bs.var('gamma_BW_Bs').getVal());
-fr_Bs.setVal(w_Bs.var('fr_Bs').getVal());
-# fr_Bs_1.setVal(w_Bs.var('fr_Bs_1').getVal()); fr_Bs_2.setVal(w_Bs.var('fr_Bs_2').getVal());
-mean_Bs.setVal(w_Bs.var('mean_Bs').getVal());
+for key, s in list(signal.items()) + [('delta', signal_delta)]:
+    iter = s.getVariables().iterator()
+    iter_comp = iter.Next()
+    while iter_comp:
+        if iter_comp.GetName() not in [v.GetName() for v in var.values()]:
+            val = w_dict[key].var(iter_comp.GetName()).getVal()
+            iter_comp.setVal(val)
+            if 'mean_' not in iter_comp.GetName():
+                iter_comp.setConstant(1)
+        iter_comp = iter.Next()
 
-###
-sigmaCB_phi_1.setVal(w_phi.var('sigmaCB_phi_1').getVal()); alpha_phi_1.setVal(w_phi.var('alpha_phi_1').getVal()); n_phi_1.setVal(w_phi.var('n_phi_1').getVal())
-sigmaCB_phi_2.setVal(w_phi.var('sigmaCB_phi_2').getVal()); alpha_phi_2.setVal(w_phi.var('alpha_phi_2').getVal()); n_phi_2.setVal(w_phi.var('n_phi_2').getVal())
-fr_phi.setVal(w_phi.var('fr_phi').getVal());
-# gamma_BW_phi.setVal(w_phi.var('gamma_BW_phi').getVal());
-# sigma_gauss_phi.setVal(w_phi.var('sigma_gauss_phi').getVal());
-# sigma_phi.setVal(w_phi.var('sigma_phi').getVal());
-# mean_zero_phi.setVal(w_phi.var('mean_zero_phi').getVal());
-mean_phi.setVal(w_phi.var('mean_phi').getVal());
-
-###
-sigma_psi_1.setVal(w_psi.var('sigma_psi_1').getVal()); sigma_psi_2.setVal(w_psi.var('sigma_psi_2').getVal());
-# sigma_psi_3.setVal(w_psi.var('sigma_psi_3').getVal());
-# sigma_psi.setVal(w_psi.var('sigma_psi').getVal());
-# gamma_BW_psi.setVal(w_psi.var('gamma_BW_psi').getVal());
-fr_psi.setVal(w_psi.var('fr_psi').getVal()); # fr_psi_1.setVal(w_psi.var('fr_psi_1').getVal()); fr_psi_2.setVal(w_psi.var('fr_psi_2').getVal());
-mean_psi.setVal(w_psi.var('mean_psi').getVal());
-
-###
-sigma_X_1.setVal(w_X.var('sigma_X_1').getVal()); sigma_X_2.setVal(w_X.var('sigma_X_2').getVal());
-# sigma_X_3.setVal(w_X.var('sigma_X_3').getVal());
-# sigma_X.setVal(w_X.var('sigma_X').getVal());
-# gamma_BW_X.setVal(w_X.var('gamma_BW_X').getVal());
-fr_X.setVal(w_X.var('fr_X').getVal()); # fr_X_1.setVal(w_X.var('fr_X_1').getVal()); fr_X_2.setVal(w_X.var('fr_X_2').getVal());
-mean_X.setVal(w_X.var('mean_X').getVal());
-
-###########################################################################################################
-
-sigma_Bs_1.setConstant(1); sigma_Bs_2.setConstant(1); sigma_Bs_3.setConstant(1);
-sigma_Bs.setConstant(1); gamma_BW_Bs.setConstant(1);
-fr_Bs.setConstant(1); fr_Bs_1.setConstant(1); fr_Bs_2.setConstant(1);
-
-sigma_delta_1.setConstant(1); sigma_delta_2.setConstant(1); fr_delta.setConstant(1);
 mean_delta.setVal(0.); mean_delta.setConstant(1)
-
-sigmaCB_phi_1.setConstant(1); alpha_phi_1.setConstant(1); n_phi_1.setConstant(1);
-sigmaCB_phi_2.setConstant(1); alpha_phi_2.setConstant(1); n_phi_2.setConstant(1);
-gamma_BW_phi.setConstant(1); sigma_gauss_phi.setConstant(1); sigma_phi.setConstant(1)
-fr_phi.setConstant(1); mean_zero_phi.setConstant(1)
-
-sigma_psi_1.setConstant(1); sigma_psi_2.setConstant(1); sigma_psi_3.setConstant(1);
-sigma_psi.setConstant(1); gamma_BW_psi.setConstant(1)
-fr_psi.setConstant(1);  fr_psi_1.setConstant(1); fr_psi_2.setConstant(1)
-
-sigma_X_1.setConstant(1); sigma_X_2.setConstant(1); sigma_X_3.setConstant(1);
-sigma_X.setConstant(1); gamma_BW_X.setConstant(1)
-fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
-
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
             #---------------#
