@@ -17,16 +17,17 @@ data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_d
 data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE])
 #
 chi2_results = {}
+# file_out_data = open('/home/yaourt/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/' + MODE +'_data_evtN.txt', 'w')
 
             #-------------------#
             ##  fixing shapes  ##
             #-------------------#
 
-w_Bs, f_Bs = get_workspace('workspace_' + MODE + '_Bs.root', 'workspace')
-w_psi, f_psi = get_workspace('workspace_psi_control.root', 'workspace')
-w_X, f_X = get_workspace('workspace_X_control.root', 'workspace')
-w_phi, f_phi = get_workspace('workspace_' + MODE + '_phi.root', 'workspace')
-w_delta_phi, f_delta_phi = get_workspace('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root', 'workspace')
+w_Bs = ROOT.TFile('workspace_' + MODE + '_Bs.root').Get('workspace')
+w_psi = ROOT.TFile('workspace_psi_control.root').Get('workspace')
+w_X = ROOT.TFile('workspace_X_control.root').Get('workspace')
+w_phi = ROOT.TFile('workspace_' + MODE + '_phi.root').Get('workspace')
+w_delta_phi = ROOT.TFile('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root').Get('workspace')
 w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
 
 for key, s in list(signal.items()) + [('delta', signal_delta)]:
@@ -46,8 +47,6 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
             #---------------#
             ##  Inclusive  ##
             #---------------#
-
-# file_out_data = open('/home/yaourt/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/' + MODE +'_data_evtN.txt', 'w')
 
 DE_inclus = DataExplorer(label=SPLOT_CUT, data=data, model=model[SPLOT_CUT])
 DE_inclus.fit(is_sum_w2=False)
@@ -88,7 +87,7 @@ frame_DE_1.Draw()
 # c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
 #
-# # file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
+# # file_out_data.write(str(N_sig[SPLOT_FROM].getVal()) + ' ' + str(N_sig[SPLOT_FROM].getError()) + '\n')
 
             #--------------#
             ##  sPlot II  ##
@@ -112,6 +111,8 @@ chi2_results.update(DE_2.chi2_test())
 frame_DE_2.Draw()
 # c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
+#
+# # file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
 
 #             #---------------#
 #             ##  sPlot III  ##
@@ -160,13 +161,13 @@ frame_DE_2.Draw()
 # frame_DE_4.Draw()
 # # c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
 # # c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_4_' + MODE + refl_line + '.pdf')
+#
+# # file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
 
             #-------------#
             ##  Writing  ##
             #-------------#
 
-# file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
 # file_out_data.close()
-
 # with open('./fit_validation/chis_' + MODE + '.txt', 'w') as file:
 #     file.write(json.dumps(chi_dict))

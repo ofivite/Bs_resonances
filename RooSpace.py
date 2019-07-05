@@ -46,7 +46,6 @@ pi_min_eta = ROOT.RooRealVar('pi_min_eta', '#eta^{min}(#pi)', -2.5, 2.5)
 BU_pt_Cjp = ROOT.RooRealVar('BU_pt_Cjp', 'p_{T}(B_{s}^{0}) [GeV]', 0, 800)
 BU_eta_Cjp = ROOT.RooRealVar('BU_eta_Cjp', '#eta(B_{s}^{0})', -2.5, 2.5)
 
-
 dR_mup = ROOT.RooRealVar('dR_mup', '', 0., 5.)
 dR_mum = ROOT.RooRealVar('dR_mum', '', 0., 5.)
 dR_pip = ROOT.RooRealVar('dR_pip', '', 0., 5.)
@@ -77,6 +76,7 @@ sigma_Bs_1 = ROOT.RooRealVar("sigma_Bs_1", "", 0.02, 0.001, 0.05)
 sigma_Bs_2 = ROOT.RooRealVar("sigma_Bs_2", "", 0.01, 0.001, 0.05)
 sigma_Bs_3 = ROOT.RooRealVar("sigma_Bs_3", "", 0.01, 0.001, 0.05)
 gamma_BW_Bs = ROOT.RooRealVar("gamma_BW_Bs","gamma_BW_Bs", 0.005, 0., 1.)
+
 exp_par = ROOT.RooRealVar('exp_par', '', -0.01, -6., -0.00001)
 a1_Bs = ROOT.RooRealVar('a1_Bs', 'a1_Bs', 0.01, 0., 1.)
 a2_Bs = ROOT.RooRealVar('a2_Bs', 'a2_Bs', 0.01, 0., 1.)
@@ -458,47 +458,3 @@ alpha_phi_2.setPlotLabel('#alpha_{2}[#phi]')
 n_phi_2.setPlotLabel('n_{2}[#phi]')
 sigma_phi_1.setPlotLabel('#sigma_{1}[#phi]')
 sigma_phi_2.setPlotLabel('#sigma_{2}[#phi]')
-
-
-def _import(wsp, obj):
-    getattr(wsp, 'import')(obj)
-
-def get_timestamp(fmt='%Y-%m-%d-%a-%H-%M'):
-    """Return formatted timestamp."""
-    return datetime.strftime(datetime.today(), fmt)
-
-def get_file(fname, mode='read'):
-    """Open and return a ROOT file."""
-    if os.path.exists(fname):
-        return ROOT.TFile(fname, mode)
-    else:
-        raise IOError('File %s does not exist!' % fname)
-
-def save_in_workspace(rfile, **argsets):
-    """Save RooFit objects in workspace and persistify.
-    Pass the different types of objects as a keyword arguments. e.g.
-    save_in_workspace(pdf=[pdf1, pdf2], variable=[var1, var2])
-    """
-
-    # from rplot.fixes import ROOT
-    import traceback
-    # Persistify variables, PDFs and datasets
-    workspace = ROOT.RooWorkspace('workspace', 'Workspace saved at %s' % get_timestamp())
-    keys = argsets.keys()
-    for key in keys:
-        print ('Importing RooFit objects in %s list.' % key)
-        for arg in argsets[key]:
-            try:
-                _import(workspace, arg)
-            except TypeError:
-                print (type(arg), arg)
-                traceback.print_exc()
-    rfile.WriteTObject(workspace)
-    print ('Saving arguments to file: %s' % rfile.GetName())
-
-
-def get_workspace(fname, wname):
-    """Read and return RooWorkspace from file."""
-    ffile = get_file(fname, 'read')
-    workspace = ffile.Get(wname)
-    return workspace, ffile
