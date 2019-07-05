@@ -1,10 +1,11 @@
 # Important: Naming conventions
 # // to be completed //
 #
-# * bkgr polynomial parameters start with 'a'
-# *
-# *
-#
+# * bkgr polynomial parameters: a<number>_<label>. Example: a3_X
+# * fractions of double gaussians/CB: fr_<label>.  Example: fr_Bs
+# * gaussian sigmas: sigma_<label>_<number>.       Example: sigma_psi_2
+# * means: mean_<label>.                           Example: mean_phi
+# * signal components start with 'sig' ......
 # Important: model construction
 # * Do not build models which share parameters - they can thus overwrite each other
 
@@ -77,10 +78,10 @@ sigma_Bs_2 = ROOT.RooRealVar("sigma_Bs_2", "", 0.01, 0.001, 0.05)
 sigma_Bs_3 = ROOT.RooRealVar("sigma_Bs_3", "", 0.01, 0.001, 0.05)
 gamma_BW_Bs = ROOT.RooRealVar("gamma_BW_Bs","gamma_BW_Bs", 0.005, 0., 1.)
 exp_par = ROOT.RooRealVar('exp_par', '', -0.01, -6., -0.00001)
-a1 = ROOT.RooRealVar('a1', 'a1', 0.01, 0., 1.)
-a2 = ROOT.RooRealVar('a2', 'a2', 0.01, 0., 1.)
-a3 = ROOT.RooRealVar('a3', 'a3', 0.01, 0., 1.)
-a4 = ROOT.RooRealVar('a4', 'a4', 0.01, 0., 1.)
+a1_Bs = ROOT.RooRealVar('a1_Bs', 'a1_Bs', 0.01, 0., 1.)
+a2_Bs = ROOT.RooRealVar('a2_Bs', 'a2_Bs', 0.01, 0., 1.)
+a3_Bs = ROOT.RooRealVar('a3_Bs', 'a3_Bs', 0.01, 0., 1.)
+a4_Bs = ROOT.RooRealVar('a4_Bs', 'a4_Bs', 0.01, 0., 1.)
 
 a1_ext = ROOT.RooRealVar('a1_ext', 'a1_ext', 0.01, -10., 10.)
 a2_ext = ROOT.RooRealVar('a2_ext', 'a2_ext', 0.01, -10., 10.)
@@ -103,7 +104,7 @@ signal_Bs = ROOT.RooAddPdf("signal_Bs", "signal_Bs", ROOT.RooArgList(sig_Bs_1, s
 # signal_Bs = ROOT.RooVoigtian("signal_Bs", "signal_Bs", var_discr, mean_Bs, gamma_BW_Bs, sigma_Bs)
 
 # bkgr_Bs = ROOT.RooExponential('bkgr_Bs', '', var_discr, exp_par)
-bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1, a2))
+bkgr_Bs = ROOT.RooBernstein('bkgr_Bs', '', var_discr, ROOT.RooArgList(a1_Bs, a2_Bs))
 N_bkgr_Bs = ROOT.RooRealVar('N_bkgr_Bs', '', 30000., 0., 100000)
 
 #############################################################################################
@@ -421,10 +422,10 @@ N_bkgr_psi.setPlotLabel('N_{bkgr}')
 N_B0_refl.setPlotLabel('N(B^{0}#rightarrow#psi(2S)K^{*0})')
 
 #
-a1.setPlotLabel('a_{1}')
-a2.setPlotLabel('a_{2}')
-a3.setPlotLabel('a_{3}')
-a4.setPlotLabel('a_{4}')
+a1_Bs.setPlotLabel('a_{1}(B_{s}^{0})')
+a2_Bs.setPlotLabel('a_{2}(B_{s}^{0})')
+a3_Bs.setPlotLabel('a_{3}(B_{s}^{0})')
+a4_Bs.setPlotLabel('a_{4}(B_{s}^{0})')
 exp_par.setPlotLabel('#lambda_{bkgr}')
 #
 mean_X.setPlotLabel("m[X]");
