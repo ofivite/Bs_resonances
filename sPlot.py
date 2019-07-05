@@ -92,14 +92,13 @@ fr_X.setConstant(1); fr_X_1.setConstant(1); fr_X_2.setConstant(1)
 
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
-
             #---------------#
             ##  Inclusive  ##
             #---------------#
 
 # file_out_data = open('/home/yaourt/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/' + MODE +'_data_evtN.txt', 'w')
 
-DE_inclus = DataExplorer(name=SPLOT_CUT, var=var[SPLOT_CUT], data=data, model=model[SPLOT_CUT], poi=N_sig[SPLOT_CUT])
+DE_inclus = DataExplorer(label=SPLOT_CUT, data=data, model=model[SPLOT_CUT])
 DE_inclus.fit(is_sum_w2=False)
 #
 DE_inclus.set_regions()
@@ -122,9 +121,9 @@ frame_inclus.Draw()
 
 if REFL_ON and MODE == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
 else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
-if SPLOT_FROM == 'Bs' and MODE == 'X': mean[SPLOT_FROM].setConstant(1)
+# if SPLOT_FROM == 'Bs' and MODE == 'X': mean[SPLOT_FROM].setConstant(1)
 
-DE_1 = DataExplorer(name=SPLOT_FROM, var=var[SPLOT_FROM], data=data_sig, model=model[SPLOT_FROM], poi=N_sig[SPLOT_FROM])
+DE_1 = DataExplorer(label=SPLOT_FROM, data=data_sig, model=model[SPLOT_FROM])
 DE_1.fit(fix_float=bkgr_params[SPLOT_FROM], is_sum_w2=False)
 #
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_1, 2, 0);
@@ -132,13 +131,13 @@ frame_DE_1 = DE_1.plot_on_var()
 chi2_results.update(DE_1.chi2_test())
 frame_DE_1.Draw()
 #
-# w1 = DE_1.prepare_workspace(nuisances=bkgr_params[SPLOT_FROM] + [mean[SPLOT_FROM], N_bkgr[SPLOT_FROM]])
+# w1 = DE_1.prepare_workspace(poi = N_sig[SPLOT_FROM], nuisances=bkgr_params[SPLOT_FROM] + [mean[SPLOT_FROM], N_bkgr[SPLOT_FROM]])
 # DE_1.toy_signif(w=w1, n_toys = 10, seed=333)
 
 # c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
-
-# file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
+#
+# # file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
 
             #--------------#
             ##  sPlot II  ##
@@ -151,7 +150,7 @@ data_sig_w.SetName('sig_w')
 hist_sig_weighted = ROOT.RooDataHist('hist_sig_weighted', 'hist_sig_weighted', ROOT.RooArgSet(var[SPLOT_TO]), data_sig_w) ### binning for this var was already previously set
 #
 mean_phi.setVal(1.01946); mean_phi.setConstant(1)
-DE_2 = DataExplorer(name=SPLOT_TO, var=var[SPLOT_TO], data=hist_sig_weighted, model=model[SPLOT_TO], poi = fr_model_phi)
+DE_2 = DataExplorer(label=SPLOT_TO, data=hist_sig_weighted, model=model[SPLOT_TO])
 DE_2.chi2_fit()
 
 # df = DE_2.toy_tstat(n_toys = 40000, seed = 332, save=False)
@@ -162,7 +161,7 @@ chi2_results.update(DE_2.chi2_test())
 frame_DE_2.Draw()
 # c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
-#
+
 #             #---------------#
 #             ##  sPlot III  ##
 #             #---------------#
@@ -170,7 +169,7 @@ frame_DE_2.Draw()
 # mean[SPLOT_FROM].setConstant(1)
 # N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 #
-# DE_3 = DataExplorer(name=SPLOT_FROM, var=var[SPLOT_FROM], data=data_side, model=model[SPLOT_FROM], poi=N_sig[SPLOT_FROM])
+# DE_3 = DataExplorer(label=SPLOT_FROM, data=data_side, model=model[SPLOT_FROM])
 # DE_3.fit(fix_float=bkgr_params[SPLOT_FROM], is_sum_w2=False)
 # #
 # # w3 = DE_3.prepare_workspace(poi=N_sig[SPLOT_FROM], nuisances=bkgr_params[SPLOT_FROM] + [mean[SPLOT_FROM], N_bkgr[SPLOT_FROM]])
@@ -197,7 +196,7 @@ frame_DE_2.Draw()
 # data_side_w.SetName('side_w')
 # hist_side_weighted = ROOT.RooDataHist('hist_side_weighted', 'hist_side_weighted', ROOT.RooArgSet(var[SPLOT_TO]), data_side_w) ### binning for this var was already previously set
 # #
-# DE_4 = DataExplorer(name=SPLOT_TO, var=var[SPLOT_TO], data=hist_side_weighted, model=model[SPLOT_TO], poi = fr_model_phi)
+# DE_4 = DataExplorer(label=SPLOT_TO, data=hist_side_weighted, model=model[SPLOT_TO])
 # DE_4.chi2_fit()
 # # #
 # # w4 = DE_4.prepare_workspace(poi = fr_model_phi, nuisances = bkgr_params[SPLOT_TO] + [mean[SPLOT_TO]])
