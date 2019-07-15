@@ -9,7 +9,7 @@ if args.mode not in ['psi', 'X']:
 MODE = args.mode
 REFL_ON = False
 GET_MC_N_EVTS = False
-SPLOT_CUT = MODE; SPLOT_FROM = 'Bs'; SPLOT_TO = 'phi'
+REGIONS_FROM = MODE; SPLOT_FROM = 'Bs'; SPLOT_TO = 'phi'
 
 if SPLOT_FROM != 'Bs': REFL_ON = False
 refl_line = '_refl' if REFL_ON else ''
@@ -20,7 +20,7 @@ left_jpsi = 3.094 - 0.1; right_jpsi = 3.094 + 0.1; nbins_jpsi = 100
 left_discr_data =  5.27; right_discr_data = 5.47; nbins_discr_data = 40 # 5.3669 + 0.1
 left_discr_MC =  5.3669 - 0.035; right_discr_MC = 5.3669 + 0.035; nbins_discr_MC = 35
 
-lrn_phi_data = {'X': [0.99, 1.055, 13], 'psi': [1.0195 - 0.030, 1.0195 + 0.030, 30]} 
+lrn_phi_data = {'X': [0.99, 1.055, 13], 'psi': [1.0195 - 0.030, 1.0195 + 0.030, 30]}
 left_phi_data, right_phi_data, nbins_phi_data = lrn_phi_data[MODE]
 
 lrn_phi_MC = {'X': [1.0195 - 0.016, 1.0195 + 0.016, 32], 'psi': [1.0195 - 0.016, 1.0195 + 0.016, 32]}

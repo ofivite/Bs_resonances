@@ -61,6 +61,9 @@ class DataExplorer(object):
         data_sig, data_sideband: tuple of RooDataSet
             datasets corresponding to events in SR and SdR
         """
+        if not self.is_fitted:
+            print('Can\'t get regions: mean should be MC-fixed value but not fitted to data.' )
+            return
         mean = self.model.getParameters(self.data).find(f'mean_{self.label}').getVal()
         data_sig = self.data.reduce(f'TMath::Abs({self.var.GetName()} - {mean}) < {self.window}')
         data_sideband = self.data.reduce(f'TMath::Abs({self.var.GetName()} - {mean}) > {self.window + self.distance_to_sdb} && TMath::Abs({self.var.GetName()} -{mean}) < {2.*self.window + self.distance_to_sdb}')
@@ -130,10 +133,13 @@ class DataExplorer(object):
         #
         self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
+        fit_results.Print()
         self.is_fitted = True
+        if is_sum_w2:
+            print('\n\n' + 56*'~' + '\nBEWARE! Errors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\n' + 56*'~' + '\n\n')
         return fit_results
 
-    def chi2_fit(self, data = None, fix_float=[], run_minos = False, poi = None, is_sum_w2 = 'auto'):
+    def chi2_fit(self, hist = None, fix_float=[], minos = False, poi = None):
         """Fit the instance data with binned chi2 method
         NB: weights presence is taken care of automatically
 
@@ -153,23 +159,28 @@ class DataExplorer(object):
         self, object
 
         """
-        data_to_fit = self.data if data is None else data
-        self.model.chi2FitTo(data_to_fit, ROOT.RooLinkedList())
+        hist_to_fit = self.data if hist is None else hist
+        is_extended = self.model.canBeExtended()
+        if type(hist_to_fit) != ROOT.RooDataHist:
+            raise TypeError('convert the data to RooDataHist')
+        chi = ROOT.RooChi2Var("chi","chi", self.model, hist_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+        m = ROOT.RooMinimizer(chi)
+        m.setMinimizerType("Minuit2")
+        m.setPrintLevel(3)
+        #
+        m.minimize("Minuit2","minimize")
         for param in fix_float:
             param.setConstant(1)
-        self.model.chi2FitTo(data_to_fit, ROOT.RooLinkedList())
+        m.minimize("Minuit2","minimize")
         for param in fix_float:
             param.setConstant(0)
-        self.model.chi2FitTo(data_to_fit, ROOT.RooLinkedList()) # couldn't make it save RooFitResult
+        m.minimize("Minuit2","minimize")
+        m.minimize("Minuit2","minimize")
         self.is_fitted = True
         #
-        if run_minos:
-            is_extended = self.model.canBeExtended()
-            chi = ROOT.RooChi2Var("chi","chi", self.model, data_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
-            m = ROOT.RooMinimizer(chi)
-            m.setMinimizerType("Minuit2")
-            m.setPrintLevel(3)
-            m.minimize("Minuit2","minimize")
+        if minos:
+            if poi is None:
+                raise TypeError('poi is None by default: set it to a proper variable.')
             m.minos(ROOT.RooArgSet(poi))
         return self
 
@@ -206,7 +217,7 @@ class DataExplorer(object):
             iter_comp = iter.Next()
         #
         if REFL_ON: self.model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44))
-        self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto)) # plotting data at the beginning once sometimes doesn't work
+        # self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto)) # plotting data at the beginning once sometimes doesn't work
         #
         frame.GetYaxis().SetTitle(f'Candidates / {round((var_right - var_left) * 1000. / var_nbins, 1)} MeV')
         frame.GetXaxis().SetTitleSize(0.04)
@@ -327,6 +338,7 @@ class DataExplorer(object):
         ac = ROOT.RooStats.AsymptoticCalculator(data, model_sb, model_b)
         ac.SetOneSidedDiscovery(True)
         as_result = ac.GetHypoTest()
+        as_result.Print()
         return as_result
 
     @staticmethod
@@ -355,7 +367,7 @@ class DataExplorer(object):
         plot.Draw()
         c.Draw()
         c.SaveAs(f'./toy_signif_{model_sb.GetPdf().GetName()}.pdf')
-        return
+        return fqResult
 
     def toy_tstat(self, n_toys = 1000, seed = 333, save=False):
         ROOT.RooRandom.randomGenerator().SetSeed(seed)
