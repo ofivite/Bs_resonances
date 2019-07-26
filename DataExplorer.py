@@ -22,7 +22,7 @@ class DataExplorer(object):
 
     def __init__(self, label, data, model):
         super(DataExplorer, self).__init__()
-        assert (type(label) is str), 'label is not str'
+        assert (type(label) is str), 'Label is not str'
         self.data = data
         self.model = model
         self.var = model.getObservables(data).iterator().Next()
@@ -490,6 +490,25 @@ class DataExplorer(object):
 # Supplementary functions
 
 def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
+    """Recursively fix model's parameters according to the values for the model in the corresponding workspace.
+    Workspace with 'fix from' model must share in the dictionary the same 'binding' key with 'to fix' model.
+
+    Parameters
+    ----------
+
+    workspaces_dict: dictionary
+        dictionary with binding labels and workspaces which carry 'fix from' models
+
+    models_dict: dictionary
+        dictionary with binding labels and 'to fix' models
+
+    var_ignore_list: list of RooRealVar
+        parameters of models (e.g. means) which are to be ignored and will not be setVal & setConstant
+
+    Returns
+    -------
+    None
+    """
     if len(workspaces_dict) < len(models_dict):
         raise Exception('There is more models than corresponding workspaces')
     for key, s in models_dict.items():
@@ -497,13 +516,10 @@ def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
         iter_comp = iter.Next()
         while iter_comp:
             if iter_comp.GetName() not in [v.GetName() for v in var_ignore_list]:
-                # print(iter_comp.GetName(), key)
-                # print(workspaces_dict[key].var(iter_comp.GetName()))
                 if key not in workspaces_dict.keys():
                     raise Exception(f'Can\'t find the \'{key}\' key in the workspaces dict')
                 val = workspaces_dict[key].var(iter_comp.GetName()).getVal()
                 iter_comp.setVal(val)
-                # if 'mean_' not in iter_comp.GetName():
                 iter_comp.setConstant(1)
             iter_comp = iter.Next()
 
