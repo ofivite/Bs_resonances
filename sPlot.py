@@ -30,7 +30,7 @@ w_phi = ROOT.TFile('workspace_' + MODE + '_phi.root').Get('workspace')
 w_delta_phi = ROOT.TFile('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root').Get('workspace')
 w = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
 #
-fix_shapes(workspaces_dict=w, models_dict={**signal, 'delta': signal_delta}, var_ignore_list=[*var.values(), *mean.values()])
+fix_shapes(workspaces_dict=w, models_dict=signal, var_ignore_list=[*var.values(), *mean.values()])
 mean_delta.setVal(0.); mean_delta.setConstant(1)
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 

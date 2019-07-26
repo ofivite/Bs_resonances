@@ -490,6 +490,8 @@ class DataExplorer(object):
 # Supplementary functions
 
 def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
+    if len(workspaces_dict) < len(models_dict):
+        raise Exception('There is more models than corresponding workspaces')
     for key, s in models_dict.items():
         iter = s.getVariables().iterator()
         iter_comp = iter.Next()
@@ -497,6 +499,8 @@ def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
             if iter_comp.GetName() not in [v.GetName() for v in var_ignore_list]:
                 # print(iter_comp.GetName(), key)
                 # print(workspaces_dict[key].var(iter_comp.GetName()))
+                if key not in workspaces_dict.keys():
+                    raise Exception(f'Can\'t find the \'{key}\' key in the workspaces dict')
                 val = workspaces_dict[key].var(iter_comp.GetName()).getVal()
                 iter_comp.setVal(val)
                 # if 'mean_' not in iter_comp.GetName():
