@@ -1,5 +1,5 @@
 from RooSpace import *
-from DataExplorer import DataExplorer
+from DataExplorer import DataExplorer, fix_shapes
 import CMS_tdrStyle_lumi
 
 from math import sqrt
@@ -28,19 +28,9 @@ w_psi = ROOT.TFile('workspace_psi_control.root').Get('workspace')
 w_X = ROOT.TFile('workspace_X_control.root').Get('workspace')
 w_phi = ROOT.TFile('workspace_' + MODE + '_phi.root').Get('workspace')
 w_delta_phi = ROOT.TFile('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root').Get('workspace')
-w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
-
-for key, s in list(signal.items()) + [('delta', signal_delta)]:
-    iter = s.getVariables().iterator()
-    iter_comp = iter.Next()
-    while iter_comp:
-        if iter_comp.GetName() not in [v.GetName() for v in var.values()]:
-            val = w_dict[key].var(iter_comp.GetName()).getVal()
-            iter_comp.setVal(val)
-            if 'mean_' not in iter_comp.GetName():
-                iter_comp.setConstant(1)
-        iter_comp = iter.Next()
-
+w = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
+#
+fix_shapes(workspaces_dict=w, models_dict={**signal, 'delta': signal_delta}, var_ignore_list=[*var.values(), *mean.values()])
 mean_delta.setVal(0.); mean_delta.setConstant(1)
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
@@ -54,7 +44,9 @@ fit_res_inclus = DE_inclus.fit(is_sum_w2=False)
 DE_inclus.set_regions()
 data_sig, data_side = DE_inclus.get_regions()
 #
-c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_inclus, 2, 0);
+c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
+CMS_tdrStyle_lumi.CMS_lumi(c_inclus, 2, 0);
+#
 frame_inclus = DE_inclus.plot_on_var(plot_params=plot_param[REGIONS_FROM]);
 frame_inclus_max = frame_inclus.GetMaximum(); coeffs = array([0.75, 0.85, 0.95]) if MODE == 'X' else array([0.5, 0.62, 0.75])
 y_sdb_left, y_sr, y_sdb_right = frame_inclus_max*coeffs
@@ -85,7 +77,6 @@ chi2_results.update(DE_1.chi2_test())
 
 # c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
-#
 # # file_out_data.write(str(N_sig[SPLOT_FROM].getVal()) + ' ' + str(N_sig[SPLOT_FROM].getError()) + '\n')
 
             #--------------#
@@ -98,7 +89,7 @@ data_sig_w = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, 
 data_sig_w.SetName('sig_w')
 hist_sig_weighted = ROOT.RooDataHist('hist_sig_weighted', 'hist_sig_weighted', ROOT.RooArgSet(var[SPLOT_TO]), data_sig_w) ### binning for this var was already previously set
 #
-mean_phi.setVal(1.01946); mean_phi.setConstant(1)
+mean_MC_val = w[SPLOT_TO].var(mean[SPLOT_TO].GetName()).getVal(); mean[SPLOT_TO].setVal(mean_MC_val); mean[SPLOT_TO].setConstant(1)
 DE_2 = DataExplorer(label=SPLOT_TO, data=data_sig_w, model=model[SPLOT_TO])
 fit_res_2 = DE_2.fit(is_sum_w2=True)
 #
@@ -109,7 +100,6 @@ frame_DE_2.Draw()
 chi2_results.update(DE_2.chi2_test())
 # c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
-#
 # # file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
 
             #---------------#
@@ -133,8 +123,7 @@ frame_DE_3.Draw()
 chi2_results.update(DE_3.chi2_test())
 # c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
 # c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_3_' + MODE + refl_line + '.pdf')
-
-# file_out_data.write(str(N_sig[SPLOT_FROM].getVal()) + ' ' + str(N_sig[SPLOT_FROM].getError()) + '\n')
+# # file_out_data.write(str(N_sig[SPLOT_FROM].getVal()) + ' ' + str(N_sig[SPLOT_FROM].getError()) + '\n')
 
             #--------------#
             ##  sPlot IV  ##
@@ -161,9 +150,8 @@ frame_DE_4.Draw()
 chi2_results.update(DE_4.chi2_test())
 # c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
 # c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_4_' + MODE + refl_line + '.pdf')
+# # file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
 
-# file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
-#
 #             #--------------#
 #             #   Writing   ##
 #             #--------------#

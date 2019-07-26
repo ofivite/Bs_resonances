@@ -487,5 +487,22 @@ class DataExplorer(object):
         return MC_manager
 
 ################################################################################################################################
+# Supplementary functions
+
+def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
+    for key, s in models_dict.items():
+        iter = s.getVariables().iterator()
+        iter_comp = iter.Next()
+        while iter_comp:
+            if iter_comp.GetName() not in [v.GetName() for v in var_ignore_list]:
+                # print(iter_comp.GetName(), key)
+                # print(workspaces_dict[key].var(iter_comp.GetName()))
+                val = workspaces_dict[key].var(iter_comp.GetName()).getVal()
+                iter_comp.setVal(val)
+                # if 'mean_' not in iter_comp.GetName():
+                iter_comp.setConstant(1)
+            iter_comp = iter.Next()
+
+################################################################################################################################
 
 print('\n\n         ~~~' + '\n\n')
