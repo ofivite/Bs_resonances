@@ -29,40 +29,44 @@ class DataExplorer(object):
         self.label = label
         self.is_fitted = False
 
-    def set_regions(self):
+    def set_regions(self, num_of_sigma_window=3, num_of_sigma_to_sdb=2):
         """Set signal region (SR) window and distance to sidebands (SdR)
+            SR=|m - mean| < window;
+            SdR=|m - mean| > window + distance_to_sdb &
+                |m - mean| < 2*window + distance_to_sdb
+        NB: Assume that self.model is a double Gaussian
 
         Parameters
         ---------
+
+        num_of_sigma_window: float, optional (default=3)
+            number of effective sigmas in the window
+        num_of_sigma_to_sdb: float, optional (default=2)
+            number of effective sigmas in between SR and SdR
 
         Returns
         -------
         self, object
         """
-        if self.label == 'phi':
-            self.window = 0.01
-            self.distance_to_sdb = 0.005
-        else:
-            fr      = self.model.getVariables().find(f'fr_{self.label}').getVal()
-            sigma_1 = self.model.getVariables().find(f'sigma_{self.label}_1').getVal()
-            sigma_2 = self.model.getVariables().find(f'sigma_{self.label}_2').getVal()
-            sigma_eff = sqrt(fr*sigma_1**2 + (1-fr)*sigma_2**2)  ### effective sigma of sum of two gaussians with common mean
-            #
-            self.window = 3*sigma_eff
-            self.distance_to_sdb = 2*sigma_eff
+        fr      = self.model.getVariables().find(f'fr_{self.label}').getVal()
+        sigma_1 = self.model.getVariables().find(f'sigma_{self.label}_1').getVal()
+        sigma_2 = self.model.getVariables().find(f'sigma_{self.label}_2').getVal()
+        sigma_eff = sqrt(fr*sigma_1**2 + (1-fr)*sigma_2**2)  ### effective sigma of sum of two gaussians with common mean
+        #
+        self.window = num_of_sigma_window*sigma_eff #
+        self.distance_to_sdb = num_of_sigma_to_sdb*sigma_eff
         return self
 
     def get_regions(self):
         """Reduce instance dataset with SR and SdR cuts
-        NB: mind that mean might be pre- or post-fitted
 
         Returns
         -------
         data_sig, data_sideband: tuple of RooDataSet
             datasets corresponding to events in SR and SdR
         """
-        if not self.is_fitted:
-            print('Can\'t get regions: mean should be MC-fixed value but not fitted to data.' )
+        if self.is_fitted:
+            raise Exception('Can\'t get regions: mean should be (if you mean it) MC-fixed value but not fitted to data.')
             return
         mean = self.model.getParameters(self.data).find(f'mean_{self.label}').getVal()
         data_sig = self.data.reduce(f'TMath::Abs({self.var.GetName()} - {mean}) < {self.window}')
@@ -162,7 +166,7 @@ class DataExplorer(object):
         hist_to_fit = self.data if hist is None else hist
         is_extended = self.model.canBeExtended()
         if type(hist_to_fit) != ROOT.RooDataHist:
-            raise TypeError('convert the data to RooDataHist')
+            raise TypeError('Wrong type: convert the data to RooDataHist.')
         chi = ROOT.RooChi2Var("chi","chi", self.model, hist_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
         m = ROOT.RooMinimizer(chi)
         m.setMinimizerType("Minuit2")
@@ -180,7 +184,7 @@ class DataExplorer(object):
         #
         if minos:
             if poi is None:
-                raise TypeError('poi is None by default: set it to a proper variable.')
+                raise TypeError('Poi is None by default: set it to a proper variable.')
             m.minos(ROOT.RooArgSet(poi))
         return self
 
@@ -245,7 +249,7 @@ class DataExplorer(object):
         w: RooWorkspace
         """
         if not self.is_fitted:
-            raise Exception('Model was not fitted to data, fit it first')
+            raise Exception('Model was not fitted to data, fit it first.')
 
         w = ROOT.RooWorkspace("w", True)
         Import = getattr(ROOT.RooWorkspace, 'import') # special trick to make things not crush
@@ -317,7 +321,7 @@ class DataExplorer(object):
         """Do chi2 goodness-of-fit test
         """
         if not self.is_fitted:
-            raise Exception('Model was not fitted to data, fit it first')
+            raise Exception('Model was not fitted to data, fit it first.')
         is_extended = self.model.canBeExtended()
         data_hist = ROOT.RooDataHist('data_hist', 'data_hist', ROOT.RooArgSet(self.var), self.data) # binning is taken from self.var definition
         nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
@@ -459,7 +463,7 @@ class DataExplorer(object):
         """Make bias checks in fitted model parameter var_to_study by generating toys with RooMCStudy()
         """
         if not self.is_fitted:
-            raise Exception('Model was not fitted to data, fit it first')
+            raise Exception('Model was not fitted to data, fit it first.')
 
         # width_N = 80 if self.mode == 'X' else 250
         # err_upper = 30 if self.mode == 'X' else 400; err_nbins = 30
@@ -503,23 +507,23 @@ def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
         dictionary with binding labels and 'to fix' models
 
     var_ignore_list: list of RooRealVar
-        parameters of models (e.g. means) which are to be ignored and will not be setVal & setConstant
+        parameters of models (e.g. means) which will not be setConstant (but the values will be set to a workspace one)
 
     Returns
     -------
     None
     """
     if len(workspaces_dict) < len(models_dict):
-        raise Exception('There is more models than corresponding workspaces')
+        raise Exception('There is more models than corresponding workspaces.')
     for key, s in models_dict.items():
         iter = s.getVariables().iterator()
         iter_comp = iter.Next()
         while iter_comp:
+            if key not in workspaces_dict.keys():
+                raise Exception(f'Can\'t find the \'{key}\' key in the workspaces dictionary.')
+            val = workspaces_dict[key].var(iter_comp.GetName()).getVal()
+            iter_comp.setVal(val)
             if iter_comp.GetName() not in [v.GetName() for v in var_ignore_list]:
-                if key not in workspaces_dict.keys():
-                    raise Exception(f'Can\'t find the \'{key}\' key in the workspaces dict')
-                val = workspaces_dict[key].var(iter_comp.GetName()).getVal()
-                iter_comp.setVal(val)
                 iter_comp.setConstant(1)
             iter_comp = iter.Next()
 

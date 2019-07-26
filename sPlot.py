@@ -39,14 +39,16 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
             #---------------#
 
 DE_inclus = DataExplorer(label=REGIONS_FROM, data=data, model=model[REGIONS_FROM])
-fit_res_inclus = DE_inclus.fit(is_sum_w2=False)
-#
 DE_inclus.set_regions()
+if REGIONS_FROM == 'phi':
+    DE_inclus.window = 0.01
+    DE_inclus.distance_to_sdb = 0.005
+#
 data_sig, data_side = DE_inclus.get_regions()
+fit_res_inclus = DE_inclus.fit(is_sum_w2=False)
 #
 c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
 CMS_tdrStyle_lumi.CMS_lumi(c_inclus, 2, 0);
-#
 frame_inclus = DE_inclus.plot_on_var(plot_params=plot_param[REGIONS_FROM]);
 frame_inclus_max = frame_inclus.GetMaximum(); coeffs = array([0.75, 0.85, 0.95]) if MODE == 'X' else array([0.5, 0.62, 0.75])
 y_sdb_left, y_sr, y_sdb_right = frame_inclus_max*coeffs
