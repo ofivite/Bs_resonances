@@ -49,7 +49,7 @@ fit_res_inclus = DE_inclus.fit(is_sum_w2=False)
 #
 c_inclus = ROOT.TCanvas("c_inclus", "c_inclus", 800, 600)
 CMS_tdrStyle_lumi.CMS_lumi(c_inclus, 2, 0);
-frame_inclus = DE_inclus.plot_on_var(plot_params=plot_param[REGIONS_FROM]);
+frame_inclus = DE_inclus.plot_on_frame(plot_params=plot_param[REGIONS_FROM]);
 frame_inclus_max = frame_inclus.GetMaximum(); coeffs = array([0.75, 0.85, 0.95]) if MODE == 'X' else array([0.5, 0.62, 0.75])
 y_sdb_left, y_sr, y_sdb_right = frame_inclus_max*coeffs
 frame_inclus = DE_inclus.plot_regions(frame_inclus, y_sdb_left, y_sr, y_sdb_right)
@@ -70,7 +70,7 @@ DE_1 = DataExplorer(label=SPLOT_FROM, data=data_sig, model=model[SPLOT_FROM])
 fit_res_1 = DE_1.fit(fix_float=bkgr_params[SPLOT_FROM], is_sum_w2=False)
 #
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_1, 2, 0);
-frame_DE_1 = DE_1.plot_on_var(plot_params=plot_param[SPLOT_FROM])
+frame_DE_1 = DE_1.plot_on_frame(plot_params=plot_param[SPLOT_FROM])
 frame_DE_1.Draw()
 #
 chi2_results.update(DE_1.chi2_test())
@@ -96,7 +96,7 @@ DE_2 = DataExplorer(label=SPLOT_TO, data=data_sig_w, model=model[SPLOT_TO])
 fit_res_2 = DE_2.fit(is_sum_w2=True)
 #
 c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0);
-frame_DE_2 = DE_2.plot_on_var(plot_params=plot_param[SPLOT_TO])
+frame_DE_2 = DE_2.plot_on_frame(plot_params=plot_param[SPLOT_TO])
 frame_DE_2.Draw()
 #
 chi2_results.update(DE_2.chi2_test())
@@ -119,7 +119,7 @@ fit_res_3 = DE_3.fit(fix_float=bkgr_params[SPLOT_FROM], is_sum_w2=False)
 # asympt_rrr.Print()
 #
 c_sPlot_3 = ROOT.TCanvas("c_sPlot_3", "c_sPlot_3", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_3, 2, 0);
-frame_DE_3 = DE_3.plot_on_var()
+frame_DE_3 = DE_3.plot_on_frame()
 frame_DE_3.Draw()
 #
 chi2_results.update(DE_3.chi2_test())
@@ -146,7 +146,7 @@ DE_4.chi2_fit()
 # asympt_rrr.Print()
 # #
 c_sPlot_4 = ROOT.TCanvas("c_sPlot_4", "c_sPlot_4", 800, 600); CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_4, 2, 0);
-frame_DE_4 = DE_4.plot_on_var()
+frame_DE_4 = DE_4.plot_on_frame()
 frame_DE_4.Draw()
 #
 chi2_results.update(DE_4.chi2_test())

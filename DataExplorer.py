@@ -112,7 +112,7 @@ class DataExplorer(object):
         return frame
 
     def fit(self, is_sum_w2, fix_float=[]):
-        """Fit instance data with instance model using fitTo() method. Set is_fitted=True.
+        """Fit instance data with instance model using fitTo() method. Extended or not is infered from the model. Set is_fitted=True.
         NB: the corresponding model parameters will be updated outside of the class instance after executing!
 
         Parameters
@@ -130,11 +130,9 @@ class DataExplorer(object):
         self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         for param in fix_float:
             param.setConstant(1)
-        #
         self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         for param in fix_float:
             param.setConstant(0)
-        #
         self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
         fit_results.Print()
@@ -143,30 +141,28 @@ class DataExplorer(object):
             print('\n\n' + 56*'~' + '\nBEWARE! Errors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\n' + 56*'~' + '\n\n')
         return fit_results
 
-    def chi2_fit(self, hist = None, fix_float=[], minos = False, poi = None):
-        """Fit the instance data with binned chi2 method
+    def chi2_fit(self, fix_float=[], minos = False, poi = None):
+        """Fit the instance data with binned chi2 method using Minuit2. Set is_fitted=True
         NB: weights presence is taken care of automatically
 
         Parameters
         ----------
 
-        //to be completed//
-
-        run_minos: bool
-            whether to calculate MINOS errors
-
         fix_float: list of RooRealVar, optional (default=[])
-            variables from this list will be firstly setConstant(1) in the fit and then setConstant(0)
+        variables from this list will be firstly setConstant(1) in the fit and then setConstant(0)
+
+        minos: bool
+            whether to calculate MINOS errors for POI
+
+        poi: RooRealVar
+            parameter of interest for which to calculate MINOS errors
 
         Returns
         -------
         self, object
-
         """
-        hist_to_fit = self.data if hist is None else hist
+        hist_to_fit = ROOT.RooDataHist('hist_to_fit', 'hist_to_fit', ROOT.RooArgSet(self.var), self.data) ### binning is taken from the var's definition
         is_extended = self.model.canBeExtended()
-        if type(hist_to_fit) != ROOT.RooDataHist:
-            raise TypeError('Wrong type: convert the data to RooDataHist.')
         chi = ROOT.RooChi2Var("chi","chi", self.model, hist_to_fit, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
         m = ROOT.RooMinimizer(chi)
         m.setMinimizerType("Minuit2")
@@ -184,11 +180,11 @@ class DataExplorer(object):
         #
         if minos:
             if poi is None:
-                raise TypeError('Poi is None by default: set it to a proper variable.')
+                raise TypeError('Poi is None by default: set it to a proper variable to run MINOS.')
             m.minos(ROOT.RooArgSet(poi))
         return self
 
-    def plot_on_var(self, title=' ', plot_params=ROOT.RooArgSet()):
+    def plot_on_frame(self, title=' ', plot_params=ROOT.RooArgSet()):
         """Plot the instance model with all its components and data on the RooPlot frame
 
         Parameters
@@ -257,7 +253,6 @@ class DataExplorer(object):
         mc = ROOT.RooStats.ModelConfig("ModelConfig", w)
         mc.SetPdf(w.pdf(self.model.GetName()))
         mc.SetParametersOfInterest(ROOT.RooArgSet(w.var(poi.GetName())))
-        # w.var("N_sig_X").setError(20.)
         mc.SetObservables(ROOT.RooArgSet(w.var(self.var.GetName())))
         mc.SetNuisanceParameters(ROOT.RooArgSet(*[w.var(nui.GetName()) for nui in nuisances]))
         mc.SetSnapshot(ROOT.RooArgSet(w.var(poi.GetName())))
