@@ -138,7 +138,7 @@ class DataExplorer(object):
         fit_results.Print()
         self.is_fitted = True
         if is_sum_w2:
-            print('\n\n' + 56*'~' + '\nBEWARE! Errors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\n' + 56*'~' + '\n\n')
+            print('\n\n' + 65*'~' + '\n' + ' '*30 + 'BEWARE!\nErrors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\nIf you want the errors to be reliable, opt for chi2_fit() method.\n' + 65*'~' + '\n\n')
         return fit_results
 
     def chi2_fit(self, fix_float=[], minos = False, poi = None):
@@ -215,9 +215,7 @@ class DataExplorer(object):
             if 'bkgr' in iter_comp.GetName().split('_'):
                 self.model.plotOn(frame, RF.Components(iter_comp.GetName()), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4))
             iter_comp = iter.Next()
-        #
         if REFL_ON: self.model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44))
-        # self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto)) # plotting data at the beginning once sometimes doesn't work
         #
         frame.GetYaxis().SetTitle(f'Candidates / {round((var_right - var_left) * 1000. / var_nbins, 1)} MeV')
         frame.GetXaxis().SetTitleSize(0.04)
