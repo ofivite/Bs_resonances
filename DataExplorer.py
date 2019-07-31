@@ -332,6 +332,14 @@ class DataExplorer(object):
         :returns: GetHypoTest() object for printing with Print()
         """
         data, model_sb, model_b = DataExplorer.extract(w)
+        if data.isWeighted():
+            print('\n\nIt\'s not a good idea to do asymptotic significance calculation with weighted data. Sure you want to proceed?\n')
+            while True:
+                answer = input('Type yes/no:\n')
+                if answer in ['yes', 'no']:
+                    break
+            if answer == 'no':
+                exit('Exiting.')
         ac = ROOT.RooStats.AsymptoticCalculator(data, model_sb, model_b)
         ac.SetOneSidedDiscovery(True)
         as_result = ac.GetHypoTest()
@@ -517,13 +525,17 @@ def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
             try:
                 val = workspaces_dict[key].var(iter_comp.GetName()).getVal()
             except:
-                print(f'Can\'t find {iter_comp.GetName()} variable in the workspace: skipping it w/o fixing.')
-                pass
+                if iter_comp in var_ignore_list:
+                    print(f'Can\'t find {iter_comp.GetName()} variable in the workspace: skipping it as ignore_listed.')
+                    pass
+                else:
+                    raise Exception(f'Can\'t find {iter_comp.GetName()} variable in the workspace: check that models match.')
             else:
                 iter_comp.setVal(val)
                 if iter_comp.GetName() not in [v.GetName() for v in var_ignore_list]:
                     iter_comp.setConstant(1)
-            iter_comp = iter.Next()
+            finally:
+                iter_comp = iter.Next()
 
 ################################################################################################################################
 

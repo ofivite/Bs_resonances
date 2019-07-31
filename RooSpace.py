@@ -263,14 +263,14 @@ N_B0_refl = ROOT.RooRealVar('N_B0_refl', '', 990., 0., 1000.)
 
 #############################################################################################
 
-model_1D_X = ROOT.RooAddPdf('model_1D_X', 'model_1D_X', ROOT.RooArgList(signal_X, bkgr_X), ROOT.RooArgList(N_sig_X, N_bkgr_X))
-model_1D_psi = ROOT.RooAddPdf('model_1D_psi', 'model_1D_psi', ROOT.RooArgList(signal_psi, bkgr_psi), ROOT.RooArgList(N_sig_psi, N_bkgr_psi))
-model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
-# model_1D_phi = ROOT.RooAddPdf('model_1D_phi', 'model_1D_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(fr_model_phi))
-model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
-# model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
+model_X = ROOT.RooAddPdf('model_X', 'model_X', ROOT.RooArgList(signal_X, bkgr_X), ROOT.RooArgList(N_sig_X, N_bkgr_X))
+model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi, bkgr_psi), ROOT.RooArgList(N_sig_psi, N_bkgr_psi))
+model_phi = ROOT.RooAddPdf('model_phi', 'model_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
+# model_phi = ROOT.RooAddPdf('model_phi', 'model_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(fr_model_phi))
+# model_Bs = ROOT.RooAddPdf('model_Bs', 'model_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+model_Bs = ROOT.RooAddPdf('model_Bs', 'model_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
 
-model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'X': model_1D_X, 'psi': model_1D_psi}
+model = {'Bs': model_Bs, 'phi': model_phi, 'X': model_X, 'psi': model_psi}
 var = {'Bs': var_discr, 'phi': PHI_mass_Cjp, 'X': var_control, 'psi': var_control}
 signal_model_dict = {'Bs': signal_Bs, 'phi': signal_phi, 'X': signal_X, 'psi': signal_psi}
 bkgr_model_dict = {'Bs': bkgr_Bs, 'phi': bkgr_phi, 'X': bkgr_X, 'psi': bkgr_psi}
