@@ -15,13 +15,12 @@ var_control.setMin(left_control_data); var_control.setMax(right_control_data);  
 #
 # file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
 # file_data = ROOT.TFile('~/BXP_v1_645_of_2035_.root')
-# file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_efa6c476.root')
 file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_61ddc20.root')
 data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
 data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE])
 #
 chi2_results = {}
-# file_out_data = open('/home/yaourt/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/' + MODE +'_data_evtN.txt', 'w')
+N_sig_results = {}
 
             #-------------------#
             ##  fixing shapes  ##
@@ -47,7 +46,7 @@ if REGIONS_FROM == 'phi':
     DE_inclus.window = 0.01
     DE_inclus.distance_to_sdb = 0.005
 else:
-    DE_inclus.set_regions()
+    DE_inclus.set_regions(num_of_sigma_window=3, num_of_sigma_to_sdb=2)
 #
 data_sig, data_side = DE_inclus.get_regions()
 fit_res_inclus = DE_inclus.fit(is_sum_w2=False)
@@ -74,7 +73,7 @@ else:
     N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
 DE_1 = DataExplorer(label=SPLOT_FROM, data=data_sig, model=model[SPLOT_FROM])
-fit_res_1 = DE_1.fit(fix_float=bkgr_params[SPLOT_FROM], is_sum_w2=False)
+fit_res_1 = DE_1.fit(is_sum_w2=False, fix_float=bkgr_params[SPLOT_FROM])
 #
 c_sPlot_1 = ROOT.TCanvas("c_sPlot_1", "c_sPlot_1", 800, 600)
 frame_DE_1 = DE_1.plot_on_frame(plot_params=plot_param[SPLOT_FROM])
@@ -88,7 +87,7 @@ chi2_results.update(DE_1.chi2_test())
 # #
 # c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
-# # file_out_data.write(str(N_sig[SPLOT_FROM].getVal()) + ' ' + str(N_sig[SPLOT_FROM].getError()) + '\n')
+N_sig_results.update({f'{N_sig[SPLOT_FROM].GetName()}_SR': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError())})
 
             #--------------#
             ##  sPlot II  ##
@@ -105,7 +104,8 @@ data_sig_w.SetName('sig_w')
 hist_sig_weighted = ROOT.RooDataHist('hist_sig_weighted', 'hist_sig_weighted', ROOT.RooArgSet(var[SPLOT_TO]), data_sig_w) ### binning for this var was already previously set
 #
 DE_2 = DataExplorer(label=SPLOT_TO, data=data_sig_w, model=model[SPLOT_TO])
-fit_res_2 = DE_2.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
+# fit_res_2 = DE_2.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
+fit_res_2 = DE_2.chi2_fit()
 # #
 # w2 = DE_2.prepare_workspace(poi=N_sig[SPLOT_TO], nuisances=bkgr_params[SPLOT_TO] + [mean[SPLOT_TO], N_bkgr[SPLOT_TO]])
 # asympt_rrr = DE_2.asympt_signif(w=w2)
@@ -119,7 +119,7 @@ CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0)
 chi2_results.update(DE_2.chi2_test())
 # c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
-# # file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
+N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SR': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError())})
 
             #---------------#
             ##  sPlot III  ##
@@ -139,7 +139,7 @@ CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_3, 2, 0)
 chi2_results.update(DE_3.chi2_test())
 # c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
 # c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_3_' + MODE + refl_line + '.pdf')
-# # file_out_data.write(str(N_sig[SPLOT_FROM].getVal()) + ' ' + str(N_sig[SPLOT_FROM].getError()) + '\n')
+N_sig_results.update({f'{N_sig[SPLOT_FROM].GetName()}_SdR': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError())})
 
             #--------------#
             ##  sPlot IV  ##
@@ -153,7 +153,7 @@ data_side_w.SetName('side_w')
 hist_side_weighted = ROOT.RooDataHist('hist_side_weighted', 'hist_side_weighted', ROOT.RooArgSet(var[SPLOT_TO]), data_side_w) ### binning for this var was already previously set
 #
 DE_4 = DataExplorer(label=SPLOT_TO, data=data_side_w, model=model[SPLOT_TO])
-DE_4.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
+fit_res_1 = DE_4.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
 #
 c_sPlot_4 = ROOT.TCanvas("c_sPlot_4", "c_sPlot_4", 800, 600)
 frame_DE_4 = DE_4.plot_on_frame(plot_params=plot_param[SPLOT_TO])
@@ -163,12 +163,16 @@ CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_4, 2, 0)
 chi2_results.update(DE_4.chi2_test())
 # c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
 # c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_4_' + MODE + refl_line + '.pdf')
-# # file_out_data.write(str(N_sig[SPLOT_TO].getVal()) + ' ' + str(N_sig[SPLOT_TO].getError()) + '\n')
+N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SdR': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError())})
 
 #             #--------------#
 #             #   Writing   ##
 #             #--------------#
 #
-# file_out_data.close()
-# with open('./fit_validation/chis_' + MODE + '.txt', 'w') as file:
-#     file.write(json.dumps(chi_dict))
+# with open(f'/home/yaourt/Study/Bs_resonances/fit_validation/chis_{MODE}.txt', 'w') as file_chi2:
+#     json.dumps(chi_dict, file_chi2)
+# with open(f'/home/yaourt/Study/Bs_resonances/{SPLOT_FROM}->{SPLOT_TO}/{MODE}_data_evtN.json', 'w') as file_evts:
+#     json.dump(N_sig_results, file_evts)
+
+# # with open('data.json', 'r') as fp:
+# #     data = json.load(fp)

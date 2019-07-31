@@ -28,6 +28,7 @@ class DataExplorer(object):
         self.var = model.getObservables(data).iterator().Next()
         self.label = label
         self.is_fitted = False
+        self.fit_status = -999
 
     def set_regions(self, num_of_sigma_window=3, num_of_sigma_to_sdb=2):
         """Set signal region (SR) window and distance to sidebands (SdR)
@@ -137,6 +138,7 @@ class DataExplorer(object):
         fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
         fit_results.Print()
         self.is_fitted = True
+        self.fit_status = fit_results.status()
         if is_sum_w2:
             print('\n\n' + 65*'~' + '\n' + ' '*30 + 'BEWARE!\nErrors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\nIf you want the errors to be reliable, opt for chi2_fit() method\n(but the normalization will likely be broken)\n' + 65*'~' + '\n\n')
         return fit_results
@@ -174,15 +176,14 @@ class DataExplorer(object):
         m.minimize("Minuit2","minimize")
         for param in fix_float:
             param.setConstant(0)
-        m.minimize("Minuit2","minimize")
-        m.minimize("Minuit2","minimize")
         self.is_fitted = True
+        self.fit_status = m.minimize("Minuit2","minimize")
         #
         if minos:
             if poi is None:
                 raise TypeError('Poi is None by default: set it to a proper variable to run MINOS.')
             m.minos(ROOT.RooArgSet(poi))
-        return self
+        return m.save()
 
     def plot_on_frame(self, title=' ', plot_params=ROOT.RooArgSet()):
         """Plot the instance model with all its components and data on the RooPlot frame
