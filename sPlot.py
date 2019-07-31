@@ -1,4 +1,5 @@
 from RooSpace import *
+from cuts import *
 from DataExplorer import DataExplorer, fix_shapes
 import CMS_tdrStyle_lumi
 
@@ -12,7 +13,10 @@ var_discr.setMin(left_discr_data); var_discr.setMax(right_discr_data); var_discr
 PHI_mass_Cjp.setMin(left_phi_data); PHI_mass_Cjp.setMax(right_phi_data); PHI_mass_Cjp.setBins(nbins_phi_data)
 var_control.setMin(left_control_data); var_control.setMax(right_control_data);  var_control.setBins(nbins_control_data)
 #
-file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
+# file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
+# file_data = ROOT.TFile('~/BXP_v1_645_of_2035_.root')
+# file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_efa6c476.root')
+file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_61ddc20.root')
 data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
 data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE])
 #
@@ -28,9 +32,9 @@ w_psi = ROOT.TFile('workspace_psi_control.root').Get('workspace')
 w_X = ROOT.TFile('workspace_X_control.root').Get('workspace')
 w_phi = ROOT.TFile('workspace_' + MODE + '_phi.root').Get('workspace')
 w_delta_phi = ROOT.TFile('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root').Get('workspace')
-w = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
+w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
 #
-fix_shapes(workspaces_dict=w, models_dict=signal, var_ignore_list=[*var.values(), *mean.values()])
+fix_shapes(workspaces_dict=w_dict, models_dict=signal_model_dict, var_ignore_list=[*var.values(), *mean.values()])
 mean_delta.setVal(0.); mean_delta.setConstant(1)
 N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 
@@ -64,9 +68,11 @@ chi2_results.update(DE_inclus.chi2_test())
             ##  sPlot I  ##
             #-------------#
 
-if REFL_ON and MODE == 'psi':  N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
-else:        N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
-#
+if REFL_ON and MODE == 'psi' and SPLOT_FROM == 'Bs':
+    N_B0_refl.setVal(9.); N_B0_refl.setConstant(0)
+else:
+    N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
+
 DE_1 = DataExplorer(label=SPLOT_FROM, data=data_sig, model=model[SPLOT_FROM])
 fit_res_1 = DE_1.fit(fix_float=bkgr_params[SPLOT_FROM], is_sum_w2=False)
 #
@@ -88,16 +94,23 @@ chi2_results.update(DE_1.chi2_test())
             ##  sPlot II  ##
             #--------------#
 
-sPlot_list = ROOT.RooArgList(N_sig[SPLOT_FROM], N_bkgr[SPLOT_FROM], N_B0_refl) if SPLOT_FROM == 'Bs' else ROOT.RooArgList(N_sig[SPLOT_FROM], N_bkgr[SPLOT_FROM])
+# ### Fixing model's parameters except for yields is needed according to sPlot tutorial
+# a1_Bs.setConstant(1); a2_Bs.setConstant(1); a3_Bs.setConstant(1); a4_Bs.setConstant(1);
+# mean_Bs.setConstant(1); sigma_Bs.setConstant(1)
+
+sPlot_list = ROOT.RooArgList(N_sig[SPLOT_FROM], N_bkgr[SPLOT_FROM], N_B0_refl) if SPLOT_FROM == 'Bs' and  REFL_ON else ROOT.RooArgList(N_sig[SPLOT_FROM], N_bkgr[SPLOT_FROM])
 sData_sig = ROOT.RooStats.SPlot('sData_sig', 'sData_sig', data_sig, model[SPLOT_FROM], sPlot_list)
 data_sig_w = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N_sig[SPLOT_FROM].GetName() + '_sw')
 data_sig_w.SetName('sig_w')
 hist_sig_weighted = ROOT.RooDataHist('hist_sig_weighted', 'hist_sig_weighted', ROOT.RooArgSet(var[SPLOT_TO]), data_sig_w) ### binning for this var was already previously set
 #
 DE_2 = DataExplorer(label=SPLOT_TO, data=data_sig_w, model=model[SPLOT_TO])
-#mean[SPLOT_TO].setConstant(1)
 fit_res_2 = DE_2.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
-#
+# #
+# w2 = DE_2.prepare_workspace(poi=N_sig[SPLOT_TO], nuisances=bkgr_params[SPLOT_TO] + [mean[SPLOT_TO], N_bkgr[SPLOT_TO]])
+# asympt_rrr = DE_2.asympt_signif(w=w2)
+# asympt_rrr.Print()
+# #
 c_sPlot_2 = ROOT.TCanvas("c_sPlot_2", "c_sPlot_2", 800, 600)
 frame_DE_2 = DE_2.plot_on_frame(plot_params=plot_param[SPLOT_TO])
 frame_DE_2.Draw()
@@ -118,12 +131,8 @@ N_B0_refl.setVal(0.); N_B0_refl.setConstant(1)
 DE_3 = DataExplorer(label=SPLOT_FROM, data=data_side, model=model[SPLOT_FROM])
 fit_res_3 = DE_3.fit(is_sum_w2=False, fix_float=bkgr_params[SPLOT_FROM])
 #
-# w3 = DE_3.prepare_workspace(poi=N_sig[SPLOT_FROM], nuisances=bkgr_params[SPLOT_FROM] + [mean[SPLOT_FROM], N_bkgr[SPLOT_FROM]])
-# asympt_rrr = DE_3.asympt_signif(w=w3)
-# asympt_rrr.Print()
-#
 c_sPlot_3 = ROOT.TCanvas("c_sPlot_3", "c_sPlot_3", 800, 600)
-frame_DE_3 = DE_3.plot_on_frame()
+frame_DE_3 = DE_3.plot_on_frame(plot_params=plot_param[SPLOT_FROM])
 frame_DE_3.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_3, 2, 0)
 #
@@ -143,15 +152,11 @@ data_side_w = ROOT.RooDataSet(data_side.GetName(), data_side.GetTitle(), data_si
 data_side_w.SetName('side_w')
 hist_side_weighted = ROOT.RooDataHist('hist_side_weighted', 'hist_side_weighted', ROOT.RooArgSet(var[SPLOT_TO]), data_side_w) ### binning for this var was already previously set
 #
-DE_4 = DataExplorer(label=SPLOT_TO, data=hist_side_weighted, model=model[SPLOT_TO])
+DE_4 = DataExplorer(label=SPLOT_TO, data=data_side_w, model=model[SPLOT_TO])
 DE_4.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
-# #
-# w4 = DE_4.prepare_workspace(poi = fr_model_phi, nuisances = bkgr_params[SPLOT_TO] + [mean[SPLOT_TO]])
-# asympt_rrr = DE_4.asympt_signif(w = w4)
-# asympt_rrr.Print()
-# #
+#
 c_sPlot_4 = ROOT.TCanvas("c_sPlot_4", "c_sPlot_4", 800, 600)
-frame_DE_4 = DE_4.plot_on_frame()
+frame_DE_4 = DE_4.plot_on_frame(plot_params=plot_param[SPLOT_TO])
 frame_DE_4.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_4, 2, 0)
 #
