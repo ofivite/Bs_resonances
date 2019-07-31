@@ -138,7 +138,7 @@ class DataExplorer(object):
         fit_results.Print()
         self.is_fitted = True
         if is_sum_w2:
-            print('\n\n' + 65*'~' + '\n' + ' '*30 + 'BEWARE!\nErrors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\nIf you want the errors to be reliable, opt for chi2_fit() method.\n' + 65*'~' + '\n\n')
+            print('\n\n' + 65*'~' + '\n' + ' '*30 + 'BEWARE!\nErrors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\nIf you want the errors to be reliable, opt for chi2_fit() method\n(but the normalization will likely be broken)\n' + 65*'~' + '\n\n')
         return fit_results
 
     def chi2_fit(self, fix_float=[], minos = False, poi = None):
@@ -514,10 +514,15 @@ def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
         while iter_comp:
             if key not in workspaces_dict.keys():
                 raise Exception(f'Can\'t find the \'{key}\' key in the workspaces dictionary.')
-            val = workspaces_dict[key].var(iter_comp.GetName()).getVal()
-            iter_comp.setVal(val)
-            if iter_comp.GetName() not in [v.GetName() for v in var_ignore_list]:
-                iter_comp.setConstant(1)
+            try:
+                val = workspaces_dict[key].var(iter_comp.GetName()).getVal()
+            except:
+                print(f'Can\'t find {iter_comp.GetName()} variable in the workspace: skipping it w/o fixing.')
+                pass
+            else:
+                iter_comp.setVal(val)
+                if iter_comp.GetName() not in [v.GetName() for v in var_ignore_list]:
+                    iter_comp.setConstant(1)
             iter_comp = iter.Next()
 
 ################################################################################################################################

@@ -15,7 +15,6 @@ from datetime import datetime
 
 import ROOT
 from ROOT import RooFit as RF
-# from cuts import *
 
 # var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
 # var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
@@ -273,13 +272,13 @@ model_1D_Bs = ROOT.RooAddPdf('model_1D_Bs', 'model_1D_Bs', ROOT.RooArgList(signa
 
 model = {'Bs': model_1D_Bs, 'phi': model_1D_phi, 'X': model_1D_X, 'psi': model_1D_psi}
 var = {'Bs': var_discr, 'phi': PHI_mass_Cjp, 'X': var_control, 'psi': var_control}
-signal = {'Bs': signal_Bs, 'phi': signal_phi, 'X': signal_X, 'psi': signal_psi}
-bkgr = {'Bs': bkgr_Bs, 'phi': bkgr_phi, 'X': bkgr_X, 'psi': bkgr_psi}
+signal_model_dict = {'Bs': signal_Bs, 'phi': signal_phi, 'X': signal_X, 'psi': signal_psi}
+bkgr_model_dict = {'Bs': bkgr_Bs, 'phi': bkgr_phi, 'X': bkgr_X, 'psi': bkgr_psi}
 N_sig = {'Bs': N_sig_Bs, 'phi': N_sig_phi, 'X': N_sig_X, 'psi': N_sig_psi}
 N_bkgr =  {'Bs': N_bkgr_Bs, 'phi': N_bkgr_phi, 'X': N_bkgr_X, 'psi': N_bkgr_psi}
 mean = {'Bs': mean_Bs, 'phi': mean_phi, 'X': mean_X, 'psi': mean_psi}
 bkgr_params = {}
-for key, b in bkgr.items():
+for key, b in bkgr_model_dict.items():
     b_list = []
     iter = b.getVariables().iterator()
     iter_comp = iter.Next()
