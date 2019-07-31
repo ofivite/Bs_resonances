@@ -87,7 +87,7 @@ chi2_results.update(DE_1.chi2_test())
 # #
 # c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
-N_sig_results.update({f'{N_sig[SPLOT_FROM].GetName()}_SR': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError())})
+N_sig_results.update({f'{N_sig[SPLOT_FROM].GetName()}_SR': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError(), DE_1.fit_status, DE_1.chi2_test_status)})
 
             #--------------#
             ##  sPlot II  ##
@@ -119,7 +119,7 @@ CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0)
 chi2_results.update(DE_2.chi2_test())
 # c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + refl_line + '.pdf')
-N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SR': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError())})
+N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SR': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError(), DE_2.fit_status, DE_2.chi2_test_status)})
 
             #---------------#
             ##  sPlot III  ##
@@ -139,7 +139,7 @@ CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_3, 2, 0)
 chi2_results.update(DE_3.chi2_test())
 # c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
 # c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_3_' + MODE + refl_line + '.pdf')
-N_sig_results.update({f'{N_sig[SPLOT_FROM].GetName()}_SdR': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError())})
+N_sig_results.update({f'{N_sig[SPLOT_FROM].GetName()}_SdR': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError(), DE_3.fit_status, DE_3.chi2_test_status)})
 
             #--------------#
             ##  sPlot IV  ##
@@ -163,7 +163,7 @@ CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_4, 2, 0)
 chi2_results.update(DE_4.chi2_test())
 # c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
 # c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_4_' + MODE + refl_line + '.pdf')
-N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SdR': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError())})
+N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SdR': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError(), DE_4.fit_status, DE_4.chi2_test_status)})
 
 #             #--------------#
 #             #   Writing   ##

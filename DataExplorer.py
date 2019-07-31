@@ -29,6 +29,7 @@ class DataExplorer(object):
         self.label = label
         self.is_fitted = False
         self.fit_status = -999
+        self.chi2_test_status = -999
 
     def set_regions(self, num_of_sigma_window=3, num_of_sigma_to_sdb=2):
         """Set signal region (SR) window and distance to sidebands (SdR)
@@ -176,8 +177,8 @@ class DataExplorer(object):
         m.minimize("Minuit2","minimize")
         for param in fix_float:
             param.setConstant(0)
-        self.is_fitted = True
         self.fit_status = m.minimize("Minuit2","minimize")
+        self.is_fitted = True
         #
         if minos:
             if poi is None:
@@ -323,6 +324,7 @@ class DataExplorer(object):
         chi = ROOT.RooChi2Var("chi","chi", self.model, data_hist, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
         chi = chi.getVal()
         pvalue = 1 - chi2.cdf(chi, ndf)
+        self.chi2_test_status = 0 if pvalue > 0.05 else 1
         return {f'{self.model.GetName()}_{self.data.GetName()}': [chi, ndf, pvalue]}
 
     @staticmethod
