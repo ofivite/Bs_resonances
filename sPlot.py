@@ -54,7 +54,7 @@ frame_inclus = DE_inclus.plot_regions(frame_inclus, y_sdb_left, y_sr, y_sdb_righ
 frame_inclus.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_inclus, 2, 0)
 #
-chi2_results.update(DE_inclus.chi2_test())
+chi2_results.update(DE_inclus.chi2_test(CHI2_PVALUE_THRESHOLD))
 # c_inclus.Update(); c_inclus.RedrawAxis(); #c_inclus.GetFrame().Draw();
 # c_inclus.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_inclus___' + MODE + REFL_LINE + '.pdf')
 
@@ -77,12 +77,8 @@ frame_DE_1 = DE_1.plot_on_frame(plot_params=plot_param[SPLOT_FROM], **refl_compo
 frame_DE_1.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_1, 2, 0)
 #
-chi2_results.update(DE_1.chi2_test())
-N_sig_results.update({f'{N_sig[SPLOT_FROM].GetName()}_SR': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError(), DE_1.fit_status, DE_1.chi2_test_status)})
-# #
-# w1 = DE_1.prepare_workspace(poi = N_sig[SPLOT_FROM], nuisances=bkgr_params[SPLOT_FROM] + [mean[SPLOT_FROM], N_bkgr[SPLOT_FROM]])
-# DE_1.toy_signif(w=w1, n_toys = 10, seed=333)
-# #
+chi2_results.update(DE_1.chi2_test(CHI2_PVALUE_THRESHOLD))
+N_sig_results.update({f'{DE_1.label}_{DE_1.data.GetName()}': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError(), DE_1.fit_status, DE_1.chi2_test_status)})
 # c_sPlot_1.Update(); c_sPlot_1.RedrawAxis(); # c_sPlot_1.GetFrame().Draw();
 # c_sPlot_1.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + REFL_LINE + '.pdf')
 
@@ -101,10 +97,9 @@ else:
 
 sData_sig = ROOT.RooStats.SPlot('sData_sig', 'sData_sig', data_sig, model[SPLOT_FROM], sPlot_list)
 data_sig_w = ROOT.RooDataSet(data_sig.GetName(), data_sig.GetTitle(), data_sig, data_sig.get(), '1 > 0', N_sig[SPLOT_FROM].GetName() + '_sw')
-data_sig_w.SetName('sig_w')
+data_sig_w.SetName('SR_w')
 DE_2 = DataExplorer(label=SPLOT_TO, data=data_sig_w, model=model[SPLOT_TO])
-# fit_res_2 = DE_2.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
-fit_res_2 = DE_2.chi2_fit()
+fit_res_2 = DE_2.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
 # #
 # w2 = DE_2.prepare_workspace(poi=N_sig[SPLOT_TO], nuisances=bkgr_params[SPLOT_TO] + [mean[SPLOT_TO], N_bkgr[SPLOT_TO]])
 # asympt_rrr = DE_2.asympt_signif(w=w2)
@@ -115,11 +110,11 @@ frame_DE_2 = DE_2.plot_on_frame(plot_params=plot_param[SPLOT_TO])
 frame_DE_2.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_2, 2, 0)
 #
-chi2_results.update(DE_2.chi2_test())
-N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SR': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError(), DE_2.fit_status, DE_2.chi2_test_status)})
+chi2_results.update(DE_2.chi2_test(CHI2_PVALUE_THRESHOLD))
+N_sig_results.update({f'{DE_2.label}_{DE_2.data.GetName()}': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError(), DE_2.fit_status, DE_2.chi2_test_status)})
 # c_sPlot_2.Update(); c_sPlot_2.RedrawAxis(); # c_sPlot_2.GetFrame().Draw();
 # c_sPlot_2.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_1_' + MODE + REFL_LINE + '.pdf')
-
+#
             #---------------#
             ##  sPlot III  ##
             #---------------#
@@ -135,8 +130,8 @@ frame_DE_3 = DE_3.plot_on_frame(plot_params=plot_param[SPLOT_FROM])
 frame_DE_3.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_3, 2, 0)
 #
-chi2_results.update(DE_3.chi2_test())
-N_sig_results.update({f'{N_sig[SPLOT_FROM].GetName()}_SdR': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError(), DE_3.fit_status, DE_3.chi2_test_status)})
+chi2_results.update(DE_3.chi2_test(CHI2_PVALUE_THRESHOLD))
+N_sig_results.update({f'{DE_3.label}_{DE_3.data.GetName()}': (N_sig[SPLOT_FROM].getVal(), N_sig[SPLOT_FROM].getError(), DE_3.fit_status, DE_3.chi2_test_status)})
 # c_sPlot_3.Update(); c_sPlot_3.RedrawAxis(); # c_sPlot_3.GetFrame().Draw();
 # c_sPlot_3.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_3_' + MODE + REFL_LINE + '.pdf')
 
@@ -148,7 +143,7 @@ mean[SPLOT_TO].setConstant(1)
 #
 sData_side = ROOT.RooStats.SPlot('sData_side', 'sData_side', data_side, model[SPLOT_FROM], sPlot_list)
 data_side_w = ROOT.RooDataSet(data_side.GetName(), data_side.GetTitle(), data_side, data_side.get(), '1 > 0', N_sig[SPLOT_FROM].GetName() + '_sw')
-data_side_w.SetName('side_w')
+data_side_w.SetName('SdR_w')
 #
 DE_4 = DataExplorer(label=SPLOT_TO, data=data_side_w, model=model[SPLOT_TO])
 fit_res_4 = DE_4.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
@@ -158,8 +153,8 @@ frame_DE_4 = DE_4.plot_on_frame(plot_params=plot_param[SPLOT_TO])
 frame_DE_4.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_sPlot_4, 2, 0)
 #
-chi2_results.update(DE_4.chi2_test())
-N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SdR': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError(), DE_4.fit_status, DE_4.chi2_test_status)})
+chi2_results.update(DE_4.chi2_test(CHI2_PVALUE_THRESHOLD))
+N_sig_results.update({f'{DE_4.label}_{DE_4.data.GetName()}': (N_sig[SPLOT_TO].getVal(), N_sig[SPLOT_TO].getError(), DE_4.fit_status, DE_4.chi2_test_status)})
 # c_sPlot_4.Update(); c_sPlot_4.RedrawAxis(); # c_sPlot_4.GetFrame().Draw();
 # c_sPlot_4.SaveAs('~/Study/Bs_resonances/' + SPLOT_FROM + '->' + SPLOT_TO + '/c_sPlot_4_' + MODE + REFL_LINE + '.pdf')
 
@@ -175,11 +170,10 @@ N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SdR': (N_sig[SPLOT_TO].getVa
 # # with open('data.json', 'r') as fp:
 # #     data = json.load(fp)
 
-
 print('\n\n' + 65*'~' + '\n' + ' '*30 + 'NB:\n')
 for fit_name, fit_params in N_sig_results.items():
     if N_sig_results[fit_name][2] == 1:
         print(f'Fit for {fit_name} did not converge!\n')
     if N_sig_results[fit_name][3] == 1:
-        print(f'Fit for {fit_name} did not pass chi2 test! (p-value < 0.05)\n')
+        print(f'Fit for {fit_name} did not pass chi2 test! (p-value = {chi2_results[fit_name][-1]} < {CHI2_PVALUE_THRESHOLD})\n')
 print(65*'~' + '\n\n')

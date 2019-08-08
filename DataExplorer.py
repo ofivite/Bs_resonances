@@ -71,8 +71,8 @@ class DataExplorer(object):
         mean = self.model.getParameters(self.data).find(f'mean_{self.label}').getVal()
         data_sig = self.data.reduce(f'TMath::Abs({self.var.GetName()} - {mean}) < {self.window}')
         data_sideband = self.data.reduce(f'TMath::Abs({self.var.GetName()} - {mean}) > {self.window + self.distance_to_sdb} && TMath::Abs({self.var.GetName()} -{mean}) < {2.*self.window + self.distance_to_sdb}')
-        data_sig.SetName('sig')
-        data_sideband.SetName('sideband')
+        data_sig.SetName('SR')
+        data_sideband.SetName('SdR')
         return data_sig, data_sideband
 
     def plot_regions(self, frame, y_sdb_left=0, y_sr=0, y_sdb_right=0, line_width=4):
@@ -323,7 +323,7 @@ class DataExplorer(object):
     #     S = ROOT.Math.gaussian_quantile_c(P, 1)
     #     print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
-    def chi2_test(self):
+    def chi2_test(self, pvalue_threshold = 0.05):
         """Do chi2 goodness-of-fit test
         """
         if not self.is_fitted:
@@ -335,8 +335,8 @@ class DataExplorer(object):
         chi = ROOT.RooChi2Var("chi","chi", self.model, data_hist, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
         chi = chi.getVal()
         pvalue = 1 - chi2.cdf(chi, ndf)
-        self.chi2_test_status = 0 if pvalue > 0.05 else 1
-        return {f'{self.model.GetName()}_{self.data.GetName()}': [chi, ndf, pvalue]}
+        self.chi2_test_status = 0 if pvalue > pvalue_threshold else 1
+        return {f'{self.label}_{self.data.GetName()}': [chi, ndf, pvalue]}
 
     @staticmethod
     def asympt_signif(w):

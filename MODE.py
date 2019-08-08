@@ -7,10 +7,11 @@ if args.mode not in ['psi', 'X']:
     raise argparse.ArgumentTypeError('wrong naming, enter psi or X')
 
 MODE = args.mode
-RUN = 1
-REGIONS_FROM = MODE; SPLOT_FROM = 'Bs'; SPLOT_TO = 'phi'
+RUN = 2
+REGIONS_FROM = 'phi'; SPLOT_FROM = 'Bs'; SPLOT_TO = MODE
 REFL_ON = False
 REFL_LINE = '_refl' if REFL_ON else ''
+CHI2_PVALUE_THRESHOLD = 0.05
 # GET_MC_N_EVTS = False
 # gStyle.SetTitleFontSize(.085)
 
