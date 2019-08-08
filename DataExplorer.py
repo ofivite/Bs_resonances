@@ -15,7 +15,6 @@ from ROOT import RooFit as RF
 from scipy.stats import chi2
 from math import sqrt
 from pandas import DataFrame
-from cuts import REFL_ON
 
 class DataExplorer(object):
     """Base class exploring data-model relationship in Bs->X(3872)phi study"""
@@ -69,7 +68,6 @@ class DataExplorer(object):
         """
         if self.is_fitted:
             raise Exception('Can\'t get regions: mean should be (if you mean it) MC-fixed value but not fitted to data.')
-            return
         mean = self.model.getParameters(self.data).find(f'mean_{self.label}').getVal()
         data_sig = self.data.reduce(f'TMath::Abs({self.var.GetName()} - {mean}) < {self.window}')
         data_sideband = self.data.reduce(f'TMath::Abs({self.var.GetName()} - {mean}) > {self.window + self.distance_to_sdb} && TMath::Abs({self.var.GetName()} -{mean}) < {2.*self.window + self.distance_to_sdb}')
@@ -186,7 +184,7 @@ class DataExplorer(object):
             m.minos(ROOT.RooArgSet(poi))
         return m.save()
 
-    def plot_on_frame(self, title=' ', plot_params=ROOT.RooArgSet()):
+    def plot_on_frame(self, title=' ', plot_params=ROOT.RooArgSet(), **kwargs):
         """Plot the instance model with all its components and data on the RooPlot frame
 
         Parameters
@@ -217,7 +215,11 @@ class DataExplorer(object):
             if 'bkgr' in iter_comp.GetName().split('_'):
                 self.model.plotOn(frame, RF.Components(iter_comp.GetName()), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4))
             iter_comp = iter.Next()
-        if REFL_ON: self.model.plotOn(frame, RF.Components("B0_refl_SR"), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name('B0_refl_SR'), RF.Range(5.32, 5.44))
+        for component_name, range in kwargs.items():
+            assert (type(component_name) is str), 'component type is not str'
+            assert (type(range) is list), 'range is not list'
+            assert (len(range) == 2), 'N elements in range != 2'
+            self.model.plotOn(frame, RF.Components(component_name), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kGreen-5), RF.LineWidth(4), RF.Normalization(1.0), RF.Name(component_name), RF.Range(*range))
         #
         frame.GetYaxis().SetTitle(f'Candidates / {round((var_right - var_left) * 1000. / var_nbins, 1)} MeV')
         frame.GetXaxis().SetTitleSize(0.04)
