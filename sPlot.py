@@ -171,8 +171,8 @@ N_sig_results.update({f'{DE_4.label}_{DE_4.data.GetName()}': (N_sig[SPLOT_TO].ge
 
 print('\n\n' + 65*'~' + '\n' + ' '*30 + 'NB:\n')
 for fit_name, fit_params in N_sig_results.items():
-    if N_sig_results[fit_name][2] == 1:
-        print(f'Fit for {fit_name} did not converge!\n')
-    if N_sig_results[fit_name][3] == 1:
+    if N_sig_results[fit_name][2] != 0:
+        print(f'Fit for {fit_name} did not converge! Fit status: {N_sig_results[fit_name][2]}\n')
+    if N_sig_results[fit_name][3] != 0:
         print(f'Fit for {fit_name} did not pass chi2 test! (p-value = {chi2_results[fit_name][-1]} < {CHI2_PVALUE_THRESHOLD})\n')
 print(65*'~' + '\n\n')
