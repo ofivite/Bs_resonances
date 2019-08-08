@@ -1,7 +1,6 @@
 from cuts_and_ranges import *
 from DataExplorer import DataExplorer, fix_shapes
 import CMS_tdrStyle_lumi
-
 from math import sqrt
 import json
 
@@ -16,6 +15,7 @@ elif RUN == 1:
     file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
 else:
     raise Exception(f'Don\'t have a file for Run = {RUN}')
+
 data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
 data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE]) # important to do reduce() instead of adding cuts to RooDataSet definition!
 
@@ -28,7 +28,7 @@ w_psi = ROOT.TFile('workspace_psi_control.root').Get('workspace')
 w_X = ROOT.TFile('workspace_X_control.root').Get('workspace')
 w_phi = ROOT.TFile('workspace_' + MODE + '_phi.root').Get('workspace')
 w_delta_phi = ROOT.TFile('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root').Get('workspace')
-w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
+w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi}
 fix_shapes(workspaces_dict=w_dict, models_dict=signal_model_dict, var_ignore_list=[*var.values(), *mean.values()])
 mean_delta.setVal(0.); mean_delta.setConstant(1)
 
