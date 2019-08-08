@@ -24,7 +24,7 @@ elif RUN == 1:
     PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0., 10.)
     PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
 else:
-    raise Exception(f'Don\'t have vars diffenition for Run = {RUN}')
+    raise Exception(f'Don\'t have vars definition for Run = {RUN}')
 
 jpsi_mass = ROOT.RooRealVar('JPSI_mass_Cmumu', 'm(#mu^{+}#mu^{-}) [GeV]', 1., 4.)
 gen_phi_mass = ROOT.RooRealVar('gen_phi_mass', 'm_{gen}(K^{+}K^{-}) [GeV]', 0., 3.)
@@ -57,13 +57,6 @@ dR_pip = ROOT.RooRealVar('dR_pip', '', 0., 5.)
 dR_pim = ROOT.RooRealVar('dR_pim', '', 0., 5.)
 dR_Kp = ROOT.RooRealVar('dR_Kp', '', 0., 5.)
 dR_Km = ROOT.RooRealVar('dR_Km', '', 0., 5.)
-
-dR_mu1_vv = ROOT.RooRealVar('dR_mu1_vv', '', 0., 5.)
-dR_mu2_vv = ROOT.RooRealVar('dR_mu2_vv', '', 0., 5.)
-dR_pi1_vv = ROOT.RooRealVar('dR_pi1_vv', '', 0., 5.)
-dR_pi2_vv = ROOT.RooRealVar('dR_pi2_vv', '', 0., 5.)
-dR_K1_vv = ROOT.RooRealVar('dR_K1_vv', '', 0., 5.)
-dR_K2_vv = ROOT.RooRealVar('dR_K2_vv', '', 0., 5.)
 
 #############################################################################################
 # Bs

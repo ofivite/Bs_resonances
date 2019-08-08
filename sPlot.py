@@ -11,11 +11,11 @@ N_sig_results = {}
 
 if RUN == 2:
     file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_61ddc20.root')
+    # file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v1_645_of_2035_.root')
 elif RUN == 1:
     file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
 else:
     raise Exception(f'Don\'t have a file for Run = {RUN}')
-# file_data = ROOT.TFile('~/BXP_v1_645_of_2035_.root')
 data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
 data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE]) # important to do reduce() instead of adding cuts to RooDataSet definition!
 
@@ -29,7 +29,6 @@ w_X = ROOT.TFile('workspace_X_control.root').Get('workspace')
 w_phi = ROOT.TFile('workspace_' + MODE + '_phi.root').Get('workspace')
 w_delta_phi = ROOT.TFile('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root').Get('workspace')
 w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi, 'delta': w_delta_phi}
-#
 fix_shapes(workspaces_dict=w_dict, models_dict=signal_model_dict, var_ignore_list=[*var.values(), *mean.values()])
 mean_delta.setVal(0.); mean_delta.setConstant(1)
 
@@ -101,7 +100,7 @@ data_sig_w.SetName('SR_w')
 DE_2 = DataExplorer(label=SPLOT_TO, data=data_sig_w, model=model[SPLOT_TO])
 fit_res_2 = DE_2.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
 # #
-# w2 = DE_2.prepare_workspace(poi=N_sig[SPLOT_TO], nuisances=bkgr_params[SPLOT_TO] + [mean[SPLOT_TO], N_bkgr[SPLOT_TO]])
+# w2 = DE_2.prepare_workspace(poi=N_sig[SPLOT_TO], nuisances= [*bkgr_params[SPLOT_TO], mean[SPLOT_TO], N_bkgr[SPLOT_TO]])
 # asympt_rrr = DE_2.asympt_signif(w=w2)
 # asympt_rrr.Print()
 # #

@@ -139,7 +139,7 @@ class DataExplorer(object):
         self.is_fitted = True
         self.fit_status = fit_results.status()
         if is_sum_w2:
-            print('\n\n' + 65*'~' + '\n' + ' '*30 + 'BEWARE!\nErrors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\nIf you want the errors to be reliable, opt for chi2_fit() method\n(but the normalization will likely be broken)\n' + 65*'~' + '\n\n')
+            print('\n\n' + 70*'~' + '\n' + ' '*30 + 'BEWARE!\n\nErrors might differ between two printed tables!\nThe last one from RooFitResult.Print() should be correct.\nYou might also want to consider chi2_fit() method as a cross-check,\nas in principle, that should give correct and more reliable results\n(but the normalization in this case will likely not be preserved \nand results might be unstable)\n' + 70*'~' + '\n\n')
         return fit_results
 
     def chi2_fit(self, fix_float=[], minos = False, poi = None):
