@@ -181,6 +181,15 @@ class DataExplorer(object):
         if minos:
             if poi is None:
                 raise TypeError('Poi is None by default: set it to a proper variable to run MINOS.')
+            if self.data.isWeighted():
+                print('\n\nThe data is weighted and MINOS should not be used. Sure you want to proceed?\n')
+                while True:
+                    answer = input('Type yes/no:\n')
+                    if answer in ['yes', 'no']:
+                        break
+                if answer == 'no':
+                    print('\nExiting MINOS. Continue running the script...\n')
+                    return m.save()
             m.minos(ROOT.RooArgSet(poi))
         return m.save()
 

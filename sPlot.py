@@ -9,9 +9,13 @@ CMS_tdrStyle_lumi.extraText = "Preliminary"
 chi2_results = {}
 N_sig_results = {}
 
-# file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
+if RUN == 2:
+    file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_61ddc20.root')
+elif RUN == 1:
+    file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
+else:
+    raise Exception(f'Don\'t have a file for Run = {RUN}')
 # file_data = ROOT.TFile('~/BXP_v1_645_of_2035_.root')
-file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_61ddc20.root')
 data = ROOT.RooDataSet('data', '', file_data.Get('mytree'), ROOT.RooArgSet(var_discr, var_control, PIPI_mass_Cjp, PHI_mass_Cjp))
 data = data.reduce(cuts_Bs_data + '&&' + cuts_phi_data + ' && ' + cuts_control_data + ' && ' + cuts_pipi[MODE]) # important to do reduce() instead of adding cuts to RooDataSet definition!
 
@@ -170,3 +174,12 @@ N_sig_results.update({f'{N_sig[SPLOT_TO].GetName()}_SdR': (N_sig[SPLOT_TO].getVa
 
 # # with open('data.json', 'r') as fp:
 # #     data = json.load(fp)
+
+
+print('\n\n' + 65*'~' + '\n' + ' '*30 + 'NB:\n')
+for fit_name, fit_params in N_sig_results.items():
+    if N_sig_results[fit_name][2] == 1:
+        print(f'Fit for {fit_name} did not converge!\n')
+    if N_sig_results[fit_name][3] == 1:
+        print(f'Fit for {fit_name} did not pass chi2 test! (p-value < 0.05)\n')
+print(65*'~' + '\n\n')

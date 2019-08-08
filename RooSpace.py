@@ -11,15 +11,20 @@
 
 import ROOT
 from ROOT import RooFit as RF
+from MODE import RUN, REFL_ON
 
-# var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
-# var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
-# PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0., 10.)
-# PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
-var_discr = ROOT.RooRealVar('Bs_mass_cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
-var_control = ROOT.RooRealVar('jpp_mass_cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
-PIPI_mass_Cjp = ROOT.RooRealVar('pipi_mass_cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0., 10.)
-PHI_mass_Cjp = ROOT.RooRealVar('phi_mass_cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
+if RUN == 2:
+    var_discr = ROOT.RooRealVar('Bs_mass_cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
+    var_control = ROOT.RooRealVar('jpp_mass_cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
+    PIPI_mass_Cjp = ROOT.RooRealVar('pipi_mass_cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0., 10.)
+    PHI_mass_Cjp = ROOT.RooRealVar('phi_mass_cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
+elif RUN == 1:
+    var_discr = ROOT.RooRealVar('BU_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}K^{+}K^{#font[122]{\55}}) [GeV]', 5.1, 5.6)
+    var_control = ROOT.RooRealVar('X_mass_Cjp', 'm(J/#psi#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 3.4, 4.2)
+    PIPI_mass_Cjp = ROOT.RooRealVar('PIPI_mass_Cjp', 'm(#pi^{+}#pi^{#font[122]{\55}}) [GeV]', 0., 10.)
+    PHI_mass_Cjp = ROOT.RooRealVar('PHI_mass_Cjp', 'm(K^{+}K^{#font[122]{\55}}) [GeV]', 0., 2.)
+else:
+    raise Exception(f'Don\'t have vars diffenition for Run = {RUN}')
 
 jpsi_mass = ROOT.RooRealVar('JPSI_mass_Cmumu', 'm(#mu^{+}#mu^{-}) [GeV]', 1., 4.)
 gen_phi_mass = ROOT.RooRealVar('gen_phi_mass', 'm_{gen}(K^{+}K^{-}) [GeV]', 0., 3.)
@@ -264,10 +269,10 @@ model_psi = ROOT.RooAddPdf('model_psi', 'model_psi', ROOT.RooArgList(signal_psi,
 model_phi = ROOT.RooAddPdf('model_phi', 'model_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(N_sig_phi, N_bkgr_phi))
 ### if you want a fraction fit (e.g. in chi2 case)
 # model_phi = ROOT.RooAddPdf('model_phi', 'model_phi', ROOT.RooArgList(signal_phi, bkgr_phi), ROOT.RooArgList(fr_model_phi))
-# if REFL_ON:
-# model_Bs = ROOT.RooAddPdf('model_Bs', 'model_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
-# else:
-model_Bs = ROOT.RooAddPdf('model_Bs', 'model_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
+if REFL_ON:
+    model_Bs = ROOT.RooAddPdf('model_Bs', 'model_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs, B0_refl), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs, N_B0_refl))
+else:
+    model_Bs = ROOT.RooAddPdf('model_Bs', 'model_Bs', ROOT.RooArgList(signal_Bs, bkgr_Bs), ROOT.RooArgList(N_sig_Bs, N_bkgr_Bs))
 
 model = {'Bs': model_Bs, 'phi': model_phi, 'X': model_X, 'psi': model_psi}
 var = {'Bs': var_discr, 'phi': PHI_mass_Cjp, 'X': var_control, 'psi': var_control}
