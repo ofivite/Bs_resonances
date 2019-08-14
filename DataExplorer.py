@@ -304,27 +304,20 @@ class DataExplorer(object):
         return data, model_sb, model_b
 
 ################################################################################################################################
-
-    # def _asympt_signif_(self):
-    #     """
-    #     Function to calculate one-sided significance for a given in the workspace s+b model by bare hands
-    #
-    #     :param: w: workspace to open
-    #     :returns: GetHypoTest() object for printing with Print()
-    #     """
-    #     N[sPlot_to].setVal(0); N[sPlot_to].setConstant(1);
-    #     model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE))
-    #     rrr_null = model[sPlot_to].fitTo(data_sig_weighted, RF.Extended(ROOT.kTRUE), RF.Save())
-    #
-    #     nll_sig  = rrr_sig.minNll()
-    #     nll_null = rrr_null.minNll()
-    #     P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! should be always ndf = 1 = number of poi for this formula to work
-    #     # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
-    #     S = ROOT.Math.gaussian_quantile_c(P, 1)
-    #     print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
+# Statistical methods
 
     def chi2_test(self, pvalue_threshold = 0.05):
-        """Do chi2 goodness-of-fit test
+        """Make goodness-of-fit chi2 test between the instance's data and model. Binning is taken from the variable definition.
+
+        Parameters
+        ----------
+
+        pvalue_threshold: float, optional (default=0.05)
+            threshold for setting boolean flag self.chi2_test_status (pass/fail chi2 test)
+
+        Returns
+        -------
+        dict: Python dictionary with chi2, ndf and p-value of the test.
         """
         if not self.is_fitted:
             raise Exception('Model was not fitted to data, fit it first.')
@@ -332,18 +325,27 @@ class DataExplorer(object):
         data_hist = ROOT.RooDataHist('data_hist', 'data_hist', ROOT.RooArgSet(self.var), self.data) # binning is taken from self.var definition
         nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
         ndf = self.var.numBins() - nfloat
-        chi = ROOT.RooChi2Var("chi","chi", self.model, data_hist, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
-        chi = chi.getVal()
-        pvalue = 1 - chi2.cdf(chi, ndf)
+        chi2_var = ROOT.RooChi2Var("chi","chi", self.model, data_hist, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+        chi2_value = chi2_var.getVal()
+        pvalue = 1 - chi2.cdf(chi2_value, ndf)
         self.chi2_test_status = 0 if pvalue > pvalue_threshold else 1
         return {f'{self.label}_{self.data.GetName()}': [chi, ndf, pvalue]}
 
     @staticmethod
     def asympt_signif(w):
-        """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator
+        """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator.
+        NB: is_fitted is set to False aftewards.
 
-        :param: w: workspace to open
-        :returns: GetHypoTest() object for printing with Print()
+        Parameters
+        ----------
+
+        w: RooWorkspace
+            Workspace containing data and model to be opened. Usage of the method prepare_workspace is assumed.
+
+        Returns
+        -------
+        as_result, HypoTestResult
+            Results of the test (for printing use Print() method)
         """
         data, model_sb, model_b = DataExplorer.extract(w)
         if data.isWeighted():
@@ -358,7 +360,50 @@ class DataExplorer(object):
         ac.SetOneSidedDiscovery(True)
         as_result = ac.GetHypoTest()
         as_result.Print()
+        # self.is_fitted = False
         return as_result
+
+    @staticmethod
+    def asympt_signif_ll(w):
+        """
+        Function to calculate one-sided significance for a given in the workspace s+b model by bare hands (through likelihoods). Might be useful as a cross-check to asympt_signif().
+        NB: is_fitted is set to False aftewards.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        as_result, HypoTestResult
+            Results of the test (for printing use Print() method)
+        """
+        data, model_sb, model_b = DataExplorer.extract(w)
+        if data.isWeighted():
+            print('\n\nIt\'s not a good idea to do asymptotic significance calculation with weighted data. Sure you want to proceed?\n')
+            while True:
+                answer = input('Type yes/no:\n')
+                if answer in ['yes', 'no']:
+                    break
+            if answer == 'no':
+                exit('Exiting.')
+        num_poi = model_sb.GetParametersOfInterest().getSize()
+        if num_poi != 1:
+            print(f'This implementation works only for one parameter of interest (you have {num_poi}). Either change the pois in the workspace or see 1007.1727 paper')
+            return
+        model_sb = model_sb.GetPdf()
+        model_b = model_b.GetPdf()
+        DE_sb = DataExplorer(label='sb', data=data, model=model_sb)
+        DE_b = DataExplorer(label='b', data=data, model=model_b)
+        rrr_sig = DE_sb.fit(is_sum_w2=data.isWeighted())
+        rrr_null = DE_b.fit(is_sum_w2=data.isWeighted())
+        nll_sig  = rrr_sig.minNll()
+        nll_null = rrr_null.minNll()
+
+        P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! should be always ndf = 1 = number of poi for this formula to work
+        # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
+        S = ROOT.Math.gaussian_quantile_c(P, 1)
+        # self.is_fitted = False
+        print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
     @staticmethod
     def toy_signif(w, n_toys = 1000, seed = 333):
