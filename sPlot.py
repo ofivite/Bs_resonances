@@ -9,7 +9,7 @@ chi2_results = {}
 N_sig_results = {}
 
 if RUN == 2:
-    file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_61ddc20.root')
+    file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_2035_of_2035_B0M0.root')
     # file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v1_645_of_2035_.root')
 elif RUN == 1:
     file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')

@@ -9,7 +9,7 @@ chi2_results = {}
 N_sig_results = {}
 
 if RUN == 2:
-    file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v0_2035_of_2035_61ddc20.root')
+    file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_2035_of_2035_B0M0.root')
     # file_data = ROOT.TFile('./lxplus_dir/X_RunII/X_RunII/BXP_v1_645_of_2035_.root')
 elif RUN == 1:
     file_data = ROOT.TFile('new_2_with_more_B0_e3de87.root')
@@ -112,6 +112,7 @@ N_sig_results.update({f'{DE_phi.label}_{DE_phi.data.GetName()}': (N_sig['phi'].g
 #
 # c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(MODE) + '.pdf')
 
+############################################################################################
 
 print('\n\n' + 65*'~' + '\n' + ' '*30 + 'NB:\n')
 for fit_name, fit_params in N_sig_results.items():
