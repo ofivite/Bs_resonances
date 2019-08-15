@@ -221,7 +221,10 @@ class DataExplorer(object):
         frame = ROOT.RooPlot(" ", title, self.var, var_left, var_right, var_nbins)  # frame.getAttText().SetTextSize(0.053)
         self.data.plotOn(frame, RF.DataError(ROOT.RooAbsData.Auto))
         self.model.plotOn(frame, RF.LineColor(ROOT.kRed-6), RF.LineWidth(5)) #, RF.NormRange('full'), RF.Range('full')
-        self.model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_params))
+        if plot_params.getSize() == 0:
+            self.model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9))
+        else:
+            self.model.paramOn(frame, RF.Layout(0.55, 0.96, 0.9), RF.Parameters(plot_params))
         #
         iter = self.model.getComponents().iterator()
         iter_comp = iter.Next()
