@@ -1,5 +1,6 @@
 from cuts_and_ranges import *
-from DataExplorer import DataExplorer, fix_shapes
+from DataExplorer import DataExplorer
+from misc import fix_shapes
 import CMS_tdrStyle_lumi
 from math import sqrt
 import json
