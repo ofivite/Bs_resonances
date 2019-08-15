@@ -111,7 +111,7 @@ class DataExplorer(object):
             frame.addObject(line)
         return frame
 
-    def fit(self, is_sum_w2, fix_float=[]):
+    def fit(self, is_sum_w2, fix = [], fix_float=[]):
         """Fit instance data with instance model using fitTo() method. Extended or not is infered from the model. Set is_fitted=True.
         NB: the corresponding model parameters will be updated outside of the class instance after executing!
 
@@ -119,6 +119,8 @@ class DataExplorer(object):
         ----------
         is_sum_w2: bool
             correct Hessian with data weights matrix to get correct errors, see RooFit tutorial rf403__weightedevts
+        fix: list of RooRealVar, optional (default=[])
+            variables from this list will be fixed in the fit and then released
         fix_float: list of RooRealVar, optional (default=[])
             variables from this list will be firstly setConstant(1) in the fit and then setConstant(0)
 
@@ -127,6 +129,8 @@ class DataExplorer(object):
         fit_results: RooFitResult
         """
         is_extended = self.model.canBeExtended()
+        for param in fix:
+            param.setConstant(1)
         self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         for param in fix_float:
             param.setConstant(1)
@@ -136,6 +140,8 @@ class DataExplorer(object):
         self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2))
         fit_results = self.model.fitTo(self.data, RF.Extended(is_extended), RF.SumW2Error(is_sum_w2), RF.Save())
         fit_results.Print()
+        for param in fix:
+            param.setConstant(0)
         self.is_fitted = True
         self.fit_status = fit_results.status()
         if is_sum_w2:
@@ -596,6 +602,22 @@ def fix_shapes(workspaces_dict, models_dict, var_ignore_list):
             finally:
                 iter_comp = iter.Next()
 
+def interactivity_yn(message):
+    """Interact with the user by printing the message and then suggesting to choose between yes or no. If 'no' is typed, exit the program. if 'yes' - continue running.
+
+    Parameters
+    ----------
+
+    message, str
+        message to be printed
+    """
+    print(f'\n\n{message}\n')
+    while True:
+        answer = input('Type yes/no:\n')
+        if answer in ['yes', 'no']:
+            break
+    if answer == 'no':
+        exit('Exiting.')
 ################################################################################################################################
 
 print('\n\n         ~~~' + '\n\n')
