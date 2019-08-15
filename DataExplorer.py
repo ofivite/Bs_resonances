@@ -262,7 +262,7 @@ class DataExplorer(object):
         w: RooWorkspace
         """
         if not self.is_fitted:
-            raise Exception('Model was not fitted to data, fit it first.')
+            interactivity_yn('Model was not fitted to data, fit it first. Sure you want to proceed?')
 
         w = ROOT.RooWorkspace("w", True)
         Import = getattr(ROOT.RooWorkspace, 'import') # special trick to make things not crush
@@ -292,22 +292,23 @@ class DataExplorer(object):
 
         Returns:
         --------
-        data, model_sb, model_b: RooAbsData, RooAbsPdf, RooAbsPdf
+        data, mc_sb, mc_b: RooAbsData, ModelConfig, ModelConfig
             Tuple with data, s+b and b-only models
         """
         data = w.obj("data")
         #
-        model_sb = w.obj("ModelConfig")
-        model_sb.SetName("model_sb")
-        poi = model_sb.GetParametersOfInterest().first()
+        mc_sb = w.obj("ModelConfig")
+        mc_sb.LoadSnapshot() # not sure whether it is useful
+        mc_sb.SetName("mc_sb")
+        poi = mc_sb.GetParametersOfInterest().first()
         #
-        model_b = model_sb.Clone()
-        model_b.SetName("B_only_model")
+        mc_b = mc_sb.Clone()
+        mc_b.SetName("B_only_model")
         oldval = poi.getVal()
         poi.setVal(0)
-        model_b.SetSnapshot(ROOT.RooArgSet(poi))
+        mc_b.SetSnapshot(ROOT.RooArgSet(poi))
         poi.setVal(oldval)
-        return data, model_sb, model_b
+        return data, mc_sb, mc_b
 
 ################################################################################################################################
 # Statistical methods
@@ -331,16 +332,15 @@ class DataExplorer(object):
         data_hist = ROOT.RooDataHist('data_hist', 'data_hist', ROOT.RooArgSet(self.var), self.data) # binning is taken from self.var definition
         nfloat = self.model.getParameters(self.data).selectByAttrib("Constant", ROOT.kFALSE).getSize()
         ndf = self.var.numBins() - nfloat
-        chi2_var = ROOT.RooChi2Var("chi","chi", self.model, data_hist, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
+        chi2_var = ROOT.RooChi2Var("chi2_var","chi2_var", self.model, data_hist, RF.Extended(is_extended), RF.DataError(ROOT.RooAbsData.Auto))
         chi2_value = chi2_var.getVal()
         pvalue = 1 - chi2.cdf(chi2_value, ndf)
         self.chi2_test_status = 0 if pvalue > pvalue_threshold else 1
-        return {f'{self.label}_{self.data.GetName()}': [chi, ndf, pvalue]}
+        return {f'{self.label}_{self.data.GetName()}': [chi2_value, ndf, pvalue]}
 
     @staticmethod
     def asympt_signif(w):
         """Function to calculate one-sided significance for a given in the workspace s+b model using RooStats.AsymptoticCalculator.
-        NB: is_fitted is set to False aftewards.
 
         Parameters
         ----------
@@ -353,28 +353,20 @@ class DataExplorer(object):
         as_result, HypoTestResult
             Results of the test (for printing use Print() method)
         """
-        data, model_sb, model_b = DataExplorer.extract(w)
+        data, mc_sb, mc_b = DataExplorer.extract(w)
         if data.isWeighted():
-            print('\n\nIt\'s not a good idea to do asymptotic significance calculation with weighted data. Sure you want to proceed?\n')
-            while True:
-                answer = input('Type yes/no:\n')
-                if answer in ['yes', 'no']:
-                    break
-            if answer == 'no':
-                exit('Exiting.')
-        ac = ROOT.RooStats.AsymptoticCalculator(data, model_sb, model_b)
+            interactivity_yn('It\'s not a good idea to do asymptotic significance calculation with weighted data. Sure you want to proceed?')
+        ac = ROOT.RooStats.AsymptoticCalculator(data, mc_sb, mc_b)
         ac.SetOneSidedDiscovery(True)
         as_result = ac.GetHypoTest()
         as_result.Print()
-        # self.is_fitted = False
         return as_result
 
     @staticmethod
     def asympt_signif_ll(w):
         """
         Function to calculate one-sided significance for a given in the workspace s+b model by bare hands (through likelihoods). Might be useful as a cross-check to asympt_signif().
-        NB: is_fitted is set to False aftewards.
-
+        NB: this gives more control on fitting than AsymptoticCalculator
         Parameters
         ----------
 
@@ -416,15 +408,15 @@ class DataExplorer(object):
         """
         // to be completed //
         """
-        data, model_sb, model_b = DataExplorer.extract(w)
-        fc = ROOT.RooStats.FrequentistCalculator(data, model_sb, model_b)
+        data, mc_sb, mc_b = DataExplorer.extract(w)
+        fc = ROOT.RooStats.FrequentistCalculator(data, mc_sb, mc_b)
         fc.SetToys(n_toys, n_toys/10); # fc.SetNToysInTails(500, 100)
-        profll = ROOT.RooStats.ProfileLikelihoodTestStat(model_sb.GetPdf())
+        profll = ROOT.RooStats.ProfileLikelihoodTestStat(mc_sb.GetPdf())
         profll.SetOneSidedDiscovery(True)
         toymcs = ROOT.RooStats.ToyMCSampler(fc.GetTestStatSampler())
         toymcs.SetTestStatistic(profll)
         #
-        if not model_sb.GetPdf().canBeExtended():
+        if not mc_sb.GetPdf().canBeExtended():
             toymcs.SetNEventsPerToy(1)
             print ('adjusting for non-extended formalism')
         #
@@ -436,7 +428,7 @@ class DataExplorer(object):
         plot.SetLogYaxis(True)
         plot.Draw()
         c.Draw()
-        c.SaveAs(f'./toy_signif_{model_sb.GetPdf().GetName()}.pdf')
+        c.SaveAs(f'./toy_signif_{mc_sb.GetPdf().GetName()}.pdf')
         return fqResult
 
     def toy_tstat(self, n_toys = 1000, seed = 333, save=False):
