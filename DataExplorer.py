@@ -375,32 +375,30 @@ class DataExplorer(object):
         as_result, HypoTestResult
             Results of the test (for printing use Print() method)
         """
-        data, model_sb, model_b = DataExplorer.extract(w)
+        data, mc_sb, mc_b = DataExplorer.extract(w)
         if data.isWeighted():
-            print('\n\nIt\'s not a good idea to do asymptotic significance calculation with weighted data. Sure you want to proceed?\n')
-            while True:
-                answer = input('Type yes/no:\n')
-                if answer in ['yes', 'no']:
-                    break
-            if answer == 'no':
-                exit('Exiting.')
-        num_poi = model_sb.GetParametersOfInterest().getSize()
+            interactivity_yn('It\'s not a good idea to do asymptotic significance calculation with weighted data. Sure you want to proceed?')
+        num_poi = mc_sb.GetParametersOfInterest().getSize()
         if num_poi != 1:
-            print(f'This implementation works only for one parameter of interest (you have {num_poi}). Either change the pois in the workspace or see 1007.1727 paper')
+            print(f'This implementation works only for one parameter of interest (you have {num_poi}). Either change pois in the workspace or see 1007.1727 paper.')
             return
-        model_sb = model_sb.GetPdf()
-        model_b = model_b.GetPdf()
+
+        mc_sb.LoadSnapshot();
+        model_sb = mc_sb.GetPdf()
         DE_sb = DataExplorer(label='sb', data=data, model=model_sb)
-        DE_b = DataExplorer(label='b', data=data, model=model_b)
         rrr_sig = DE_sb.fit(is_sum_w2=data.isWeighted())
+        #
+        mc_b.LoadSnapshot()
+        mc_b.GetParametersOfInterest().first().setConstant()
+        model_b = mc_b.GetPdf()
+        DE_b = DataExplorer(label='b', data=data, model=model_b)
         rrr_null = DE_b.fit(is_sum_w2=data.isWeighted())
+        #
         nll_sig  = rrr_sig.minNll()
         nll_null = rrr_null.minNll()
-
         P = ROOT.TMath.Prob(2*(nll_null - nll_sig), 1) ## !!! should be always ndf = 1 = number of poi for this formula to work
-        # S = ROOT.TMath.ErfcInverse(P) * sqrt(2)
-        S = ROOT.Math.gaussian_quantile_c(P, 1)
-        # self.is_fitted = False
+        S = ROOT.TMath.ErfcInverse(P)*sqrt(2) # this yields same result as AsymptoticCalculator
+        # S = ROOT.Math.gaussian_quantile_c(P, 1) # this is slightly different, might be python precision issues
         print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
 
     @staticmethod
