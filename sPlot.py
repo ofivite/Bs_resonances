@@ -101,7 +101,7 @@ data_sig_w.SetName('SR_w')
 DE_2 = DataExplorer(label=SPLOT_TO, data=data_sig_w, model=model[SPLOT_TO])
 fit_res_2 = DE_2.fit(is_sum_w2=True, fix_float=bkgr_params[SPLOT_TO])
 # #
-# w2 = DE_2.prepare_workspace(poi=N_sig[SPLOT_TO], nuisances= [*bkgr_params[SPLOT_TO], mean[SPLOT_TO], N_bkgr[SPLOT_TO]])
+# w2 = DE_2.write_to_workspace(poi=N_sig[SPLOT_TO], nuisances= [*bkgr_params[SPLOT_TO], mean[SPLOT_TO], N_bkgr[SPLOT_TO]])
 # asympt_rrr = DE_2.asympt_signif(w=w2)
 # asympt_rrr.Print()
 # #

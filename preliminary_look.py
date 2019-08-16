@@ -1,6 +1,5 @@
 from cuts_and_ranges import *
 from DataExplorer import DataExplorer
-from misc import fix_shapes
 import CMS_tdrStyle_lumi
 from math import sqrt
 import json
@@ -30,7 +29,7 @@ w_X = ROOT.TFile('workspace_X_control.root').Get('workspace')
 w_phi = ROOT.TFile('workspace_' + MODE + '_phi.root').Get('workspace')
 w_delta_phi = ROOT.TFile('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root').Get('workspace')
 w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi}
-fix_shapes(workspaces_dict=w_dict, models_dict=signal_model_dict, var_ignore_list=[*var.values(), *mean.values()])
+DataExplorer.fix_shapes(workspaces_dict=w_dict, models_dict=signal_model_dict, var_ignore_list=[*var.values(), *mean.values()])
 mean_delta.setVal(0.); mean_delta.setConstant(1)
 
             #-----------------#
@@ -65,9 +64,9 @@ CMS_tdrStyle_lumi.CMS_lumi(c_control, 2, 0)
 chi2_results.update(DE_control.chi2_test(CHI2_PVALUE_THRESHOLD))
 N_sig_results.update({f'{DE_control.label}_{DE_control.data.GetName()}': (N_sig[MODE].getVal(), N_sig[MODE].getError(), DE_control.fit_status, DE_control.chi2_test_status)})
 #
-# w_control = DE_control.prepare_workspace(poi=N_sig[MODE], nuisances=[*bkgr_params[MODE], mean[MODE], N_bkgr[MODE]])
-# ar_control = DE_control.asympt_signif(w=w_control)
-# ar_control.Print()
+w_control = DE_control.write_to_workspace(poi=N_sig[MODE], nuisances=[*bkgr_params[MODE], mean[MODE], N_bkgr[MODE]])
+ar_control = DE_control.asympt_signif(w=w_control)
+ar_control.Print()
 #
 # c_control.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_control_prelim_' + str(MODE) + '.pdf')
 
@@ -86,9 +85,9 @@ CMS_tdrStyle_lumi.CMS_lumi(c_Bs, 2, 0)
 chi2_results.update(DE_Bs.chi2_test(CHI2_PVALUE_THRESHOLD))
 N_sig_results.update({f'{DE_Bs.label}_{DE_Bs.data.GetName()}': (N_sig['Bs'].getVal(), N_sig['Bs'].getError(), DE_Bs.fit_status, DE_Bs.chi2_test_status)})
 #
-# w_Bs = DE_Bs.prepare_workspace(poi=N_sig['Bs'], nuisances=[*bkgr_params['Bs'], mean['Bs'], N_bkgr['Bs']])
-# ar_Bs = DE_Bs.asympt_signif(w=w_Bs)
-# ar_Bs.Print()
+w_Bs = DE_Bs.write_to_workspace(poi=N_sig['Bs'], nuisances=[*bkgr_params['Bs'], mean['Bs'], N_bkgr['Bs']])
+ar_Bs = DE_Bs.asympt_signif(w=w_Bs)
+ar_Bs.Print()
 #
 # c_Bs.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_Bs_prelim_' + str(MODE) + '.pdf')
 
@@ -107,9 +106,9 @@ CMS_tdrStyle_lumi.CMS_lumi(c_phi, 2, 0)
 chi2_results.update(DE_phi.chi2_test(CHI2_PVALUE_THRESHOLD))
 N_sig_results.update({f'{DE_phi.label}_{DE_phi.data.GetName()}': (N_sig['phi'].getVal(), N_sig['phi'].getError(), DE_phi.fit_status, DE_phi.chi2_test_status)})
 #
-# w_phi = DE_phi.prepare_workspace(poi=N_sig['phi'], nuisances=[*bkgr_params['phi'], mean['phi'], N_bkgr['phi']])
-# ar_phi = DE_phi.asympt_signif(w=w_phi)
-# ar_phi.Print()
+w_phi = DE_phi.write_to_workspace(poi=N_sig['phi'], nuisances=[*bkgr_params['phi'], mean['phi'], N_bkgr['phi']])
+ar_phi = DE_phi.asympt_signif(w=w_phi)
+ar_phi.Print()
 #
 # c_phi.SaveAs('~/Study/Bs_resonances/preliminary_look_plots/c_phi_prelim_' + str(MODE) + '.pdf')
 
