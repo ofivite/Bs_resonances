@@ -9,9 +9,9 @@ class StatTools:
     """Additional to DataExplorer module for performing statistical inference.
     """
 
-    def chi2_test(self, pvalue_threshold = 0.05):
+    def chi2_test(self, pvalue_threshold = 0.05, nbins = -1):
         """Make goodness-of-fit chi2 test between the instance's data and model.
-        NB: binning is taken from the variable's definition.
+        NB: by default, binning is taken from the variable's definition. Otherwise, it is temporarily set to nbins value.
 
         Parameters
         ----------
@@ -19,10 +19,17 @@ class StatTools:
         pvalue_threshold: float, optional (default=0.05)
             threshold for setting boolean flag self.chi2_test_status (pass/fail chi2 test)
 
+        nbins: int/float, optional (default=-1: take the number of bins from the variable's definition)
+            number of bins in calculating chi2
+
         Returns
         -------
         dict: Python dictionary with chi2, ndf and p-value of the test.
         """
+        init_nbins = self.var.numBins()
+        if nbins != -1:
+            assert (nbins % 1 == 0 and nbins >= 0), 'nbins type is not a positive integer'
+            self.var.setBins(nbins)
         if not self.is_fitted:
             raise Exception('Model was not fitted to data, fit it first.')
         is_extended = self.model.canBeExtended()
@@ -33,6 +40,7 @@ class StatTools:
         chi2_value = chi2_var.getVal()
         pvalue = 1 - chi2.cdf(chi2_value, ndf)
         self.chi2_test_status = 0 if pvalue > pvalue_threshold else 1
+        self.var.setBins(init_nbins)
         return {f'{self.label}_{self.data.GetName()}': [chi2_value, ndf, pvalue]}
 
     @classmethod
@@ -83,12 +91,14 @@ class StatTools:
         model_sb = mc_sb.GetPdf()
         DE_sb = cls(label='sb', data=data, model=model_sb)
         rrr_sig = DE_sb.fit(is_sum_w2=data.isWeighted())
+        a = mc_sb.GetParametersOfInterest().first().getVal()
 
         mc_b.LoadSnapshot()
         mc_b.GetParametersOfInterest().first().setConstant()
         model_b = mc_b.GetPdf()
         DE_b = cls(label='b', data=data, model=model_b)
         rrr_null = DE_b.fit(is_sum_w2=data.isWeighted())
+        b = mc_b.GetParametersOfInterest().first().getVal()
 
         nll_sig  = rrr_sig.minNll()
         nll_null = rrr_null.minNll()
@@ -96,6 +106,7 @@ class StatTools:
         S = ROOT.TMath.ErfcInverse(P)*sqrt(2) # this yields same result as AsymptoticCalculator
         # S = ROOT.Math.gaussian_quantile_c(P, 1) # this is slightly different, might be python precision issues
         print ('P=', P, ' nll_sig=', nll_sig, ' nll_null=', nll_null, '\n', 'S=', S)
+        return a,b
 
     @staticmethod
     def toy_signif(w, n_toys = 1000, seed = 333):

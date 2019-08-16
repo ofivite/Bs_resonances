@@ -1,6 +1,5 @@
 from cuts_and_ranges import *
 from DataExplorer import DataExplorer
-from misc import fix_shapes
 import CMS_tdrStyle_lumi
 from math import sqrt
 import json
@@ -30,7 +29,7 @@ w_X = ROOT.TFile('workspace_X_control.root').Get('workspace')
 w_phi = ROOT.TFile('workspace_' + MODE + '_phi.root').Get('workspace')
 w_delta_phi = ROOT.TFile('workspace_' + MODE + '_delta_gen_phi_dRmatched_qM.root').Get('workspace')
 w_dict = {'Bs': w_Bs, 'X': w_X, 'psi': w_psi, 'phi': w_phi}
-fix_shapes(workspaces_dict=w_dict, models_dict=signal_model_dict, var_ignore_list=[*var.values(), *mean.values()])
+DataExplorer.fix_shapes(workspaces_dict=w_dict, models_dict=signal_model_dict, var_ignore_list=[*var.values(), *mean.values()])
 mean_delta.setVal(0.); mean_delta.setConstant(1)
 
             #---------------#
@@ -175,5 +174,5 @@ for fit_name, fit_params in N_sig_results.items():
     if N_sig_results[fit_name][2] != 0:
         print(f'Fit for {fit_name} did not converge! Fit status: {N_sig_results[fit_name][2]}\n')
     if N_sig_results[fit_name][3] != 0:
-        print(f'Fit for {fit_name} did not pass chi2 test! (p-value = {chi2_results[fit_name][-1]} < {CHI2_PVALUE_THRESHOLD})\n')
+        print(f'Fit for {fit_name} did not pass chi2 test! (p-value = {chi2_results[fit_name][-1]:.5f} < {CHI2_PVALUE_THRESHOLD})\n')
 print(65*'~' + '\n\n')
