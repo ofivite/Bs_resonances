@@ -2,7 +2,6 @@ import ROOT
 from ROOT import RooFit as RF
 from misc import interactivity_yn
 from scipy.stats import chi2
-from pandas import DataFrame
 from math import sqrt
 
 class StatTools:

@@ -37,13 +37,13 @@ mean_delta.setVal(0.); mean_delta.setConstant(1)
             #-----------------#
 
 DE_Bs = DataExplorer(label='Bs', data=data, model=model['Bs'])
-DE_Bs.set_regions(num_of_sigma_window=3, num_of_sigma_to_sdb=2)
+DE_Bs.set_regions(num_of_sigma_window=3, num_of_sigma_to_sdr=2)
 mean_Bs_val = mean['Bs'].getVal()
-#
+
 DE_control = DataExplorer(label=MODE, data=data, model=model[MODE])
-DE_control.set_regions(num_of_sigma_window=3, num_of_sigma_to_sdb=2)
+DE_control.set_regions(num_of_sigma_window=3, num_of_sigma_to_sdr=2)
 mean_control_val = mean[MODE].getVal()
-#
+
 DE_phi = DataExplorer(label='phi', data=data, model=model['phi'])
 DE_phi.window = 0.01
 DE_phi.distance_to_sdb = 0.005
@@ -55,15 +55,15 @@ mean_phi_val = mean['phi'].getVal()
 windows_control = f'TMath::Abs({var_discr.GetName()} - {mean_Bs_val}) < {DE_Bs.window} && TMath::Abs({PHI_mass_Cjp.GetName()} - {mean_phi_val}) < {DE_phi.window}'
 DE_control.data = data.reduce(windows_control)
 DE_control.fit(is_sum_w2=False, fix_float=bkgr_params[MODE])
-#
+
 c_control = ROOT.TCanvas("c_control", "c_control", 800, 600)
 frame_control = DE_control.plot_on_frame(plot_params=plot_param[MODE])
 frame_control.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_control, 2, 0)
-#
+
 chi2_results.update(DE_control.chi2_test(CHI2_PVALUE_THRESHOLD))
-N_sig_results.update({f'{DE_control.label}_{DE_control.data.GetName()}': (N_sig[MODE].getVal(), N_sig[MODE].getError(), DE_control.fit_status, DE_control.chi2_test_status)})
-#
+N_sig_results.update({f'{DE_control.label}': (N_sig[MODE].getVal(), N_sig[MODE].getError(), DE_control.fit_status, DE_control.chi2_test_status)})
+
 w_control = DE_control.write_to_workspace(poi=N_sig[MODE], nuisances=[*bkgr_params[MODE], mean[MODE], N_bkgr[MODE]])
 ar_control = DE_control.asympt_signif(w=w_control)
 ar_control.Print()
@@ -76,15 +76,15 @@ ar_control.Print()
 windows_Bs = f'TMath::Abs({var_control.GetName()} - {mean_control_val}) < {DE_control.window} && TMath::Abs({PHI_mass_Cjp.GetName()} - {mean_phi_val}) < {DE_phi.window}'
 DE_Bs.data = data.reduce(windows_Bs)
 DE_Bs.fit(is_sum_w2=False, fix_float=bkgr_params['Bs'])
-#
+
 c_Bs = ROOT.TCanvas("c_Bs", "c_Bs", 800, 600)
 frame_Bs = DE_Bs.plot_on_frame(plot_params=plot_param['Bs'])
 frame_Bs.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_Bs, 2, 0)
-#
+
 chi2_results.update(DE_Bs.chi2_test(CHI2_PVALUE_THRESHOLD))
-N_sig_results.update({f'{DE_Bs.label}_{DE_Bs.data.GetName()}': (N_sig['Bs'].getVal(), N_sig['Bs'].getError(), DE_Bs.fit_status, DE_Bs.chi2_test_status)})
-#
+N_sig_results.update({f'{DE_Bs.label}': (N_sig['Bs'].getVal(), N_sig['Bs'].getError(), DE_Bs.fit_status, DE_Bs.chi2_test_status)})
+
 w_Bs = DE_Bs.write_to_workspace(poi=N_sig['Bs'], nuisances=[*bkgr_params['Bs'], mean['Bs'], N_bkgr['Bs']])
 ar_Bs = DE_Bs.asympt_signif(w=w_Bs)
 ar_Bs.Print()
@@ -97,15 +97,15 @@ ar_Bs.Print()
 windows_phi = f'TMath::Abs({var_discr.GetName()} - {mean_Bs_val}) < {DE_Bs.window} && TMath::Abs({var_control.GetName()} - {mean_control_val}) < {DE_control.window}'
 DE_phi.data = data.reduce(windows_phi)
 DE_phi.fit(is_sum_w2=False, fix_float=bkgr_params['phi'])
-#
+
 c_phi = ROOT.TCanvas("c_phi", "c_phi", 800, 600)
 frame_phi = DE_phi.plot_on_frame(plot_params=plot_param['phi'])
 frame_phi.Draw()
 CMS_tdrStyle_lumi.CMS_lumi(c_phi, 2, 0)
-#
+
 chi2_results.update(DE_phi.chi2_test(CHI2_PVALUE_THRESHOLD))
-N_sig_results.update({f'{DE_phi.label}_{DE_phi.data.GetName()}': (N_sig['phi'].getVal(), N_sig['phi'].getError(), DE_phi.fit_status, DE_phi.chi2_test_status)})
-#
+N_sig_results.update({f'{DE_phi.label}': (N_sig['phi'].getVal(), N_sig['phi'].getError(), DE_phi.fit_status, DE_phi.chi2_test_status)})
+
 w_phi = DE_phi.write_to_workspace(poi=N_sig['phi'], nuisances=[*bkgr_params['phi'], mean['phi'], N_bkgr['phi']])
 ar_phi = DE_phi.asympt_signif(w=w_phi)
 ar_phi.Print()

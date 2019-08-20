@@ -14,7 +14,6 @@
 import ROOT
 from ROOT import RooFit as RF
 from math import sqrt
-from pandas import DataFrame
 from misc import interactivity_yn
 from StatTools import StatTools
 
