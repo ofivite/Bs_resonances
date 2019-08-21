@@ -261,9 +261,9 @@ class DataExplorer(StatTools):
         iter = self.model.getComponents().iterator()
         iter_comp = iter.Next()
         while iter_comp:
-            if iter_comp.GetName().startswith('sig'):
+            if iter_comp.GetName().startswith('sig_'):
                 self.model.plotOn(frame, RF.Components(iter_comp.GetName()), RF.LineStyle(ROOT.kDashed), RF.LineColor(47), RF.LineWidth(4))
-            if iter_comp.GetName().startswith('bkgr'):
+            if iter_comp.GetName().startswith('bkgr_'):
                 self.model.plotOn(frame, RF.Components(iter_comp.GetName()), RF.LineStyle(ROOT.kDashed), RF.LineColor(ROOT.kBlue-8), RF.LineWidth(4))
             iter_comp = iter.Next()
 
